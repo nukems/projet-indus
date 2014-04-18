@@ -1,7 +1,8 @@
 global.http = require('http');
 global.url = require('url');
 
-global.env = require("./lib/config.js");
+env = require("../lib/config.js");
+global.envDatabase = env.getConfig();
 
 var server = http.createServer(function(req, res) {
 	global.req = req;
