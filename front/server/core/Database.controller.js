@@ -5,8 +5,10 @@ function Core_Database() {
 	this.client = null;
 	this.connexion = null;
 
-	this.host = "localhost";
-	this.port = "27017";
+	this.host = env.database.host;
+	this.port = env.database.port;
+	this.username = env.database.username;
+	this.password = env.database.password;
 	this.db = "veille_concurentielle";
 
 	/**
@@ -15,7 +17,7 @@ function Core_Database() {
 	this.connect = function(callback) {
 		this.client = require('mongodb').MongoClient;
 
-		this.client.connect("mongodb://" + this.host + ":" + this.port + "/" + this.db, function(err, db) {
+		this.client.connect("mongodb://" + this.username + ":" + this.password + "@"  + this.host + ":" + this.port + "/" + this.db, function(err, db) {
 			self.connexion = db;
 			callback();
 		});
