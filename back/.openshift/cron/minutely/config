@@ -1,2 +1,2 @@
-# facebook --minutely \~/app-root/logs/facebook.log
-# website --fiveminutely \~/app-root/logs/website.log
+# facebook --minutely facebook.log
+# website --fiveminutely website.log

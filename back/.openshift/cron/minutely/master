@@ -4,14 +4,6 @@ sleep 1
 
 source /usr/bin/rhcsh
 
-APP_REPO=~/app-root/runtime/repo/
-MODULES_REPO=$APP_REPO/connectors/
-CRON_LOG=~/app-root/logs/cron.log
-
-createLogFile $CRON_LOG
-
-CRON_POSSIBILITIES=("--minutely" "--fiveminutely" "--hourly" "--daily")
-
 isCronOption() 
 {
         local e
@@ -33,8 +25,18 @@ createLogFile()
         fi
 }
 
-exec > >(tee -a $CRON_LOG)
-exec 2> >(tee -a $CRON_LOG >&2)
+APP_REPO=~/app-root/runtime/repo/
+MODULES_REPO=$APP_REPO/connectors/
+
+LOG_REPO=~/app-repo/logs/
+CRON_LOG=$LOG_REPO/cron.log
+
+createLogFile $CRON_LOG
+
+CRON_POSSIBILITIES=("--minutely" "--fiveminutely" "--hourly" "--daily")
+
+exec >> $CRON_LOG
+exec 2>&1
 
 echo
 echo "###########################"
@@ -89,8 +91,7 @@ echo
 
 echo "Preparing log files..."
 for log in ${logs[@]}; do
-	TMP_LOG=$log
-	createLogFile $TMP_LOG
+	createLogFile $LOG_REPO/$log
 done
 echo "Log files are ready"
 echo
