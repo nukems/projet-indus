@@ -2,7 +2,7 @@
 
 sleep 1
 
-source /usr/bin/rhcsh
+#source /usr/bin/rhcsh
 
 isCronOption() 
 {
@@ -44,6 +44,12 @@ echo "#          CRON           #"
 echo "###########################"
 echo
 echo "Time : $(date -R)"
+echo
+echo -n "User : "
+whoami
+echo
+echo -n "Path : "
+pwd
 
 i=0
 echo
