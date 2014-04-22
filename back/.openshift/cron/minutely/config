@@ -1,0 +1,2 @@
+facebook --minutely ~/app-root/logs/facebook.log
+website --fiveminutely ~/app-root/logs/website.log

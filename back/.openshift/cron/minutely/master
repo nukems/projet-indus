@@ -1,0 +1,96 @@
+#!/bin/bash
+
+source /usr/bin/rhcsh
+source functions
+
+CRON_LOG=~/app-root/logs/cron.log
+createLogFile $CRON_LOG
+
+exec > >(tee -a $CRON_LOG)
+exec 2> >(tee -a $CRON_LOG >&2)
+
+echo
+echo "###########################"
+echo "#          CRON           #"
+echo "###########################"
+echo
+echo "Time : $(date -R)"
+
+i=0
+echo
+echo "Reading ./config file..."
+while read line; do
+	j=0
+	for param in $line; do
+		params[$j]=$param
+		let j=j+1
+	done
+
+	if [[ ! -d $MODULES_REPO/${params[0]} ]]; then
+		echo "Module {{${params[0]}}} does not exist"
+		echo "Aborting"
+		#exit 1
+	fi
+
+	isCronOption ${params[1]}
+	if [[ $? -eq 0 ]]; then
+		echo "Cron option ${params[1]} is not avaiable"
+		echo "Aborting"
+		#exit 1
+	fi
+
+	modules[$i]=${params[0]}
+	crony[$i]=${params[1]}
+	logs[$i]=${params[2]}
+
+	let i=i+1
+	echo
+	echo " Line $i :"
+	let i=i-1
+
+	echo " |- Module : ${modules[$i]}"
+	echo " |- Cron : ${crony[$i]}"
+	echo " \_ Log path : ${logs[$i]}"
+	
+	echo
+	let i=i+1
+done < config
+echo "Read ./config file successfully"
+echo 
+
+echo "Preparing log files..."
+for log in ${logs[@]}; do
+	createLogFile $log
+done
+echo "Log files are ready"
+echo
+
+k=0
+echo "Calling modules independantly..."
+echo
+while [[ k -lt i ]]; do
+	if [[ ${crony[$k]} == ${CRON_POSSIBILITIES[0]} ]]; then 
+		# --minutely
+		echo "node $MODULES_REPO/${modules[$k]}/main.js >> ${logs[$k]} &"
+	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[1]} ]]; then
+		if [[ $(date +%M) == *0 ]] || [[ $(date +%M) == *5 ]]; then
+			# --fiveminutely
+			echo "node $MODULES_REPO/${modules[$k]}/main.js >> ${logs[$k]} &"
+		fi
+	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[2]} ]]; then 
+		if [[ $(date +%M) -eq 0 ]]; then
+			# --hourly
+			echo "node $MODULES_REPO/${modules[$k]}/main.js >> ${logs[$k]} &"
+		fi
+	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[3]} ]]; then
+		if [[ $(date +%H) -eq 0 ]] && [[ $(date +%M) -eq 0 ]]; then
+			# --daily
+			echo "node $MODULES_REPO/${modules[$k]}/main.js >> ${logs[$k]} &"
+		fi
+	fi
+	let k=k+1
+done
+
+echo
+echo "Cron done"
+echo "___________________"
