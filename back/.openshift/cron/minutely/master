@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 sleep 1
 
 #source /usr/bin/rhcsh
@@ -30,6 +31,8 @@ MODULES_REPO=$APP_REPO/connectors/
 
 LOG_REPO=~/app-repo/logs/
 CRON_LOG=$LOG_REPO/cron.log
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 createLogFile $CRON_LOG
 
@@ -91,7 +94,7 @@ while read line; do
 	
 	echo
 	let i=i+1
-done < config
+done < $DIR/config
 echo "Read ./config file successfully"
 echo 
 
