@@ -5,10 +5,10 @@ function Core_Database() {
 	this.client = null;
 	this.connexion = null;
 
-	this.host = envDatabase.host;
-	this.port = envDatabase.port;
-	this.username = envDatabase.username;
-	this.password = envDatabase.password;
+	this.host = env.database.host;
+	this.port = env.database.port;
+	this.username = env.database.username;
+	this.password = env.database.password;
 	this.db = "veille_concurentielle";
 
 	/**

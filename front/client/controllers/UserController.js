@@ -2,6 +2,14 @@ function UserController() {
 
 	var self = this;
 
+	//initilisation d'un utilisateur : autoconnexion
+	this.init = function() {
+		var autologinKey = get(Cookie).val('autologin');
+		if (autologinKey != null) { //cle d'autoconnexion trouvee
+			self.autoLogInRequest(autologinKey);
+		}
+	}
+
 	this.logIn = function() {
 		$('#content').html(self.displayLogIn());
 		self.logInEvents();
@@ -83,15 +91,30 @@ function UserController() {
 			mail: $('#logInMail').val(),
 			password: $('#logInPassword').val()
 		};
-		console.log(data);
 		get(Ajax).send('user/log-in', data, self.logInCallback);
 	}
 	this.logInCallback = function(data) {
-		console.log(data);
 		if (data.error == 1) {
 			$('#logInError').html(data.data);
 		} else {
-			alert('Connexion reussie');
+			get(User).setToken(data.data.token);
+			get(User).setName(data.data.name);
+			get(User).setFirstName(data.data.firstName);
+			if (data.data.autologin) {
+				get(Cookie).create('autologin', data.data.autologin);
+			}
+			get(Routes).goTo('#!/dashboard');
+		}
+	}
+
+	this.autoLogInRequest = function(key) {
+		get(Ajax).send('user/auto-log-in', {'key': key}, self.autoLogInCallback);
+	}
+	this.autoLogInCallback = function(data) {
+		if (data.error == 0) {
+			self.logInCallback(data);
+		} else {
+			get(Routes).goTo('#!');
 		}
 	}
 

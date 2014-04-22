@@ -8,7 +8,7 @@ function Routes() {
 	*/
 	this.init = function() {
 		self.events();
-		self.go(document.location.hash);
+		//self.go(document.location.hash);
 	}
 
 	/**
@@ -66,7 +66,9 @@ function Routes() {
 				get(UserController).logIn();
 			}
 		} else {
-
+			if (args.length == 1 || args[1] == 'dashboard') {
+				get(DashboardController).init();
+			}
 		}
 		
 	}

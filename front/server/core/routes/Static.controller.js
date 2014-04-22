@@ -75,15 +75,19 @@ function Core_Routes_Static() {
 	    res.end('<html>' + 
     				'<head>' + 
     					'<title>Projet industriel</title>' +
+    					'<link rel="stylesheet" type="text/css" href="' + host + 'client/design/main.css">' + 
+    					'<link rel="stylesheet" type="text/css" href="' + host + 'client/design/dashboard.css">' + 
     					'<script type="text/javascript" src="' + host + 'client/core/libs/jquery.min.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/libs/jquery.history.min.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/libs/jquery.base64.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/main.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/ajax.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/routes.js"></script>' +
+    					'<script type="text/javascript" src="' + host + 'client/core/cookie.js"></script>' +
     					'<script type="text/javascript" src="' + host + 'client/core/instances.js"></script>' +
     					'<script type="text/javascript" src="' + host + 'client/entities/user.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/controllers/userController.js"></script>' +  
+    					'<script type="text/javascript" src="' + host + 'client/controllers/dashboardController.js"></script>' +  
     				'</head>' + 
     				'<body>' +
     					'<div id="content"></div>' + 

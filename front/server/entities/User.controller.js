@@ -15,19 +15,18 @@ function Entities_User() {
 	/**
 	*	Peuple l'utilisateur a partir de la cle d'autologin
 	*	Correspond a la connexion auto a l'arrivee sur le site
-	*	Return false si cle qui ne correspond a aucun utilisateur
-	*	Return vrai sinon
 	*/
 	this.getUserForAutoLogIn = function(key, callback) {
 		this.autoLogInCollection.findOne({"key": key}, {"userId": 1}, function(err, user) {
-			if(err == null) {
+			if(err == null && user != null) {
 				self.setId(user.userId);
 				self.updateToken(function() {
-					self.getUserForId();
+					self.getUserForId(user.userId, callback);
 					callback();
 				});
+			} else {
+				callback();
 			}
-			callback();
 		});
 	}
 
@@ -38,6 +37,7 @@ function Entities_User() {
 	this.getUserForToken = function(token, callback) {
 		this.userCollection.findOne({"token": token}, function(err, user) {
 			if (err == null && user != null) {
+				self.hydrate(user);
 			}
 			callback();
 		});
@@ -81,7 +81,7 @@ function Entities_User() {
 				self.addAutoLogIn(callback);
 			} else {
 				self.autoLogInCollection.insert({"key": newKey, "userId": self.getId()}, function(err, item) {
-					callback();
+					callback(newKey);
 				});
 			}
 		});
@@ -97,6 +97,7 @@ function Entities_User() {
 				self.addToken(callback);
 			} else {
 				self.userCollection.update({"_id": new require('mongodb').ObjectID(self.getId())}, {$set: {"token": newToken}}, function(err, result) {
+					self.setToken(newToken);
 					callback();
 				});
 			}
@@ -124,8 +125,8 @@ function Entities_User() {
 	/**
 	*	Supprime tous les couples autologin/userid de la collection
 	*/
-	this.deleteAutoLogIn = function(key, callback) {
-		this.autoLogInCollection.remove({"key": key}, function(err, nb) {
+	this.deleteAutoLogIn = function(callback) {
+		this.autoLogInCollection.remove({"userId": self.getId()}, function(err, nb) {
 			callback();
 		});
 	}
@@ -140,7 +141,7 @@ function Entities_User() {
 	}
 
 	/**
-	*
+	*	Retourne le nombre d'utilisateurs ayant l'adresse mail identique a celle passee en parametre
 	*/
 	this.countMail = function(mail, callback) {
 		this.userCollection.count({"mail": mail}, function(err, count) {
@@ -149,7 +150,7 @@ function Entities_User() {
 	}
 
 	/**
-	* 
+	* 	Retourne l'id d'un utilisateur en fonction de son mail et de son mot de passe
 	*/
 	this.getIdForMailAndPassword = function(mail, password, callback) {
 		this.userCollection.findOne({"mail": mail, "password": InstancesController.getInstance('Core_Utils_Text').crypte(password)}, function(err, user) {
