@@ -29,7 +29,7 @@ createLogFile()
 APP_REPO=~/app-root/runtime/repo/
 MODULES_REPO=$APP_REPO/connectors/
 
-LOG_REPO=~/app-repo/logs/
+LOG_REPO=~/app-root/logs/
 CRON_LOG=$LOG_REPO/cron.log
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
