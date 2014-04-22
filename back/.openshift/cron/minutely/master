@@ -1,10 +1,35 @@
 #!/bin/bash
 
 source /usr/bin/rhcsh
-source functions
 
+APP_REPO=~/app-root/runtime/repo/
+MODULES_REPO=$APP_REPO/connectors/
 CRON_LOG=~/app-root/logs/cron.log
+
 createLogFile $CRON_LOG
+
+CRON_POSSIBILITIES=("--minutely" "--fiveminutely" "--hourly" "--daily")
+
+isCronOption() 
+{
+        local e
+        for e in "${CRON_POSSIBILITIES[@]}"; do
+                if [[ "$1" == "$e" ]]; then
+                        return 1
+                fi
+        done
+        return 0
+}
+
+createLogFile()
+{
+        if [[ ! -f $1 ]]; then
+                mkdir -p $1
+                rm -r $1
+                touch $1
+                echo "Log file $log was not existing, is now created"
+        fi
+}
 
 exec > >(tee -a $CRON_LOG)
 exec 2> >(tee -a $CRON_LOG >&2)
@@ -22,8 +47,10 @@ echo "Reading ./config file..."
 while read line; do
 	j=0
 	for param in $line; do
-		params[$j]=$param
-		let j=j+1
+		if [[ $param != "#" ]]; then
+			params[$j]=$param
+			let j=j+1
+		fi
 	done
 
 	if [[ ! -d $MODULES_REPO/${params[0]} ]]; then
