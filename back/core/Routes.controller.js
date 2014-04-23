@@ -16,11 +16,13 @@ function Core_Routes() {
 				res.end(-1);
 			} 
 			var moduleName = urlParts[1];
-			var module = require("../modules/" + moduleName + "/main.js");
-			module.execute(function() {
-				console.log('Execution du module '  + moduleName + ' avec succes');
-				res.end(0);
-			});
+			if (moduleName != 'favicon.ico') {
+				var module = require("../modules/" + moduleName + "/main.js");
+				module.execute(function() {
+					console.log('Execution du module '  + moduleName + ' avec succes');
+					res.end(0);
+				});
+			}
 		}
 	}
 
