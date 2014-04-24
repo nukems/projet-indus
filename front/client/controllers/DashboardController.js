@@ -18,7 +18,7 @@ function DashboardController() {
 							'<div id="dashboardHeaderUser">' + 
 								get(User).getFirstName() + ' ' + get(User).getName() + 
 								'<br />' + 
-								'<a href="#!" id="logOutButton">Déconnexion</a>' +
+								'<a href="#!" id="logOutButton" style="color: #eeeeee;">Déconnexion</a>' +
 							'</div>' +
 						'</div>' + 
 						'<div id="dashboardTable">' + 

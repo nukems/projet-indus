@@ -47,7 +47,7 @@ function init() {
 	global.RoutesController = InstancesController.getInstance('Core_Routes_Routes');
 	RoutesController.setUrl(req.url);
 	//url de l'application
-	global.host = "http://" + req.headers.host + "/";
+	global.host = "http://" + req.headers.host + "/front/";
 
 	//initialisation des evenements
 	global.EventEmitter = require('events').EventEmitter;

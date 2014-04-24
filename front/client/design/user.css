@@ -1,0 +1,29 @@
+/* LOG IN */
+#logInForm {
+	margin: 100px auto 100px auto;
+	width: 260px;
+	background-color: #eeeeee;
+	padding: 20px;
+}
+#logInForm input {
+	width: 260px;
+}
+
+#logInForm button {
+	margin-top: 20px;
+}
+
+/* SIGN IN */
+#signInForm {
+	margin: 100px auto 100px auto;
+	width: 260px;
+	background-color: #eeeeee;
+	padding: 20px;
+}
+#signInForm input {
+	width: 260px;
+}
+
+#signInForm button {
+	margin-top: 20px;
+}

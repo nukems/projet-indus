@@ -36,6 +36,7 @@ function Entities_User() {
 	*/
 	this.getUserForToken = function(token, callback) {
 		this.userCollection.findOne({"token": token}, function(err, user) {
+			console.log(user);
 			if (err == null && user != null) {
 				self.hydrate(user);
 			}

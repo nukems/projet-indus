@@ -27,6 +27,7 @@ function UserController() {
 	*/
 	this.displayLogIn = function() {
 		var html = '<form method="post" id="logInForm">' + 
+						'<h1>Se connecter</h1>' +
 						'<div id="logInError"></div>' +
 						'<label for="logInMail">Adresse mail :</label>' + 
 						'<input type="text" name="logInMail" id="logInMail"/>' +
@@ -34,16 +35,15 @@ function UserController() {
 						'<label for="logInPassword">Mot de passe :</label>' + 
 						'<input type="password" name="logInPassword" id="logInPassword"/>' +
 						'<br />' + 
-						'<button type="submit">Se connecter</button>' +
-						'<p>' + 
-							'<a href="#!/inscription" class="link">Inscription</a>' +
-						'</p>' +
+						'<button type="submit" class="green">Se connecter</button>' +
+						' ou <a href="#!/inscription" class="link">s\'inscrire</a>' +
 					'</form>';
 		return html;
 	}
 
 	this.displaySignIn = function() {
 		var html = '<form method="post" id="signInForm">' + 
+						'</h1>S\'inscrire</h1>' +
 						'<div id="signInError"></div>' +
 						'<label for="signInName">Nom : </label>' + 
 						'<input type="text" name="signInName" id="signInName"/>' +
@@ -60,10 +60,8 @@ function UserController() {
 						'<label for="signInName">Confirmation : </label>' + 
 						'<input type="password" name="signInConfirm" id="signInConfirm"/>' +
 						'<br />' +
-						'<button type="submit">S\'inscrire</button>' +
-						'<p>' + 
-							'<a href="#!" class="link">Se connecter</a>' +
-						'</p>' +
+						'<button type="submit" class="green">S\'inscrire</button>' +
+						' ou <a href="#!" class="link">Se connecter</a>' +
 					'</form>';
 		return html;
 	}

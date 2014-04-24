@@ -1,5 +1,41 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
 html, body {
 	margin: 0px;
 	padding: 0px;
-	font-family: "Trebuchet MS";
+	font-family: "Open Sans";
+	font-size: 13px;
+}
+
+a {
+	color: #666666;
+}
+
+h1 {
+	font-size: 20px;
+	font-weight: bold;
+	margin: 0px 0px 10px 0px;
+}
+
+/**
+*	FORMULAIRES
+*/
+input {
+	border: 1px solid #dddddd;
+	border-radius: 3px;
+	box-shadow: 0px 0px 2px #eeeeee inset;
+	padding: 8px;
+}
+label {
+	display: block;
+}
+
+button {
+	padding: 8px;
+	border: 0px;
+	border-radius: 3px;
+}
+button.green {
+	background-color: #8AC54D;
+	color: white;
 }
