@@ -1,4 +1,4 @@
-var config_fb = {
+var config = {
 	"type" : [
 		{
 			"name" : "info_page",
@@ -15,4 +15,4 @@ var config_fb = {
 	]
 }
 
-exports.config_fb = config_fb;
+exports.config = config;

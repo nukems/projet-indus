@@ -15,5 +15,5 @@
   "bundleDependencies": [],
 
   "private": true,
-  "main": "./front/server.js"
+  "main": "./server.js"
 }
