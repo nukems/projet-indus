@@ -9,7 +9,7 @@ function Core_Database() {
 	this.port = env.database.port;
 	this.username = env.database.username;
 	this.password = env.database.password;
-	this.db = "veille_concurentielle";
+	this.db = env.database.basename;
 
 	/**
 	*	Connexion a la base de donnees mongodb
