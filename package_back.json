@@ -15,5 +15,5 @@
 	"bundleDependencies": [],
 
 	"private": true,
-	"main": "server.js"
+	"main": "./back/server.js"
 }

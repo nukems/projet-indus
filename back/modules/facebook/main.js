@@ -9,7 +9,7 @@ function execute(callback) {
 
 	var linkFacebook = ConfigChecker.get("facebook");
 	
-	/*var parseData = {
+	var parseData = {
 		"datas" : []
 	};
 	
@@ -20,7 +20,7 @@ function execute(callback) {
 			"date" : new Date(),
 			"competitor_id" : linkFacebook[0].pagelink,
 			"info" : [{"fans" : 1458}, {"shared" : 654}]
-		});*/
+		});
 	
 	for(var i = 0; i < linkFacebook.length; i++)
 	{
