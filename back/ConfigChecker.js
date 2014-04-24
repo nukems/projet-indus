@@ -27,6 +27,16 @@ var mongoDB = {
 					"pagelink" : "www.spion.fr"
 				}
 			]
+		},
+		{
+			"id" : 2,
+			"company_name" : "FacebookDevelopers",
+			"connectors" : [
+				{
+					"name" : "facebook",
+					"pagelink" : "/FacebookDevelopers"
+				}
+			]
 		}
 	]
 };
