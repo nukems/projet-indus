@@ -7,6 +7,8 @@
 #dashboardHeaderUser {
 	float: right;
 	color: white;
+	text-align: right;
+	padding: 10px;
 }
 
 #dashboardTable {
@@ -27,6 +29,15 @@
 .dashboardMenuItem {
 	border-bottom: 1px solid #cccccc;
 	padding: 10px;
+}
+.dashboardMenuItem:hover {
+	cursor: pointer;
+	background-color: #eeeeee;
+}
+
+#addCompetitor {
+	width: 180px;
+	margin: 10px;
 }
 
 
