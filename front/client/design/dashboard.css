@@ -53,5 +53,17 @@
 }
 #competitorName {
 	margin: 0px;
-	padding: 0px;
+}
+
+/**
+*	Formulaire ajout concurrent
+*/
+#addCompetitorForm {
+	padding: 10px;
+}
+#addCompetitorForm input {
+	width: 178px;
+}
+#addCompetitorForm button {
+	margin-top: 10px;
 }

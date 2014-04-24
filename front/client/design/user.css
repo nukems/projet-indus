@@ -27,3 +27,8 @@
 #signInForm button {
 	margin-top: 20px;
 }
+
+/* erreur */
+.formError {
+	color: red;
+}

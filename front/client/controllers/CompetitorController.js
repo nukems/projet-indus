@@ -20,8 +20,11 @@ function Competitor() {
 							'<button id="addConnectorToCompetitorButton">Ajouter un connecteur</button> ' +
 							'<button id="deleteCompetitorButton">Supprimer</button>' + 
 						'</div>' +
-						'<h1 id="competitorName">' + self.getName() + '</h1>' + 
-						'<div id="competitorDashboard">' + 
+						'<h1 id="competitorName">' + self.getName() + '</h1>';
+		if (self.getWebsite() != null) {
+			html += '<a href="' + self.getWebsite() + '">' + self.getWebsite() + '</a>';
+		}
+		html +=			'<div id="competitorDashboard">' + 
 							'Affichage du dashboard...' + 
 						'</div>' + 
 					'</div>';

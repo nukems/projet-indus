@@ -28,7 +28,7 @@ function UserController() {
 	this.displayLogIn = function() {
 		var html = '<form method="post" id="logInForm">' + 
 						'<h1>Se connecter</h1>' +
-						'<div id="logInError"></div>' +
+						'<div id="logInError" class="formError"></div>' +
 						'<label for="logInMail">Adresse mail :</label>' + 
 						'<input type="text" name="logInMail" id="logInMail"/>' +
 						'<br />' + 
@@ -43,8 +43,8 @@ function UserController() {
 
 	this.displaySignIn = function() {
 		var html = '<form method="post" id="signInForm">' + 
-						'</h1>S\'inscrire</h1>' +
-						'<div id="signInError"></div>' +
+						'<h1>S\'inscrire</h1>' +
+						'<div id="signInError" class="formError"></div>' +
 						'<label for="signInName">Nom : </label>' + 
 						'<input type="text" name="signInName" id="signInName"/>' +
 						'<br />' +

@@ -45,12 +45,12 @@ function DashboardController() {
 	}
 
 	this.displayAddCompetitor = function() {
-		var html = '<form method="post">' + 
-						'<label for="competitorName">Nom du concurrent :</label><br />' +
-						'<input type="text" name="competitorName" id="competitorName"/><br />' + 
-						'<label for="competitorWebsite">Site web :</label><br />' + 
-						'<input type="text" name="competitorWebsite id="competitorWebsite"/><br />' + 
-						'<button id="addCompetitorButton">Ajouter</button> ' + 
+		var html = '<form method="post" id="addCompetitorForm">' + 
+						'<label for="addCompetitorName">Nom du concurrent* :</label>' +
+						'<input type="text" name="addCompetitorName" id="addCompetitorName"/><br />' + 
+						'<label for="addCompetitorWebsite">Site web :</label>' + 
+						'<input type="text" name="addCompetitorWebsite" id="addCompetitorWebsite"/><br />' + 
+						'<button id="addCompetitorButton" class="green">Ajouter</button> ' + 
 						'<button id="cancelAddCompetitor">Annuler</button>' +
 					'</form>';
 		$('#addCompetitor').replaceWith(html);
@@ -84,6 +84,10 @@ function DashboardController() {
 			self.addCompetitor();
 			return false;
 		});
+		$('#cancelAddCompetitor').off().click(function() {
+			$('#addCompetitorForm').replaceWith('<button id="addCompetitor">Ajouter un concurrent</button>');
+			self.eventsMenu();
+		});
 	}
 
 	/**
@@ -108,8 +112,8 @@ function DashboardController() {
 
 	this.addCompetitor = function() {
 		var data = {
-			"companyName": $('#competitorName').val(),
-			"websiteUrl": $('#competitorWebsite').val()
+			"companyName": $('#addCompetitorName').val(),
+			"websiteUrl": $('#addCompetitorWebsite').val()
 		};
 		get(Ajax).sendOne('user/competitors/add', data, self.addCompetitorCallback);
 	}
