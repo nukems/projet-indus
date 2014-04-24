@@ -1,7 +1,7 @@
 global.http = require('http');
 global.url = require('url');
 
-envObject = require("../lib/config.js");
+envObject = require("./lib/config.js");
 global.env = envObject.getConfig();
 
 var server = http.createServer(function(req, res) {
@@ -38,7 +38,7 @@ function getPostData(callback) {
 */
 function init() {
 	//initialisation de l'autoload
-	var i = require('./core/Instances.controller').controller;
+	var i = require('./back/core/Instances.controller.js').controller;
 	global.InstancesController = new i();
 
 	//connexion a la base de donnees
