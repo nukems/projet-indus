@@ -48,6 +48,19 @@ function Core_Database() {
 		return this.connexion;
 	}
 
+	/**
+	*	Incremente un compteur et retourne la nouvelle valeur
+	*/
+	this.getNextValue = function(counter, callback) {
+		self.getCollection("counters").update({ "_id": counter }, { $inc: { seq: 1 } }, 
+        function(err, result) {
+        	self.getCollection("counters").findOne({ "_id": counter }, function(err, item) {
+	        	callback(item.seq);
+	      	});
+        	
+		});
+	}
+
 }
 
 exports.controller = Core_Database;

@@ -19,14 +19,29 @@
 /* MENU */
 #dashboardMenu {
 	display: table-cell;
+	vertical-align: top;
 	width: 200px;
 	background-color: #dddddd;
 	padding-top: 60px;
+}
+.dashboardMenuItem {
+	border-bottom: 1px solid #cccccc;
+	padding: 10px;
+	font-size: 0.8em;
 }
 
 
 /* CONTENU */
 #dashboardContent {
 	display: table-cell;
-	padding-top: 60px;
+	padding: 70px 10px 10px 10px;
+}
+
+/*header competitor*/
+#competitorActions {
+	float: right;
+}
+#competitorName {
+	margin: 0px;
+	padding: 0px;
 }

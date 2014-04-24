@@ -72,8 +72,9 @@ function Core_Routes_Static() {
 	*/
 	this.getIndexPage = function() {
 		res.writeHead(200, {"Content-Type": "text/html"});
-	    res.end('<html>' + 
+	    res.end('<html lang="fr">' + 
     				'<head>' + 
+    					'<meta charset="utf-8" />' +
     					'<title>Projet industriel</title>' +
     					'<link rel="stylesheet" type="text/css" href="' + host + 'client/design/main.css">' + 
     					'<link rel="stylesheet" type="text/css" href="' + host + 'client/design/dashboard.css">' + 
@@ -87,7 +88,8 @@ function Core_Routes_Static() {
     					'<script type="text/javascript" src="' + host + 'client/core/instances.js"></script>' +
     					'<script type="text/javascript" src="' + host + 'client/entities/user.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/controllers/userController.js"></script>' +  
-    					'<script type="text/javascript" src="' + host + 'client/controllers/dashboardController.js"></script>' +  
+    					'<script type="text/javascript" src="' + host + 'client/controllers/dashboardController.js"></script>' + 
+    					'<script type="text/javascript" src="' + host + 'client/controllers/competitorController.js"></script>' +  
     				'</head>' + 
     				'<body>' +
     					'<div id="content"></div>' + 

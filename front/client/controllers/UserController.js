@@ -7,6 +7,8 @@ function UserController() {
 		var autologinKey = get(Cookie).val('autologin');
 		if (autologinKey != null) { //cle d'autoconnexion trouvee
 			self.autoLogInRequest(autologinKey);
+		} else {
+			get(Routes).goTo('#!');
 		}
 	}
 
@@ -53,10 +55,10 @@ function UserController() {
 						'<input type="text" name="signInMail" id="signInMail"/>' +
 						'<br />' +
 						'<label for="signInName">Mot de passe : </label>' + 
-						'<input type="text" name="signInPassword" id="signInPassword"/>' +
+						'<input type="password" name="signInPassword" id="signInPassword"/>' +
 						'<br />' +
 						'<label for="signInName">Confirmation : </label>' + 
-						'<input type="text" name="signInConfirm" id="signInConfirm"/>' +
+						'<input type="password" name="signInConfirm" id="signInConfirm"/>' +
 						'<br />' +
 						'<button type="submit">S\'inscrire</button>' +
 						'<p>' + 
@@ -107,6 +109,25 @@ function UserController() {
 		}
 	}
 
+	this.signInRequest = function() {
+		var data = {
+			name: $('#signInName').val(),
+			firstName: $('#signInFirstName').val(),
+			mail: $('#signInMail').val(),
+			password: $('#signInPassword').val(),
+			passwordConfirm: $('#signInConfirm').val()
+		};
+		get(Ajax).send('user/sign-in', data, self.signInCallback);
+	}
+	this.signInCallback = function(data) {
+		if (parseInt(data.error, 10) == 1) {
+			$('#signInError').html(data.data);
+		} else {
+			alert("Inscription réussie");
+			get(Routes).goTo('#!');
+		}
+	}
+
 	this.autoLogInRequest = function(key) {
 		get(Ajax).send('user/auto-log-in', {'key': key}, self.autoLogInCallback);
 	}
@@ -117,9 +138,4 @@ function UserController() {
 			get(Routes).goTo('#!');
 		}
 	}
-
-	this.signInRequest = function() {
-
-	}
-
 }

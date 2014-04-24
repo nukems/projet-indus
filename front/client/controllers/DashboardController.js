@@ -16,7 +16,7 @@ function DashboardController() {
 		var html = '<div id="dashboardMain">' + 
 						'<div id="dashboardHeader">' + 
 							'<div id="dashboardHeaderUser">' + 
-								get(User).getName() + ' ' + get(User).getFirstName() + 
+								get(User).getFirstName() + ' ' + get(User).getName() + 
 								'<br />' + 
 								'<a href="#!" id="logOutButton">Déconnexion</a>' +
 							'</div>' +
@@ -25,7 +25,7 @@ function DashboardController() {
 							'<div id="dashboardMenu">' + 
 							'</div>' + 
 							'<div id="dashboardContent">' + 
-								'Chargement...' +
+								'Commencez par choisir un concurrent dans le menu de gauche' +
 							'</div>' + 
 						'</div>' +
 					'</div>';
@@ -44,13 +44,45 @@ function DashboardController() {
 		$('#dashboardMenu').html(html);
 	}
 
+	this.displayAddCompetitor = function() {
+		var html = '<form method="post">' + 
+						'<label for="competitorName">Nom du concurrent :</label><br />' +
+						'<input type="text" name="competitorName" id="competitorName"/><br />' + 
+						'<label for="competitorWebsite">Site web :</label><br />' + 
+						'<input type="text" name="competitorWebsite id="competitorWebsite"/><br />' + 
+						'<button id="addCompetitorButton">Ajouter</button> ' + 
+						'<button id="cancelAddCompetitor">Annuler</button>' +
+					'</form>';
+		$('#addCompetitor').replaceWith(html);
+	}
+
 	/**
 	*	EVENTS
 	*/
 	//evenements de base du dashboard
 	this.eventsBase = function() {
-		$('#logOutButton').click(function() {
+		$('#logOutButton').off().click(function() {
 			self.logOut();
+		});
+	}
+
+	//evenements du menu
+	this.eventsMenu = function() {
+		$('#addCompetitor').off().click(function() {
+			self.displayAddCompetitor();
+			self.eventsAdd();
+		});
+		$('.dashboardMenuItem').off().click(function() {
+			var id = $(this).attr("id");
+			get(Competitor).init(id);
+		});
+	}
+
+	//evenements d'ajouts
+	this.eventsAdd = function() {
+		$('#addCompetitorButton').off().click(function() {
+			self.addCompetitor();
+			return false;
 		});
 	}
 
@@ -67,9 +99,26 @@ function DashboardController() {
 	}
 
 	this.getCompetitors = function() {
-		get(Ajax).send('user/competitors/', null, function(data) {
-			self.displayCompetitorsList(data.data.competitors);
-		});
+		get(Ajax).sendOne('user/competitors/', null, self.getCompetitorsCallback);
+	}
+	this.getCompetitorsCallback = function(data) {
+		self.displayCompetitorsList(data.data.competitors);
+		self.eventsMenu();
+	}
+
+	this.addCompetitor = function() {
+		var data = {
+			"companyName": $('#competitorName').val(),
+			"websiteUrl": $('#competitorWebsite').val()
+		};
+		get(Ajax).sendOne('user/competitors/add', data, self.addCompetitorCallback);
+	}
+	this.addCompetitorCallback = function(data) {
+		if(parseInt(data.error, 10) == 0) {
+			self.getCompetitors();
+		} else {
+			alert(data.data);
+		}
 	}
 
 }

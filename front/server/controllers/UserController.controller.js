@@ -89,6 +89,28 @@ function Controllers_UserController() {
 			});
 		});
 	}
+
+	/**
+	*	Inscription d'un nouvel utilisateur
+	*/
+	this.signIn = function() {
+		var name = POST.data.name;
+		var firstName = POST.data.firstName;
+		var mail = POST.data.mail;
+		var password = POST.data.password;
+		var passwordConfirm = POST.data.passwordConfirm;
+		var userController = InstancesController.getInstance("Entities_User");
+
+		if (name == null || name == '' || firstName == null || firstName == '' || mail == null || mail == '' || password == null || password == '') {
+			Ajax.setError("Il faut remplir tous les champs").send();
+		} else if (password != passwordConfirm) {
+			Ajax.setError("Le mot de passe et la confirmation sont différents").send();
+		} else {
+			userController.add(name, firstName, mail, password, function() {
+				Ajax.setData({}).send();
+			})
+		}
+	}
 }
 
 exports.controller = Controllers_UserController;
