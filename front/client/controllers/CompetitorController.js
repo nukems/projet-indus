@@ -40,7 +40,10 @@ function Competitor() {
 				self.deleteCompetitor();
 			}
 			return false;
-		})
+		});
+		$('#addConnectorToCompetitorButton').click(function() {
+			get(Connector).initAdd();
+		});
 	}
 
 	/**

@@ -88,9 +88,10 @@ function Core_Routes_Static() {
     					'<script type="text/javascript" src="' + host + 'client/core/cookie.js"></script>' +
     					'<script type="text/javascript" src="' + host + 'client/core/instances.js"></script>' +
     					'<script type="text/javascript" src="' + host + 'client/entities/user.js"></script>' + 
-    					'<script type="text/javascript" src="' + host + 'client/controllers/userController.js"></script>' +  
-    					'<script type="text/javascript" src="' + host + 'client/controllers/dashboardController.js"></script>' + 
-    					'<script type="text/javascript" src="' + host + 'client/controllers/competitorController.js"></script>' +  
+    					'<script type="text/javascript" src="' + host + 'client/controllers/UserController.js"></script>' +  
+    					'<script type="text/javascript" src="' + host + 'client/controllers/DashboardController.js"></script>' + 
+    					'<script type="text/javascript" src="' + host + 'client/controllers/CompetitorController.js"></script>' +  
+    					'<script type="text/javascript" src="' + host + 'client/controllers/ConnectorController.js"></script>' +  
     				'</head>' + 
     				'<body>' +
     					'<div id="content"></div>' + 
