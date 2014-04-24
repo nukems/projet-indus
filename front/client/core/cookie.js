@@ -27,6 +27,6 @@ function Cookie() {
     }
     
     this.delete = function(name) {
-        get(Cookie).addCookie(name,"",-1);
+        get(Cookie).create(name,"",-1);
     }
 }

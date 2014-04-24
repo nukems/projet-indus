@@ -99,6 +99,7 @@ function DashboardController() {
 	}
 	this.logOutCallback = function(data) {
 		get(User).setToken(null);
+		get(Cookie).delete('autologin');
 		get(Routes).goTo('#!');
 	}
 

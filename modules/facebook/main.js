@@ -4,7 +4,7 @@
 function execute(callback) {
 	console.log("execution du module facebook");
 	
-	var ConfigChecker = require('./../../ConfigChecker.js');
+	var ConfigChecker = require('./../../back/ConfigChecker.js');
 	var facebook = require('./facebook.js');
 
 	var linkFacebook = ConfigChecker.get("facebook");

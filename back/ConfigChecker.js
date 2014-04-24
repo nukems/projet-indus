@@ -60,7 +60,7 @@ function get(module_name) {
 function add(module_name, type_name, data) {
 	
 	//Get the module config file
-	var file_config = require('./modules/' + module_name + '/config_back.js');
+	var file_config = require('../modules/' + module_name + '/config_back.js');
 	var config = file_config.config_fb;
 	
 	var dataCheck = checkAllFields(getTypeObject(config, type_name), data);
