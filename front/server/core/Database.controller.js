@@ -15,9 +15,9 @@ function Core_Database() {
 	*	Connexion a la base de donnees mongodb
 	*/
 	this.connect = function(callback) {
-		this.client = require('mongodb').MongoClient;
+		self.client = require('mongodb').MongoClient;
 
-		this.client.connect("mongodb://" + this.username + ":" + this.password + "@" + this.host + ":" + this.port + "/" + this.db, function(err, db) {
+		self.client.connect("mongodb://" + self.username + ":" + self.password + "@" + self.host + ":" + self.port + "/" + self.db, function(err, db) {
 			if (err != null) {
 				fatalError("Error connecting database : " + err);
 			}
