@@ -109,3 +109,5 @@ function fatalError(err) {
 	res.writeHead(200, {"Content-Type": "text/html"});
 	res.end(JSON.stringify(data));
 }
+
+global.fatalError = fatalError;

@@ -19,8 +19,7 @@ function Core_Database() {
 
 		this.client.connect("mongodb://" + this.username + ":" + this.password + "@" + this.host + ":" + this.port + "/" + this.db, function(err, db) {
 			if (err != null) {
-				console.log("Error connecting database : " + err);
-				throw err;
+				fatalError("Error connecting database : " + err);
 			}
 			self.connexion = db;
 			callback();
@@ -42,7 +41,12 @@ function Core_Database() {
 	*	@collectionName nom de la collection
 	*/
 	this.getCollection = function(collectionName) {
-		return this.connexion.collection(collectionName);
+		var collection = this.connexion.collection(collectionName);
+		if(collection == null) {
+			fatalError("La collection demandée n'existe pas");
+		} else {
+			return collection;
+		}
 	}
 
 	/**
@@ -58,9 +62,17 @@ function Core_Database() {
 	this.getNextValue = function(counter, callback) {
 		self.getCollection("counters").update({ "_id": counter }, { $inc: { seq: 1 } }, 
         function(err, result) {
-        	self.getCollection("counters").findOne({ "_id": counter }, function(err, item) {
-	        	callback(item.seq);
-	      	});
+        	if(err != null || result == 0) {
+        		fatalError("Impossible d'incrementer le compteur " + counter);
+        	} else {
+        		self.getCollection("counters").findOne({ "_id": counter }, function(err, item) {
+        			if (err != null || item == null) {
+        				fatalError("Impossible de recuperer le compteur " + counter);
+        			} else {
+	        			callback(item.seq);
+	        		}
+	      		});
+        	}
         	
 		});
 	}
