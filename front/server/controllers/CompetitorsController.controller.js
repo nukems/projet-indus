@@ -5,8 +5,11 @@ function Controllers_CompetitorsController() {
 	*/
 	this.getList = function() {
 		InstancesController.getInstance("Entities_Competitor").getAllForUser(function(user) {
-			//user.competitors = [];
-			Ajax.setData({"competitors": user.competitors}).send();
+			if (user == null) {
+				Ajax.setError("Impossible de récuperer les concurrents").send();
+			} else {
+				Ajax.setData({"competitors": user.competitors}).send();
+			}
 		});
 	}
 
@@ -19,8 +22,12 @@ function Controllers_CompetitorsController() {
 		if (companyName == '') {
 			Ajax.setError("Le nom du concurrent est vide").send();
 		} else {
-			InstancesController.getInstance("Entities_Competitor").addCompetitorForUser(companyName, websiteUrl, function() {
-				Ajax.setData({}).send();
+			InstancesController.getInstance("Entities_Competitor").addCompetitorForUser(companyName, websiteUrl, function(added) {
+				if (added == false) {
+					Ajax.setError("Impossible d'ajouter le concurrent").send();
+				} else {
+					Ajax.setData({}).send();
+				}
 			});
 		}
 	}
@@ -31,8 +38,12 @@ function Controllers_CompetitorsController() {
 	this.delete = function() {
 		var competitorId = POST.data.id;
 
-		InstancesController.getInstance("Entities_Competitor").deleteCompetitorForUser(competitorId, function() {
-			Ajax.setData({}).send();
+		InstancesController.getInstance("Entities_Competitor").deleteCompetitorForUser(competitorId, function(deleted) {
+			if (deleted == false) {
+				Ajax.setError("Impossible de supprimer le concurrent").send();
+			} else {
+				Ajax.setData({}).send();
+			}
 		});
 	}
 

@@ -22,10 +22,10 @@ function Entities_User() {
 				self.setId(user.userId);
 				self.updateToken(function() {
 					self.getUserForId(user.userId, callback);
-					callback();
+					callback(true);
 				});
 			} else {
-				callback();
+				callback(false);
 			}
 		});
 	}
@@ -38,8 +38,10 @@ function Entities_User() {
 		this.userCollection.findOne({"token": token}, function(err, user) {
 			if (err == null && user != null) {
 				self.hydrate(user);
+				callback(true);
+			} else {
+				callback(false);
 			}
-			callback();
 		});
 	}
 
@@ -48,10 +50,12 @@ function Entities_User() {
 	*/
 	this.getUserForId = function(id, callback) {
 		this.userCollection.findOne({"_id": new require('mongodb').ObjectID(id)}, function(err, user) {
-			if (err == null) {
+			if (err == null && user != null) {
 				self.hydrate(user);
+				callback(true);
+			} else {
+				callback(false);
 			}
-			callback();
 		});
 	}
 
@@ -67,7 +71,11 @@ function Entities_User() {
 									"lastConnectionDate": Math.round(+new Date()/1000),
 									"competitors": []}, 
 		function(err, user) {
-			callback();
+			if (err != null || user == null) {
+				callback(false);
+			} else {
+				callback(true);
+			}
 		});
 	}
 

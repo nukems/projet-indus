@@ -9,7 +9,7 @@ var server = http.createServer(function(req, res) {
 		global.res = res;
 		getPostData(init);
 	} catch(err) {
-		res.end("An error occured");
+		fatalError(err);
 	}
 });
 
@@ -42,26 +42,30 @@ function getPostData(callback) {
 *	Execution du code 
 */
 function init() {
-	//initialisation de l'autoload
-	var i = require('./front/server/core/Instances.controller.js').controller;
-	global.InstancesController = new i();
+	try {
+		//initialisation de l'autoload
+		var i = require('./front/server/core/Instances.controller.js').controller;
+		global.InstancesController = new i();
 
-	//initialisation de la gestion des routes
-	global.RoutesController = InstancesController.getInstance('Core_Routes_Routes');
-	RoutesController.setUrl(req.url);
-	//url de l'application
-	global.host = "http://" + req.headers.host + "/front/";
+		//initialisation de la gestion des routes
+		global.RoutesController = InstancesController.getInstance('Core_Routes_Routes');
+		RoutesController.setUrl(req.url);
+		//url de l'application
+		global.host = "http://" + req.headers.host + "/front/";
 
-	//initialisation des evenements
-	global.EventEmitter = require('events').EventEmitter;
+		//initialisation des evenements
+		global.EventEmitter = require('events').EventEmitter;
 
-	var isAjax = POST.isAjax; //si ajax, un Flag dans les donnees POST permet de le determiner
-	
-	if(isAjax) { //c'est une requete ajax
-		ajaxInit();
-	} else { //c'est une requete normale, on envoi juste le code de base de la page ou un element statique (image, ...)
-		var StaticController = InstancesController.getInstance('Core_Routes_Static');
-		StaticController.exec();
+		var isAjax = POST.isAjax; //si ajax, un Flag dans les donnees POST permet de le determiner
+		
+		if(isAjax) { //c'est une requete ajax
+			ajaxInit();
+		} else { //c'est une requete normale, on envoi juste le code de base de la page ou un element statique (image, ...)
+			var StaticController = InstancesController.getInstance('Core_Routes_Static');
+			StaticController.exec();
+		}
+	} catch(err) {
+		fatalError(err);
 	}
 }
 
@@ -69,13 +73,39 @@ function init() {
 *	Initialisation du serveur pour une requete ajax
 */
 function ajaxInit() {
-	//initialisation de la connexion avec le base de donnees
-	var db = InstancesController.getInstance('Core_Database');
-	db.connect(function() {
-		global.Ajax = InstancesController.getInstance('Core_Ajax');
-		//autoconnexion si token indique
-		InstancesController.getInstance('Controllers_UserController').init(function() {
-			RoutesController.exec(); //on execute le code de la route appelee
+	try {
+		//initialisation de la connexion avec le base de donnees
+		var db = InstancesController.getInstance('Core_Database');
+		db.connect(function() {
+			try {
+				global.Ajax = InstancesController.getInstance('Core_Ajax');
+				//autoconnexion si token indique
+				InstancesController.getInstance('Controllers_UserController').init(function() {
+					try {
+						RoutesController.exec(); //on execute le code de la route appelee
+					} catch(err) {
+						fatalError(err);
+					}
+				});
+			} catch (err) {
+				fatalError(err);
+			}
 		});
-	});
+	} catch (err) {
+		fatalError(err);
+	}
+}
+
+/**
+*	Action en cas de crash du serveur
+*/
+function fatalError(err) {
+	console.log("Error !" + "\n" + err);
+	var data = {
+		'fatalError': 1,
+		'error': err
+	};
+
+	res.writeHead(200, {"Content-Type": "text/html"});
+	res.end(JSON.stringify(data));
 }

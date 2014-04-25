@@ -5,7 +5,7 @@ function Controllers_UserController() {
 	*/
 	this.init = function(callback) {
 		if (POST.token) {
-			InstancesController.getInstance("Entities_User").getUserForToken(POST.token, function() {
+			InstancesController.getInstance("Entities_User").getUserForToken(POST.token, function(result) {
 				callback();
 			});
 		} else {
@@ -23,19 +23,26 @@ function Controllers_UserController() {
 		var userController = InstancesController.getInstance("Entities_User");
 
 		function log(id) {
-			userController.getUserForId(id, function() {
-				userController.updateToken(function() {
-					userController.addAutoLogIn(function(autologinKey) {
-						Ajax.setData({
-							'autologin': autologinKey,
-							'token': userController.getToken(),
-							'name': userController.getName(),
-							'firstName': userController.getFirstName(),
-							'mail': userController.getMail()
-						}).send();
+			userController.getUserForId(id, function(result) {
+				if(result) {
+					userController.updateToken(function() {
+						if (result) {
+							userController.addAutoLogIn(function(autologinKey) {
+								Ajax.setData({
+									'autologin': autologinKey,
+									'token': userController.getToken(),
+									'name': userController.getName(),
+									'firstName': userController.getFirstName(),
+									'mail': userController.getMail()
+								}).send();
+							});
+						} else {
+							Ajax.setError("Probleme lors de la connexion").send();
+						}
 					});
-					
-				});
+				} else {
+					Ajax.setError("Probleme lors de la connexion").send();
+				}
 			});
 		}
 
@@ -106,8 +113,12 @@ function Controllers_UserController() {
 		} else if (password != passwordConfirm) {
 			Ajax.setError("Le mot de passe et la confirmation sont différents").send();
 		} else {
-			userController.add(name, firstName, mail, password, function() {
-				Ajax.setData({}).send();
+			userController.add(name, firstName, mail, password, function(result) {
+				if (result) {
+					Ajax.setData({}).send();
+				} else {
+					Ajax.setError("Problème lors de la création du compte").send();
+				}
 			})
 		}
 	}

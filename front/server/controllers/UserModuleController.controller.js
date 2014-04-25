@@ -10,13 +10,20 @@ function Controllers_UserModuleController() {
 		var competitorId = POST.data.competitorId;
 		var moduleName = POST.data.moduleName;
 		var fields = POST.data.fields;
-
+		try {
 		if (!this.checkFields()) {
 			Ajax.setError("Les champs sont incorrects").send();
 		} else {
-			InstancesController.getInstance("Entities_Connector").add(competitorId, moduleName, fields, function() {
-				Ajax.setData({}).send();
+			InstancesController.getInstance("Entities_Connector").add(competitorId, moduleName, fields, function(result) {
+				if (result) {
+					Ajax.setData({}).send();
+				} else {
+					Ajax.setError("Problème lors de l'ajout du connecteur");
+				}	
 			});
+		}
+		} catch(err) {
+			fatalError(err);
 		}
 	}
 

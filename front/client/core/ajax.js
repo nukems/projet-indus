@@ -1,4 +1,4 @@
-function Ajax() {
+ function Ajax() {
     
     this.ajaxInstance = null; //requete courante
     var self = this;
@@ -33,7 +33,11 @@ function Ajax() {
             async: true,
             success: function(dataReturn){
                 var dataParsed = self.parse(dataReturn);
-                if (callback != null) {
+                //si erreur fatale sur le serveur
+                if(dataParsed.fatalError && dataParsed.fatalError == 1) {
+                    alert("Une erreur fatale est survenue (logguée dans la console)");
+                    console.log(dataParsed.error);
+                } else if (callback != null) {
                     callback(dataParsed);
                 }
             }

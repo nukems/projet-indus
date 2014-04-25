@@ -32,7 +32,11 @@ function Entities_Competitor() {
 									   			"connectors": [] 
 									   }}}, 
 			function(err, item) {
-				callback();
+				if (item == 0 || err != null) {
+					callback(false);
+				} else {
+					callback(true);
+				}
 			});	
 		});
 	}
@@ -42,7 +46,11 @@ function Entities_Competitor() {
 	*/
 	this.deleteCompetitorForUser = function(id, callback) {
 		self.userCollection.update({'_id': new require('mongodb').ObjectID(self.userId)}, {$pull: {"competitors": {"_id": parseInt(id, 10)}}}, function(err, result) {
-			callback();
+			if (err != null || result == 0) {
+				callback(false);
+			} else {
+				callback(true);
+			}
 		});
 	}
 
@@ -51,12 +59,16 @@ function Entities_Competitor() {
 	*/
 	this.getDataForCompetitor = function(competitorId, callback) {
 		self.getAllForUser(function(user) {
-			var i = 0;
-			while (i < user.competitors.length && user.competitors[i]._id != parseInt(competitorId, 10)) {
-				i++;
-			}
-			if (i < user.competitors.length) { //on a trouve le concurrent
-				callback(user.competitors[i]);
+			if(user != null) {
+				var i = 0;
+				while (i < user.competitors.length && user.competitors[i]._id != parseInt(competitorId, 10)) {
+					i++;
+				}
+				if (i < user.competitors.length) { //on a trouve le concurrent
+					callback(user.competitors[i]);
+				} else {
+					return null;
+				}
 			} else {
 				return null;
 			}

@@ -112,7 +112,7 @@ function Connector() {
 			alert('Connecteur ajouté');
 			get(Competitor).init(get(Competitor).getId());
 		} else {
-			$('#addConnectorError').html(html);
+			$('#addConnectorError').html(data.data);
 		}
 	}
 

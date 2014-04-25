@@ -26,7 +26,11 @@ function Entities_Connector() {
 									   		}
 									   }, 
 			function(err, result) {
-				callback();
+				if (err != null || result == 0) {
+					callback(false);
+				} else {
+					callback(true);
+				}
 			});
 		});
 	}

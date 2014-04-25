@@ -92,7 +92,7 @@ function Core_Routes_Routes() {
 			i++;
 		}
 		if (error404 || !object.controller) { //rien de trouve pour l'url
-
+			fatalError("404");
 		} else { //on execute la bonne fonction
 			var controller = InstancesController.getInstance(object.controller);
 			controller[object.function]();

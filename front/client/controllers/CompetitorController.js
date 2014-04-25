@@ -59,7 +59,7 @@ function Competitor() {
 			self.displayCompetitor();
 			self.competitorEvents();
 		} else {
-			alert('error');
+			alert(data.data);
 		}
 	}
 
@@ -71,6 +71,8 @@ function Competitor() {
 			$('.dashboardMenuItem[id="' + self.getId()  +'"]').remove();
 			self.setId(null);
 			$('#dashboardContent').html("Concurrent supprimé");
+		} else {
+			alert(data.data);
 		}
 	}
 

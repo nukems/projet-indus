@@ -107,8 +107,12 @@ function DashboardController() {
 		get(Ajax).sendOne('user/competitors/', null, self.getCompetitorsCallback);
 	}
 	this.getCompetitorsCallback = function(data) {
-		self.displayCompetitorsList(data.data.competitors);
-		self.eventsMenu();
+		if (parseInt(data.error, 10) == 0) {
+			self.displayCompetitorsList(data.data.competitors);
+			self.eventsMenu();
+		} else {
+			alert(data.data);
+		}
 	}
 
 	this.addCompetitor = function() {
