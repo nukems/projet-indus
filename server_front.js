@@ -1,19 +1,22 @@
 global.http = require('http');
 global.url = require('url');
 
-envObject = require("./lib/config.js");
-global.env = envObject.getConfig();
+global.env = require("./lib/config.js").getConfig();
 
 var server = http.createServer(function(req, res) {
-	global.req = req;
-	global.res = res;
-	getPostData(init);
+	try {
+		global.req = req;
+		global.res = res;
+		getPostData(init);
+	} catch(err) {
+		res.end("An error occured");
+	}
 });
 
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 server.listen( port, ipaddress, function(){
-    console.log((new Date()) + ' Server is listening on port 8080');
+    console.log((new Date()) + ' Server is listening on port ' + port);
 });
 
 /**

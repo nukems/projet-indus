@@ -67,3 +67,27 @@
 #addCompetitorForm button {
 	margin-top: 10px;
 }
+
+/**
+*	Ajout de connecteur
+*/
+.addConnectorChoice {
+	background-color: #eeeeee;
+	margin: 0px 0px 10px 0px;
+	padding: 10px;
+}
+.addConnectorChoiceButton:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.addConnectorInputDiv {
+	padding-bottom: 10px;
+}
+.inputDescription {
+	color: #aaaaaa;
+	font-size: 0.85em;
+}
+.addConnectorInput {
+	width: 300px;
+}

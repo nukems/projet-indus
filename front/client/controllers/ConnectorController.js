@@ -13,40 +13,58 @@ function Connector() {
 	*/
 	//affichage de la liste des modules
 	this.displayList = function(modules) {
-		var html = '<h2>Ajouter un module</h2>';
+		var html = '<h1>Ajouter un connecteur au concurrent ' + get(Competitor).getName() + '</h1>';
 		for (var key in modules) {
-			html += '<button id="' + key + '" class="addConnectorChoiceButton">' + modules[key].name + '</button><br />' + 
-					modules[key].description + '<br /><br />';
+			html += '<div id="' + key + '" class="addConnectorChoice">' + 
+						'<h2 id="' + key + '" class="addConnectorChoiceButton">' + modules[key].name + '</h2>' + 
+						modules[key].description + 
+						'<div id="' + key + 'AddForm" class="addConnectorForm"></div>' +
+					'</div>';
 		}
 		$('#dashboardContent').html(html);
 	}
 
 	//affichage des champs à ajouter pour un module
 	this.displayAdd = function(module) {
-		var html = '<h2>Ajout du module ' + module.name + '</h2>';
+		var html = '<hr />' + 
+				   '<form method="post" id="addConnectorForm">' +
+				   '<div id="addConnectorError" class="formError"></div>';
 		for(var key in module.fields) {
-			html += '<div>' +
-						'Champ ' + module.fields[key].name + ' : <br />' + 
-						module.fields[key].description + '<br />' + 
-						'<input type="text" id="' + key + '"/>' + 
+			html += '<div class="addConnectorInputDiv">' +
+						'<label for="' + key + '">' + module.fields[key].name + ' : </label>' + 
+						'<div class="inputDescription">' + module.fields[key].description + '</div>' + 
+						'<input type="text" class="addConnectorInput" name="' + key + '" id="' + key + 'InputAddConnector"/>' + 
 					'</div>';
 		}
-		html += '<button class="green">Ajouter</button>';
-		$('#dashboardContent').html(html);
+		html += '<button type="submit" class="green">Ajouter le connecteur</button> ou ' + 
+				'<a href="#!" id="cancelAddConnector">Annuler</a>';
+		$('#' + self.getConnectorName() + 'AddForm').html(html);
+	}
+
+	this.resetAdd = function() {
+		$('.addConnectorForm').html('');
 	}
 
 	/**
 	*	EVENTS
 	*/
 	this.listEvents = function() {
-		$('.addConnectorChoiceButton').click(function() {
+		$('.addConnectorChoiceButton').off().click(function() {
+			self.resetAdd();
 			self.setConnectorName($(this).attr('id'));
 			self.getFieldsForAdd();
 		})
 	}
 
 	this.addEvents = function() {
-
+		$('#cancelAddConnector').off().click(function() {
+			self.resetAdd();
+			return false;
+		});
+		$('#addConnectorForm').submit(function() {
+			self.addConnector();
+			return false;
+		});
 	}
 
 	/**
@@ -71,6 +89,30 @@ function Connector() {
 		} else {
 			self.displayAdd(data.data.module);
 			self.addEvents();
+		}
+	}
+
+	this.addConnector = function() {
+		var data = {
+			competitorId: get(Competitor).getId(),
+			moduleName: self.getConnectorName(),
+			fields: self.getFields()
+		}
+		get(Ajax).send('user/competitors/modules/add', data, self.addConnectorCallback);
+	}
+	this.getFields = function() {
+		var fields = {};
+		$('.addConnectorInput').each(function(index) {
+			fields[$(this).attr('name')] = $(this).val();
+		});
+		return fields;
+	}
+	this.addConnectorCallback = function(data) {
+		if (parseInt(data.error, 10) == 0) {
+			alert('Connecteur ajouté');
+			get(Competitor).init(get(Competitor).getId());
+		} else {
+			$('#addConnectorError').html(html);
 		}
 	}
 
