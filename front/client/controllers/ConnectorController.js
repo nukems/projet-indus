@@ -116,6 +116,22 @@ function Connector() {
 		}
 	}
 
+	this.delete = function(id) {
+		var data = {
+			competitorId: get(Competitor).getId(),
+			moduleId: id
+		}
+		get(Ajax).send('user/competitors/modules/delete', data, self.deleteCallback);
+	}
+	this.deleteCallback = function(data) {
+		if (parseInt(data.error, 10) == 0) {
+			alert("Connecteur supprimé");
+			get(Competitor).init(get(Competitor).getId());
+		} else {
+			alert(data.data);
+		}
+	}
+
 	/**
 	*	GETTERS et SETTERS
 	*/

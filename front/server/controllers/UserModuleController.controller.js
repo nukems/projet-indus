@@ -11,17 +11,17 @@ function Controllers_UserModuleController() {
 		var moduleName = POST.data.moduleName;
 		var fields = POST.data.fields;
 		try {
-		if (!this.checkFields()) {
-			Ajax.setError("Les champs sont incorrects").send();
-		} else {
-			InstancesController.getInstance("Entities_Connector").add(competitorId, moduleName, fields, function(result) {
-				if (result) {
-					Ajax.setData({}).send();
-				} else {
-					Ajax.setError("Problème lors de l'ajout du connecteur");
-				}	
-			});
-		}
+			if (!this.checkFields()) {
+				Ajax.setError("Les champs sont incorrects").send();
+			} else {
+				InstancesController.getInstance("Entities_Connector").add(competitorId, moduleName, fields, function(result) {
+					if (result) {
+						Ajax.setData({}).send();
+					} else {
+						Ajax.setError("Problème lors de l'ajout du connecteur");
+					}	
+				});
+			}
 		} catch(err) {
 			fatalError(err);
 		}
@@ -61,6 +61,22 @@ function Controllers_UserModuleController() {
 			default: 
 				return false;
 		}
+	}
+
+	/**
+	*	Suppression d'un connecteur pour un concurrent
+	*/
+	this.delete = function() {
+		var competitorId = POST.data.competitorId;
+		var moduleId = POST.data.moduleId;
+		
+		InstancesController.getInstance("Entities_Connector").delete(competitorId, moduleId, function(result) {
+			if (result) {
+				Ajax.setData({}).send();
+			} else {
+				Ajax.setError("Problème lors de la suppression du connecteur");
+			}	
+		});
 	}
 
 }

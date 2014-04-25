@@ -5,7 +5,7 @@ function DashboardController() {
 	this.init = function() {
 		self.displayBase();
 		self.eventsBase();
-		self.getCompetitors();
+		 self.getCompetitors();
 	}
 
 	/**
@@ -63,6 +63,7 @@ function DashboardController() {
 	this.eventsBase = function() {
 		$('#logOutButton').off().click(function() {
 			self.logOut();
+			return false;
 		});
 	}
 
@@ -94,8 +95,7 @@ function DashboardController() {
 	*	REQUESTS
 	*/
 	this.logOut = function() {
-		get(Ajax).send('user/log-out', null, self.logOutCallback);
-		return false;
+		get(Ajax).sendOne('user/log-out', null, self.logOutCallback);
 	}
 	this.logOutCallback = function(data) {
 		get(User).setToken(null);

@@ -5,6 +5,7 @@ function Competitor() {
 	this.id = null;
 	this.name;
 	this.website;
+	this.connectors;
 
 	this.init = function(id) {
 		self.setId(id);
@@ -24,25 +25,46 @@ function Competitor() {
 		if (self.getWebsite() != null) {
 			html += '<a href="' + self.getWebsite() + '">' + self.getWebsite() + '</a>';
 		}
+		html += '<br /><br />';
 		html +=			'<div id="competitorDashboard">' + 
-							'Affichage du dashboard...' + 
+							self.displayConnectors() +
 						'</div>' + 
 					'</div>';
 		$('#dashboardContent').html(html);
+	}
+	this.displayConnectors = function() {
+		var html = '';
+		var connectors = self.getConnectors();
+		for (var i = 0; i < connectors.length; i++) {
+			html += '<div id="' + connectors[i]._id + '" class="connectorDisplay">' + 
+						'<button class="deleteConnector green" id="' + connectors[i]._id + '">Supprimer</button>' +
+						'<h2>Module ' + connectors[i].module_name + '</h2>' + 
+						JSON.stringify(connectors[i].config_fields) + 
+					'</div>';
+		}
+		return html;
 	}
 
 	/**
 	*	EVENTS
 	*/
 	this.competitorEvents = function() {
+		//supprimer un concurrent
 		$('#deleteCompetitorButton').click(function() {
 			if (confirm('Êtes-vous sûr de vouloir supprimer ce concurrent ?')) {
 				self.deleteCompetitor();
 			}
 			return false;
 		});
+		//ajouter un connecteur a un concurrent
 		$('#addConnectorToCompetitorButton').click(function() {
 			get(Connector).initAdd();
+		});
+
+		//supprimer un connecteur a un concurrent
+		$('.deleteConnector').click(function() {
+			get(Connector).delete($(this).attr('id'));
+			return false;
 		});
 	}
 
@@ -56,6 +78,7 @@ function Competitor() {
 		if (parseInt(data.error, 10) == 0) {
 			self.setName(data.data.competitor.company_name);
 			self.setWebsite(data.data.competitor.website_url);
+			self.setConnectors(data.data.competitor.connectors);
 			self.displayCompetitor();
 			self.competitorEvents();
 		} else {
@@ -98,6 +121,13 @@ function Competitor() {
 	}
 	this.setWebsite = function(website) {
 		this.website = website;
+	}
+
+	this.getConnectors = function() {
+		return this.connectors;
+	}
+	this.setConnectors = function(connectors) {
+		this.connectors = connectors;
 	}
 
 }

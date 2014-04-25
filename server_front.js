@@ -4,6 +4,7 @@ global.url = require('url');
 global.env = require("./lib/config.js").getConfig();
 
 var server = http.createServer(function(req, res) {
+	console.log("Handle request from " + req.connection.remoteAddress);
 	try {
 		global.req = req;
 		global.res = res;
@@ -59,8 +60,12 @@ function init() {
 		var isAjax = POST.isAjax; //si ajax, un Flag dans les donnees POST permet de le determiner
 		
 		if(isAjax) { //c'est une requete ajax
+			console.log("AJAX request : " + req.url);
+			console.log("\n");
 			ajaxInit();
 		} else { //c'est une requete normale, on envoi juste le code de base de la page ou un element statique (image, ...)
+			console.log("GET " + req.url);
+			console.log("\n");
 			var StaticController = InstancesController.getInstance('Core_Routes_Static');
 			StaticController.exec();
 		}

@@ -91,3 +91,13 @@
 .addConnectorInput {
 	width: 300px;
 }
+
+/**
+*	VOIR UN CONNECTEUR
+*/
+.connectorDisplay {
+	padding-bottom: 15px;
+}
+.deleteConnector {
+	float: right;
+}
