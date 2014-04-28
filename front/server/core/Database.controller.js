@@ -17,7 +17,7 @@ function Core_Database() {
 	this.connect = function(callback) {
 		self.client = require('mongodb').MongoClient;
 
-		self.client.connect("mongodb://" + self.host + ":" + self.port + "/" + self.db, function(err, db) {
+		self.client.connect("mongodb://" + self.username + ":" + self.password + "@" + self.host + ":" + self.port + "/" + self.db, function(err, db) {
 			if (err != null) {
 				fatalError("Error connecting database : " + err);
 			}
@@ -62,7 +62,7 @@ function Core_Database() {
 	this.getNextValue = function(counter, callback) {
 		self.getCollection("counters").update({ "_id": counter }, { $inc: { seq: 1 } }, 
         function(err, result) {
-        	if(err != null || result == 0) {
+        	if (err != null || result == 0) {
         		fatalError("Impossible d'incrementer le compteur " + counter);
         	} else {
         		self.getCollection("counters").findOne({ "_id": counter }, function(err, item) {

@@ -113,19 +113,25 @@ function Controllers_UserController() {
 		} else if (password != passwordConfirm) {
 			Ajax.setError("Le mot de passe et la confirmation sont différents").send();
 		} else {
-			userController.add(name, firstName, mail, password, function(userId) {
-				if (userId !== false) {
-					userController.addDataCollection(userId, function(result) {
-						if (result) {
-							Ajax.setData({}).send();
+			userController.countMail(mail, function(count) {
+				if (count === 0) {
+					userController.add(name, firstName, mail, password, function(userId) {
+						if (userId !== false) {
+							userController.addDataCollection(userId, function(result) {
+								if (result) {
+									Ajax.setData({}).send();
+								} else {
+									Ajax.setError("Problème lors de la création du compte utilisateur").send();
+								}
+							});
 						} else {
-							Ajax.setError("Problème lors de la création du compte utilisateur").send();
+							Ajax.setError("Problème lors de la création du compte").send();
 						}
 					});
 				} else {
-					Ajax.setError("Problème lors de la création du compte").send();
+					Ajax.setError("Cette adresse mail existe déjà, merci d'en choisir une autre").send();
 				}
-			})
+			});
 		}
 	}
 }

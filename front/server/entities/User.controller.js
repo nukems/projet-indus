@@ -146,6 +146,15 @@ function Entities_User() {
 	}
 
 	/**
+	*	Retourne le nombre de mails identiques dans la collection
+	*/
+	this.countMail = function(mail, callback) {
+		this.userCollection.count({"mail": mail}, function(err, count) {
+			callback(count);
+		});
+	}
+
+	/**
 	*	Supprime tous les couples autologin/userid de la collection
 	*/
 	this.deleteAutoLogIn = function(callback) {
