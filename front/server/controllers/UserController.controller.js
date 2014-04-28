@@ -113,9 +113,15 @@ function Controllers_UserController() {
 		} else if (password != passwordConfirm) {
 			Ajax.setError("Le mot de passe et la confirmation sont différents").send();
 		} else {
-			userController.add(name, firstName, mail, password, function(result) {
-				if (result) {
-					Ajax.setData({}).send();
+			userController.add(name, firstName, mail, password, function(userId) {
+				if (userId !== false) {
+					userController.addDataCollection(userId, function(result) {
+						if (result) {
+							Ajax.setData({}).send();
+						} else {
+							Ajax.setError("Problème lors de la création du compte utilisateur").send();
+						}
+					});
 				} else {
 					Ajax.setError("Problème lors de la création du compte").send();
 				}

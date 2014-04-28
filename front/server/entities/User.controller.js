@@ -74,6 +74,21 @@ function Entities_User() {
 			if (err != null || user == null) {
 				callback(false);
 			} else {
+				callback(user[0]._id);
+			}
+		});
+	}
+
+
+	/**
+	*	Ajoute une collection de donnees pour l'utilisateur
+	*/
+	this.addDataCollection = function(userId, callback) {
+		var collectionName = "user_" + userId;
+		InstancesController.getInstance('Core_Database').getConnexion().createCollection(collectionName, function(err, result) {
+			if (err != null) {
+				callback(false);
+			} else {
 				callback(true);
 			}
 		});
