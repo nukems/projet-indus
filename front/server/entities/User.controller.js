@@ -21,8 +21,7 @@ function Entities_User() {
 			if(err == null && user != null) {
 				self.setId(user.userId);
 				self.updateToken(function() {
-					self.getUserForId(user.userId, callback);
-					callback(true);
+					self.getUserForId(callback);
 				});
 			} else {
 				callback(false);
@@ -48,8 +47,8 @@ function Entities_User() {
 	/**
 	*	Peuple un utilisateur en fonction de son id
 	*/
-	this.getUserForId = function(id, callback) {
-		this.userCollection.findOne({"_id": new require('mongodb').ObjectID(id)}, function(err, user) {
+	this.getUserForId = function(callback) {
+		self.userCollection.findOne({"_id": new require('mongodb').ObjectID(self.getId())}, function(err, user) {
 			if (err == null && user != null) {
 				self.hydrate(user);
 				callback(true);
@@ -117,7 +116,7 @@ function Entities_User() {
 		var newToken = InstancesController.getInstance('Core_Utils_Text').generateKey(15);
 		self.countToken(newToken, function(nb, newToken) {
 			if (nb > 0) {
-				self.addToken(callback);
+				self.updateToken(callback);
 			} else {
 				self.userCollection.update({"_id": new require('mongodb').ObjectID(self.getId())}, {$set: {"token": newToken}}, function(err, result) {
 					self.setToken(newToken);

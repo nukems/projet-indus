@@ -23,7 +23,8 @@ function Controllers_UserController() {
 		var userController = InstancesController.getInstance("Entities_User");
 
 		function log(id) {
-			userController.getUserForId(id, function(result) {
+			userController.setId(id);
+			userController.getUserForId(function(result) {
 				if(result) {
 					userController.updateToken(function() {
 						if (result) {
@@ -68,14 +69,13 @@ function Controllers_UserController() {
 
 		userController.getUserForAutoLogIn(key, function(data) {
 			if (userController.isLogged()) {
-				userController.updateToken(function() {
-					Ajax.setData({
-						'token': userController.getToken(),
-						'name': userController.getName(),
-						'firstName': userController.getFirstName(),
-						'mail': userController.getMail()
-					}).send();
-				});
+				console.log("SEND");
+				Ajax.setData({
+					'token': userController.getToken(),
+					'name': userController.getName(),
+					'firstName': userController.getFirstName(),
+					'mail': userController.getMail()
+				}).send();
 			} else {
 				Ajax.setError(1).send();
 			}
