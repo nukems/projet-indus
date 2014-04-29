@@ -57,6 +57,25 @@ function Entities_Connector() {
 		});
 	}
 
+	/**
+	*	Recupere les donnees selon des criteres 
+	*	@moduleName le nom du module pour lequel on veut des donnees
+	*	@typeName le type de donnees a recuperer pour le module
+	*	@connectorId l'id du connecteur pour lequel on veut les donnees
+	*	@where autres conditions de selection
+	*	@callback la fonction a executer apres la requete
+	*/
+	this.get = function(moduleName, typeName, connectorId, where, callback) {
+		var collection = InstancesController.getInstance('Core_Database').getCollection("user_" + self.userId());
+		if (collection == null) {
+			fatalError("Collection existe pas");
+		} else {
+			collection.find({"module"}).toArray(function(err, items) {
+				callback(items);
+			});
+		}
+	}
+
 }
 
 exports.controller = Entities_Connector;

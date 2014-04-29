@@ -83,10 +83,14 @@ function Controllers_UserModuleController() {
 	*	Retourne les donnees concernant un module pour un concurrent precis
 	*/
 	this.get = function() {
-		var module_name = POST.data.module_name;
-		var type_name = POST.data.type_name;
-		var connector_id = POST.data.connector_id;
+		var moduleName = POST.data.module_name;
+		var typeName = POST.data.type_name;
+		var connectorId = POST.data.connector_id;
 		var where = POST.data.where;
+
+		InstancesController.getInstance("Entities_Connector").get(moduleName, typeName, connectorId, where, function(data) {
+			Ajax.setData(data).send();
+		});
 
 	}
 
