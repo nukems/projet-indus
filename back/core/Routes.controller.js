@@ -10,6 +10,12 @@ function Core_Routes() {
 	this.exec = function() {
 		var moduleName = self.getUrl();
 
+		if (moduleName == null || moduleName == '')
+		{
+			console.log('Error in RouteController : no moduleName defined')
+			process.exit(0);
+		}
+
 		try {
 			var module = require("../../modules/" + moduleName + "/main.js");
 			module.execute(function() {

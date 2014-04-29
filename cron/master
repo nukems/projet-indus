@@ -113,20 +113,24 @@ echo
 while [[ k -lt i ]]; do
 	if [[ ${crony[$k]} == ${CRON_POSSIBILITIES[0]} ]]; then 
 		# --minutely
+		echo "Calling (minutely) : node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &"
 		node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[1]} ]]; then
 		if [[ $(date +%M) == *0 ]] || [[ $(date +%M) == *5 ]]; then
 			# --fiveminutely
+			echo "Calling (fiveminutely) : node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &"
 			node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
 		fi
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[2]} ]]; then 
 		if [[ $(date +%M) -eq 0 ]]; then
 			# --hourly
+			echo "Calling (hourly) : node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &"
 			node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
 		fi
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[3]} ]]; then
 		if [[ $(date +%H) -eq 0 ]] && [[ $(date +%M) -eq 0 ]]; then
 			# --daily
+			echo "Calling (daily) : node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &"
 			node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
 		fi
 	fi
