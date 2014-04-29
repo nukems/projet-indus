@@ -102,6 +102,7 @@ echo
 echo "Preparing log files..."
 for log in ${logs[@]}; do
 	createLogFile $LOG_REPO/$log
+	chmod +w $LOG_REPO/$log
 done
 echo "Log files are ready"
 echo
@@ -112,21 +113,21 @@ echo
 while [[ k -lt i ]]; do
 	if [[ ${crony[$k]} == ${CRON_POSSIBILITIES[0]} ]]; then 
 		# --minutely
-		node $INIT_PATH ${modules[$k]} >> ${logs[$k]} &
+		node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[1]} ]]; then
 		if [[ $(date +%M) == *0 ]] || [[ $(date +%M) == *5 ]]; then
 			# --fiveminutely
-			node $INIT_PATH ${modules[$k]} >> ${logs[$k]} &
+			node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
 		fi
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[2]} ]]; then 
 		if [[ $(date +%M) -eq 0 ]]; then
 			# --hourly
-			node $INIT_PATH ${modules[$k]} >> ${logs[$k]} &
+			node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
 		fi
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[3]} ]]; then
 		if [[ $(date +%H) -eq 0 ]] && [[ $(date +%M) -eq 0 ]]; then
 			# --daily
-			node $INIT_PATH ${modules[$k]} >> ${logs[$k]} &
+			node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
 		fi
 	fi
 	let k=k+1
