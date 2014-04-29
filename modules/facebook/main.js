@@ -5,7 +5,6 @@ var accessToken = "CAADTa5xIkQUBACN5WetnSYdjAjn2Ddn1ZBkQ0gwnMzCY67hk4JlHUk4fQDvH
 
 function execute(callback) {
 	console.log("Execution du module facebook");
-
 	ConfigChecker.get("facebook", function(linkFacebook){
 		
 		for(var i = 0; i < linkFacebook.length; i++)

@@ -55,6 +55,10 @@ function Core_Routes_Routes() {
 					'delete': { //suppression d'un module pour un concurrent
 						'controller': 'Controllers_UserModuleController',
 						'function' : 'delete'
+					}, 
+					'get': { //retourne des donnees pour un module pour un competiteur
+						'controller': 'Controllers_UserModuleController',
+						'function': 'get'
 					}
 				}
 			}
