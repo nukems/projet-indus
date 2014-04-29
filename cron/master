@@ -26,7 +26,7 @@ createLogFile()
 }
 
 APP_REPO=~/app-root/runtime/repo/
-MODULES_REPO=$APP_REPO/connectors/
+MODULES_REPO=$APP_REPO/modules/
 
 LOG_REPO=~/app-root/logs/
 CRON_LOG=$LOG_REPO/cron.log
