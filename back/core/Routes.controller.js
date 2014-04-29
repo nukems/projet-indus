@@ -14,6 +14,7 @@ function Core_Routes() {
 			var module = require("../../modules/" + moduleName + "/main.js");
 			module.execute(function() {
 				console.log('Execution du module '  + moduleName + ' avec succes');
+				//fermeture connexion
 			});
 		} catch (e) {
 			console.log("ERROR EXECUTION MODULE : " + e);
