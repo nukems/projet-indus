@@ -6,9 +6,7 @@ var accessToken = "CAADTa5xIkQUBACN5WetnSYdjAjn2Ddn1ZBkQ0gwnMzCY67hk4JlHUk4fQDvH
 
 function execute(callback) {
 	console.log("Execution du module facebook");
-
 	ConfigChecker.get("facebook", function(linkFacebook){
-	
 		FB.api('oauth/access_token', {
 					
 			client_id: '232459136962821',
@@ -17,13 +15,13 @@ function execute(callback) {
 			
 		}, function (resu) {
 			
-			//var accessToken = resu.access_token;
+			var accessToken = resu.access_token;
 			FB.setAccessToken(accessToken);
 			
 			for(var i = 0; i < linkFacebook.length; i++)
 			{
 				doInfoPageFacebookRequest(linkFacebook, i);
-				doPostFacebookRequest(linkFacebook, i);
+				//doPostFacebookRequest(linkFacebook, i);
 			}
 			
 		});
@@ -41,6 +39,7 @@ function doInfoPageFacebookRequest(linkFacebook, index) {
 	FB.api(linkFacebook[index].fields.pageName, { fields : ['likes', 'talking_about_count'] }, function(response) {
 		if(response)
 		{
+			console.log(response);
 			var dataFBPage = {
 				"connector_name" : "facebook",
 				"type" : "info_page",
@@ -67,7 +66,6 @@ function doInfoPageFacebookRequest(linkFacebook, index) {
 function doPostFacebookRequest(linkFacebook, index) {
 	
 	FB.api((linkFacebook[index].fields.pageName + '/statuses/'), { fields : ['likes.limit(1).summary(true)', 'comments.limit(1).summary(true)', 'message', 'updated_time']}, function(response) {
-		
 		if(response)
 		{	
 			console.log(response);	
