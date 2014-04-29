@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 sleep 1
 
 #source /usr/bin/rhcsh
@@ -31,6 +30,8 @@ MODULES_REPO=$APP_REPO/connectors/
 
 LOG_REPO=~/app-root/logs/
 CRON_LOG=$LOG_REPO/cron.log
+
+INIT_PATH=$APP_REPO/back/init.js
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -69,14 +70,14 @@ while read line; do
 	if [[ ! -d $MODULES_REPO/${params[0]} ]]; then
 		echo "Module {{${params[0]}}} does not exist"
 		echo "Aborting"
-		#exit 1
+		exit 1
 	fi
 
 	isCronOption ${params[1]}
 	if [[ $? -eq 0 ]]; then
 		echo "Cron option ${params[1]} is not avaiable"
 		echo "Aborting"
-		#exit 1
+		exit 1
 	fi
 
 	modules[$i]=${params[0]}
@@ -111,21 +112,21 @@ echo
 while [[ k -lt i ]]; do
 	if [[ ${crony[$k]} == ${CRON_POSSIBILITIES[0]} ]]; then 
 		# --minutely
-		echo "node $MODULES_REPO/${modules[$k]}/main.js >> ${logs[$k]} &"
+		node $INIT_PATH ${modules[$k]} >> ${logs[$k]} &
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[1]} ]]; then
 		if [[ $(date +%M) == *0 ]] || [[ $(date +%M) == *5 ]]; then
 			# --fiveminutely
-			echo "node $MODULES_REPO/${modules[$k]}/main.js >> ${logs[$k]} &"
+			node $INIT_PATH ${modules[$k]} >> ${logs[$k]} &
 		fi
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[2]} ]]; then 
 		if [[ $(date +%M) -eq 0 ]]; then
 			# --hourly
-			echo "node $MODULES_REPO/${modules[$k]}/main.js >> ${logs[$k]} &"
+			node $INIT_PATH ${modules[$k]} >> ${logs[$k]} &
 		fi
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[3]} ]]; then
 		if [[ $(date +%H) -eq 0 ]] && [[ $(date +%M) -eq 0 ]]; then
 			# --daily
-			echo "node $MODULES_REPO/${modules[$k]}/main.js >> ${logs[$k]} &"
+			node $INIT_PATH ${modules[$k]} >> ${logs[$k]} &
 		fi
 	fi
 	let k=k+1
