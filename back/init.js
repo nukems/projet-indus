@@ -19,14 +19,22 @@ function init() {
 	});
 }
 
-global.env = require("../lib/config.js").getConfig();
+console.log('*************************');
+console.log('Launching init.js');
+console.log('');
+
+global.env = require("./../lib/config.js").getConfig();
 global.args = [];
 process.argv.forEach(function (val, index, array) {
   args.push(val);
 });
-if (args.length == 2) {
-	console.log("ERROR : no module defined");
+if (args.length <= 2) {
+	console.log("ERROR : parameters missing in args");
 	process.exit(0);
 } else {
 	init();
 }
+
+console.log('');
+console.log('Ending init.js');
+console.log('*************************');
