@@ -8,11 +8,6 @@ var modules = {
 				'type': 'string',
 				'name': 'Nom de la page',
 				'description': 'Nom de la page disponible depuis l\'url'
-			},
-			'pageName1': {
-				'type': 'string',
-				'name': 'Nom de la page',
-				'description': 'Nom de la page disponible depuis l\'url'
 			}
 		}
 	},

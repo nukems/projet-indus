@@ -26,6 +26,7 @@ process.argv.forEach(function (val, index, array) {
 });
 if (args.length == 2) {
 	console.log("ERROR : no module defined");
+	process.exit(0);
 } else {
 	init();
 }
