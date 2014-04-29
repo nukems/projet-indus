@@ -42,7 +42,7 @@ function init() {
 	global.InstancesController = new i();
 
 	//connexion a la base de donnees
-	Database = InstancesController.getInstance('Core_Database');
+	var Database = InstancesController.getInstance('Core_Database');
 	Database.connect(function() {
 		//initialisation de la gestion des routes
 		RoutesController = InstancesController.getInstance('Core_Routes');

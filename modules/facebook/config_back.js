@@ -9,7 +9,7 @@ var config = {
 		{
 			"name" : "post",
 			"fields" : [
-				"likes", "shared", "message", "id"
+				"likes", "message", "id", "updated_time"
 			]
 		}
 	]

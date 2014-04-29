@@ -1,119 +1,111 @@
-var mongoDB = {
-	"competitors" : [
-		{
-			"id" : 1,
-			"company_name" : "Infotracking",
-			"connectors" : [
-				{
-					"name" : "facebook",
-					"pagelink" : "/InfoTracking"
-				},
-				{
-					"name" : "Website",
-					"pagelink" : "www.infotracking.fr"
-				}
-			]
-		},
-		{
-			"id" : 2,
-			"company_name" : "Spi0n",
-			"connectors" : [
-				{
-					"name" : "facebook",
-					"pagelink" : "/Spi0n"
-				},
-				{
-					"name" : "Website",
-					"pagelink" : "www.spion.fr"
-				}
-			]
-		},
-		{
-			"id" : 2,
-			"company_name" : "FacebookDevelopers",
-			"connectors" : [
-				{
-					"name" : "facebook",
-					"pagelink" : "/FacebookDevelopers"
-				}
-			]
-		}
-	]
-};
 
-var dataCustomer = {
-	"datas" : [
-		
-	]
-};
-
-function get(module_name) {
+/*
+ *   Get all the connectors of each competitors of each users which match the module name passed in parameter
+ */
+function get(module_name, callback) {
 	var module_info = [];
 	
-	for(var i = 0; i < mongoDB.competitors.length; i++)
-	{
-		var competitor = mongoDB.competitors[i];
+	InstancesController.getInstance('Core_Database').getCollection("user").find({"competitors.connectors.module_name" : module_name},{"_id" : 1, "competitors.connectors.config_fields" : 1, "competitors._id" : 1}).toArray(function(err, module){
 		
-		for(var j = 0; j < competitor.connectors.length; j++)
+		if(err == null || module != null)
 		{
-			var connector = competitor.connectors[j];
-			if(connector.name == module_name)
+			for(var i = 0; i < module.length; i++)
 			{
-				module_info.push(connector);
+				var competitors = module[i].competitors;
+				for(var j = 0; j < competitors.length; j++)
+				{
+					var connectors = competitors[j].connectors;
+					for(var k = 0; k < connectors.length; k++)
+						module_info.push({"user_id" : module[i]._id, "competitor_id" : competitors[j]._id, "fields" : connectors[k].config_fields});
+				}
 			}
+			
+			callback(module_info);
 		}
-	}
-	
-	return module_info;
+	});
 };
 
-function add(module_name, type_name, data) {
+/*
+ *   Add a new data in the user data's collection
+ */ 
+function add(constraints, data) {
 	
 	//Get the module config file
-	var file_config = require('../modules/' + module_name + '/config_back.js');
+	var file_config = require('../modules/' + constraints.module_name + '/config_back.js');
 	var config = file_config.config;
 	
-	var dataCheck = checkAllFields(getTypeObject(config, type_name), data);
+	//Check if each config's info field matches a data's info field
+	var dataCheck = checkAllFields(getTypeObject(config, constraints.type_name), data);
 	
 	if(dataCheck == 1)
-		console.log("GG"); //dataCustomer.datas.push(data);
+	{
+		InstancesController.getInstance('Core_Database').getCollection("user_" + constraints.user_id).insert(data, function(err, result){
+			if(err == null | result != null)
+				console.log("Data has been added");
+			else
+				console.log("Error : Data has not been added");
+		});
+	}
 	else if(dataCheck == 0)
-		console.log("fields problem");
+		console.log("Error : All config's fields don't match");
 	else if(dataCheck == -1)
-		console.log("type name problem");
+		console.log("Error : Type name isn't find in the config file");
 	else
-		console.log("ERROR SCRIPT");
+		console.log("Error script");
 };
 
+/*
+ *	 Replace a data by the new one if find or create a new data in the user data's collection
+ */
+function update(constraints, data) {
+	
+	//Get the module config file
+	var file_config = require('../modules/' + constraints.module_name + '/config_back.js');
+	var config = file_config.config;
+	
+	//Check if each config's info field matches a data's info field
+	var dataCheck = checkAllFields(getTypeObject(config, constraints.type_name), data);
+	
+	if(dataCheck == 1)
+	{
+		var key = 'info.' + constraints.field;
+		var arr = {};
+		arr[key] = data.info[constraints.field];
+		arr["type"] = constraints.type_name;
+		
+		InstancesController.getInstance('Core_Database').getCollection("user_" + constraints.user_id).update(arr, data, {upsert: true}, function(err, result){});
+	}
+	else if(dataCheck == 0)
+		console.log("Error : All config's fields don't match");
+	else if(dataCheck == -1)
+		console.log("Error : Type name isn't find in the config file");
+	else
+		console.log("Error script");
+};
+
+/*
+ *   Compare all the config's fields with the data's info fields
+ */
 function checkAllFields(typeObject, data)
 {	
 	if(typeObject != null)
 	{
-		var fields_count = 0;
-		
 		//Check if each fields are present and define in the data object
 		for(var i = 0; i < typeObject.fields.length; i++)
 		{
-			var boolean = 0;
-			
-			for(var j = 0; j < data.info.length; j++)
-			{
-				if(data.info[j][typeObject.fields[i]])
-					boolean = 1;
-			}
-			
-			fields_count += boolean;
+			if(data.info[typeObject.fields[i]] == null)
+				return 0;
 		}
 		
-		if(fields_count == typeObject.fields.length)
-			return 1;
-		else
-			return 0;
+		return 1;
 	}
 	else
 		return -1;
 };
 
+/*
+ *   Get the JSON Object which includes all the fields
+ */
 function getTypeObject(config, type_name) {
 	var typeObject = null;
 	
@@ -124,40 +116,6 @@ function getTypeObject(config, type_name) {
 	}
 	
 	return typeObject;
-};
-
-function update(module_name, type_name, field, data) {
-	
-	//Get the module config file
-	var file_config = require('./modules/' + module_name + '/config_back.js');
-	var config = file_config.config_fb;
-	
-	var dataCheck = checkAllFields(getTypeObject(config, type_name), data);
-	
-	if(dataCheck == 1)
-	{
-		for(var i = 0; i < dataCustomer.datas.length; i++)
-		{
-			if(dataCustomer.datas[i].connector_name == module_name && dataCustomer.datas[i].type == type_name)
-			{
-				if(dataCustomer.datas[i].info[field] == data.info[field])
-				{
-					console.log("update");
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-	else if(dataCheck == 0)
-		console.log("fields problem");
-	else if(dataCheck == -1)
-		console.log("type name problem");
-	else
-		console.log("ERROR SCRIPT");
-	
-	return false;
 };
 
 exports.get = get;
