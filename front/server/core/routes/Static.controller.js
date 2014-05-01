@@ -14,16 +14,16 @@ function Core_Routes_Static() {
 	*	Execute une requete qui n'est pas une requete ajax
 	*	Image, ...
 	*/
-	this.exec = function() {
-		var RoutesController = InstancesController.getInstance('Core_Routes_Routes');
+	this.exec = function(instances) {
+		var RoutesController = instances.getInstance('Core_Routes_Routes');
 		var uri = RoutesController.getUri();
 		var uriParts = uri.split('.');
 		var extension = uriParts[uriParts.length - 1];
 
 		if (this.isStaticElement(extension)) { //on demande un element statique comme une image ou une page javascript
-			this.readStaticElement(uri, extension);
+			this.readStaticElement(instances.getRes(), uri, extension);
 		} else { //on demande la page d'accueil
-			this.getIndexPage();
+			this.getIndexPage(instances.getRes());
 		}
 	}
 
@@ -55,22 +55,22 @@ function Core_Routes_Static() {
 	*	@uri chemin relatif vers le fichier
 	*	@extension l'extension du fichier
 	*/
-	this.readStaticElement = function(uri, extension) { //TODO RAJOUTER GESTION DES ERREURS
+	this.readStaticElement = function(res, uri, extension) {
 		try {
-		var fs = require('fs');
-		var img = fs.readFileSync('./' + uri);
-    	res.writeHead(200, {'Content-Type': this.getMimeType(extension) });
-    	res.end(img, 'binary');
-    	} catch(e) {
+			var fs = require('fs');
+			var img = fs.readFileSync('./' + uri);
+			res.writeHead(200, {'Content-Type': this.getMimeType(extension) });
+    		res.end(img);
+		} catch(e) {
     		res.writeHead(404);
     		res.end();
-    	}
+    	}   	
 	}
 
 	/**
 	*	Retourne le code HTML de la page d'accueil
 	*/
-	this.getIndexPage = function() {
+	this.getIndexPage = function(res) {
 		res.writeHead(200, {"Content-Type": "text/html"});
 	    res.end('<html lang="fr">' + 
     				'<head>' + 
@@ -82,16 +82,19 @@ function Core_Routes_Static() {
     					'<script type="text/javascript" src="' + host + 'client/core/libs/jquery.min.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/libs/jquery.history.min.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/libs/jquery.base64.js"></script>' + 
+    					'<script type="text/javascript" src="' + host + 'client/core/libs/canvasjs.min.js"></script>' +
     					'<script type="text/javascript" src="' + host + 'client/core/main.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/ajax.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/routes.js"></script>' +
     					'<script type="text/javascript" src="' + host + 'client/core/cookie.js"></script>' +
     					'<script type="text/javascript" src="' + host + 'client/core/instances.js"></script>' +
+    					'<script type="text/javascript" src="' + host + 'client/core/animations.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/entities/user.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/controllers/UserController.js"></script>' +  
     					'<script type="text/javascript" src="' + host + 'client/controllers/DashboardController.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/controllers/CompetitorController.js"></script>' +  
-    					'<script type="text/javascript" src="' + host + 'client/controllers/ConnectorController.js"></script>' +  
+    					'<script type="text/javascript" src="' + host + 'client/controllers/ConnectorController.js"></script>' +
+    					'<script type="text/javascript" src="http://127.0.0.1:8080/modules/facebook/display.js"></script>' +  
     				'</head>' + 
     				'<body>' +
     					'<div id="content"></div>' + 

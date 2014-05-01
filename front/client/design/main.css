@@ -45,3 +45,11 @@ button.green {
 	background-color: #8AC54D;
 	color: white;
 }
+button.red {
+	background-color: #e1765a;
+	color: white;
+}
+button.little {
+	padding: 6px;
+	line-height: 13px;
+}

@@ -1,9 +1,13 @@
 /**
 *	Simuler l'autoload de PHP
 */
-function InstancesController() {
+function InstancesController(req, res) {
 
 	this.instances = {};
+	
+	this.req;
+	this.res;
+	this.post;
 
 	/**
 	*	Renvoi l'instance d'une classe a partir de son nom
@@ -33,6 +37,30 @@ function InstancesController() {
 		path += parts[parts.length - 1] + '.controller';
 		return path;
 
+	}
+
+	/**
+	*	GETTERS et SETTERS
+	*/
+	this.getReq = function() {
+		return this.req;
+	}
+	this.setReq = function(req) {
+		this.req = req;
+	}
+
+	this.getRes = function() {
+		return this.res;
+	}
+	this.setRes = function(res) {
+		this.res = res;
+	}
+
+	this.getPost = function() {
+		return this.post;
+	}
+	this.setPost = function(post) {
+		this.post = post;
 	}
 
 	

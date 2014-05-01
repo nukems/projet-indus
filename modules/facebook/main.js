@@ -31,7 +31,7 @@ function doInfoPageFacebookRequest(linkFacebook, index) {
 				"connector_name" : "facebook",
 				"type" : "info_page",
 				"date" : new Date(),
-				"competitor_id" : linkFacebook[index].competitor_id,
+				"connector_id" : linkFacebook[index].connector_id,
 				"info" : {"fans" : response.likes, "shared" : response.talking_about_count}
 			};
 				
@@ -64,7 +64,7 @@ function doPostFacebookRequest(linkFacebook, index) {
 					"connector_name" : "facebook",
 					"type" : "post",
 					"date" : new Date(),
-					"competitor_id" : linkFacebook[index].competitor_id,
+					"connector_id" : linkFacebook[index].connector_id,
 					"info" : {"id" : parseInt(response.data[j].id), "likes" : response.data[j].likes.summary.total_count, "message" : response.data[j].message, "updated_time" : response.data[j].updated_time}
 				};		
 				

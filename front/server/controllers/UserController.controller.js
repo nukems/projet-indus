@@ -3,9 +3,11 @@ function Controllers_UserController() {
 	/**
 	*	Initialisation de l'utilisateur quand token non null
 	*/
-	this.init = function(callback) {
-		if (POST.token) {
-			InstancesController.getInstance("Entities_User").getUserForToken(POST.token, function(result) {
+	this.init = function(instances, callback) {
+		if (instances.getPost().token) {
+			var userController = instances.getInstance("Entities_User");
+			userController.setInstances(instances);
+			userController.getUserForToken(instances.getPost().token, function(result) {
 				callback();
 			});
 		} else {
@@ -17,10 +19,12 @@ function Controllers_UserController() {
 	/**
 	*	Connexion depuis le formulaire
 	*/
-	this.logIn = function() {
-		var mail = POST.data.mail;
-		var password = POST.data.password;
-		var userController = InstancesController.getInstance("Entities_User");
+	this.logIn = function(instances) {
+		var mail = instances.getPost().data.mail;
+		var password = instances.getPost().data.password;
+		var userController = instances.getInstance("Entities_User");
+		userController.setInstances(instances);
+		var Ajax = instances.getInstance('Core_Ajax');
 
 		function log(id) {
 			userController.setId(id);
@@ -63,13 +67,14 @@ function Controllers_UserController() {
 	/**
 	*	Autoconnexion au chargement de la page
 	*/
-	this.autoLogIn = function() {
-		var key = POST.data.key;
-		var userController = InstancesController.getInstance("Entities_User");
+	this.autoLogIn = function(instances) {
+		var key = instances.getPost().data.key;
+		var userController = instances.getInstance("Entities_User");
+		userController.setInstances(instances);
+		var Ajax = instances.getInstance('Core_Ajax');
 
 		userController.getUserForAutoLogIn(key, function(data) {
 			if (userController.isLogged()) {
-				console.log("SEND");
 				Ajax.setData({
 					'token': userController.getToken(),
 					'name': userController.getName(),
@@ -85,9 +90,11 @@ function Controllers_UserController() {
 	/**
 	*	Deconnexion d'un utilisateur
 	*/
-	this.logOut = function() {
-		var token = POST.token;
-		var userController = InstancesController.getInstance("Entities_User");
+	this.logOut = function(instances) {
+		var token = instances.getPost().token;
+		var userController = instances.getInstance("Entities_User");
+		userController.setInstances(instances);
+		var Ajax = instances.getInstance('Core_Ajax');
 
 		userController.deleteAutoLogIn(function() {
 			userController.deleteToken(token, function() {
@@ -100,18 +107,22 @@ function Controllers_UserController() {
 	/**
 	*	Inscription d'un nouvel utilisateur
 	*/
-	this.signIn = function() {
-		var name = POST.data.name;
-		var firstName = POST.data.firstName;
-		var mail = POST.data.mail;
-		var password = POST.data.password;
-		var passwordConfirm = POST.data.passwordConfirm;
-		var userController = InstancesController.getInstance("Entities_User");
+	this.signIn = function(instances) {
+		var name = instances.getPost().data.name;
+		var firstName = instances.getPost().data.firstName;
+		var mail = instances.getPost().data.mail;
+		var password = instances.getPost().data.password;
+		var passwordConfirm = instances.getPost().data.passwordConfirm;
+		var userController = instances.getInstance("Entities_User");
+		userController.setInstances(instances);
+		var Ajax = instances.getInstance('Core_Ajax');
 
 		if (name == null || name == '' || firstName == null || firstName == '' || mail == null || mail == '' || password == null || password == '') {
 			Ajax.setError("Il faut remplir tous les champs").send();
 		} else if (password != passwordConfirm) {
 			Ajax.setError("Le mot de passe et la confirmation sont différents").send();
+		} else if (!instances.getInstance("Core_Utils_Text").validateMail(mail)) {
+			Ajax.setError("Le format de l'adresse mail est incorrect").send();
 		} else {
 			userController.countMail(mail, function(count) {
 				if (count === 0) {

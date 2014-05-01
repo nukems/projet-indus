@@ -8,9 +8,7 @@ function Entities_User() {
 	this.firstName;
 	this.mail;
 
-	this.userCollection = InstancesController.getInstance('Core_Database').getCollection('user');
-	this.autoLogInCollection = InstancesController.getInstance('Core_Database').getCollection('auto_log_in');
-
+	this.instances;
 
 	/**
 	*	Peuple l'utilisateur a partir de la cle d'autologin
@@ -65,7 +63,7 @@ function Entities_User() {
 		this.userCollection.insert({"name": name,
 									"firstName": firstName,
 									"mail": mail,
-									"password": InstancesController.getInstance('Core_Utils_Text').crypte(password), 
+									"password": self.getInstances().getInstance('Core_Utils_Text').crypte(password), 
 									"creationDate": Math.round(+new Date()/1000),
 									"lastConnectionDate": Math.round(+new Date()/1000),
 									"competitors": []}, 
@@ -84,7 +82,7 @@ function Entities_User() {
 	*/
 	this.addDataCollection = function(userId, callback) {
 		var collectionName = "user_" + userId;
-		InstancesController.getInstance('Core_Database').getConnexion().createCollection(collectionName, function(err, result) {
+		this.getInstances().getInstance('Core_Database').getConnexion().createCollection(collectionName, function(err, result) {
 			if (err != null) {
 				callback(false);
 			} else {
@@ -97,7 +95,7 @@ function Entities_User() {
 	*	Ajoute une cle d'autoconnexion pour l'user courant
 	*/
 	this.addAutoLogIn = function(callback) {
-		var newKey = InstancesController.getInstance('Core_Utils_Text').generateKey(15);
+		var newKey = this.getInstances().getInstance('Core_Utils_Text').generateKey(15);
 		this.countAutoLogIn(newKey, function(nb, newKey) {
 			if (nb > 0) {
 				self.addAutoLogIn(callback);
@@ -113,7 +111,7 @@ function Entities_User() {
 	*	Modifie un token pour l'user courant
 	*/
 	this.updateToken = function(callback) {
-		var newToken = InstancesController.getInstance('Core_Utils_Text').generateKey(15);
+		var newToken = this.getInstances().getInstance('Core_Utils_Text').generateKey(15);
 		self.countToken(newToken, function(nb, newToken) {
 			if (nb > 0) {
 				self.updateToken(callback);
@@ -184,7 +182,7 @@ function Entities_User() {
 	* 	Retourne l'id d'un utilisateur en fonction de son mail et de son mot de passe
 	*/
 	this.getIdForMailAndPassword = function(mail, password, callback) {
-		this.userCollection.findOne({"mail": mail, "password": InstancesController.getInstance('Core_Utils_Text').crypte(password)}, function(err, user) {
+		this.userCollection.findOne({"mail": mail, "password": self.getInstances().getInstance('Core_Utils_Text').crypte(password)}, function(err, user) {
 			if (err == null && user && user._id) {
 				callback(user._id);
 			} else {
@@ -244,6 +242,15 @@ function Entities_User() {
 	}
 	this.setToken = function(token) {
 		this.token = token;
+	}
+
+	this.getInstances = function() {
+		return this.instances;
+	}
+	this.setInstances = function(instances) {
+		this.instances = instances;
+		this.userCollection = this.instances.getInstance('Core_Database').getCollection('user');
+		this.autoLogInCollection = this.instances.getInstance('Core_Database').getCollection('auto_log_in');
 	}
 
 }

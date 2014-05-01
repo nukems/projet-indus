@@ -3,15 +3,13 @@ function Entities_Connector() {
 	var self = this;
 	this.autoIncrement = 'connector_id';
 
-	this.userId = InstancesController.getInstance('Entities_User').getId();
-
-	this.userCollection = InstancesController.getInstance('Core_Database').getCollection('user');
+	this.instances;
 
 	/**
 	*	Ajoute un connecteur a un concurrent
 	*/
 	this.add = function(competitorId, moduleName, fields, callback) {
-		InstancesController.getInstance("Core_Database").getNextValue(self.autoIncrement, function(connectorId) {
+		this.getInstances().getInstance("Core_Database").getNextValue(self.autoIncrement, function(connectorId) {
 			self.userCollection.update({"_id": new require('mongodb').ObjectID(self.userId),
 										"competitors._id": parseInt(competitorId, 10)}, 
 									   {
@@ -59,23 +57,35 @@ function Entities_Connector() {
 
 	/**
 	*	Recupere les donnees selon des criteres 
-	*	@moduleName le nom du module pour lequel on veut des donnees
-	*	@typeName le type de donnees a recuperer pour le module
 	*	@connectorId l'id du connecteur pour lequel on veut les donnees
 	*	@where autres conditions de selection
 	*	@callback la fonction a executer apres la requete
 	*/
-	this.get = function(moduleName, typeName, connectorId, where, callback) {
-		var collection = InstancesController.getInstance('Core_Database').getCollection("user_" + self.userId());
+	this.get = function(connectorId, where, callback) {
+		//recuperation de la bonne collection
+		var collection = this.getInstances().getInstance('Core_Database').getCollection("user_" + self.userId);
 		if (collection == null) {
-			fatalError("Collection existe pas");
+			fatalError("Aucune donnée pour cet utilisateur");
 		} else {
-			collection.find({"module"}).toArray(function(err, items) {
+			where.connector_id = connectorId
+			collection.find(where).toArray(function(err, items) {
 				callback(items);
 			});
 		}
 	}
 
+	/**
+	*	GETTERS et SETTERS 
+	*/
+	this.getInstances = function() {
+		return this.instances;
+	}
+
+	this.setInstances = function(instances) {
+		this.instances = instances;
+		this.userId = instances.getInstance('Entities_User').getId();
+		this.userCollection = instances.getInstance('Core_Database').getCollection('user');
+	}
 }
 
 exports.controller = Entities_Connector;

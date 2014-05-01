@@ -1,16 +1,3 @@
-#dashboardHeader {
-	background-color: #666666;
-	width: 100%;
-	height: 60px;
-	position: absolute;
-}
-#dashboardHeaderUser {
-	float: right;
-	color: white;
-	text-align: right;
-	padding: 10px;
-}
-
 #dashboardTable {
 	display: table;
 	height: 100%;
@@ -19,24 +6,38 @@
 
 
 /* MENU */
+#dashboardMenuHeader {
+	border-bottom: 1px solid #616161;
+}
+#dashboardMenuHeaderName {
+	padding: 6px 5px 0px 60px;
+}
+#dashboardMenuHeaderName a {
+	color: #cccccc;
+}
+#userAvatar {
+	width: 50px;
+	height: 50px;
+	float: left;
+}
 #dashboardMenu {
 	display: table-cell;
 	vertical-align: top;
-	width: 200px;
-	background-color: #dddddd;
-	padding-top: 60px;
+	width: 230px;
+	background-color: #666666;
+	color: #eeeeee;
 }
 .dashboardMenuItem {
-	border-bottom: 1px solid #cccccc;
+	border-bottom: 1px solid #616161;
 	padding: 10px;
 }
 .dashboardMenuItem:hover {
 	cursor: pointer;
-	background-color: #eeeeee;
+	background-color: #707070;
 }
 
 #addCompetitor {
-	width: 180px;
+	width: 210px;
 	margin: 10px;
 }
 
@@ -44,15 +45,21 @@
 /* CONTENU */
 #dashboardContent {
 	display: table-cell;
-	padding: 70px 10px 10px 10px;
 }
 
 /*header competitor*/
+#competitorHeader {
+	background-color: #eeeeee;
+	padding: 10px;
+}
 #competitorActions {
 	float: right;
 }
 #competitorName {
 	margin: 0px;
+}
+#competitorDashboard {
+	padding: 10px;
 }
 
 /**
@@ -62,7 +69,7 @@
 	padding: 10px;
 }
 #addCompetitorForm input {
-	width: 178px;
+	width: 208px;
 }
 #addCompetitorForm button {
 	margin-top: 10px;
@@ -71,6 +78,9 @@
 /**
 *	Ajout de connecteur
 */
+#addConnectorForm {
+	margin: 0px;
+}
 .addConnectorChoice {
 	background-color: #eeeeee;
 	margin: 0px 0px 10px 0px;
@@ -92,6 +102,10 @@
 	width: 300px;
 }
 
+#cancelAddCompetitor {
+	color: #cccccc;
+}
+
 /**
 *	VOIR UN CONNECTEUR
 */
@@ -100,4 +114,11 @@
 }
 .deleteConnector {
 	float: right;
+}
+
+.connectorLoading {
+	background-color: #f4f4f4;
+	border: 1px solid #eeeeee;
+	text-align: center;
+	padding: 50px;
 }

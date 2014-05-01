@@ -13,7 +13,8 @@ function Connector() {
 	*/
 	//affichage de la liste des modules
 	this.displayList = function(modules) {
-		var html = '<h1>Ajouter un connecteur au concurrent ' + get(Competitor).getName() + '</h1>';
+		var html = '<div style="padding: 10px;">' + 
+						'<h1>Ajouter un connecteur au concurrent ' + get(Competitor).getName() + '</h1>';
 		for (var key in modules) {
 			html += '<div id="' + key + '" class="addConnectorChoice">' + 
 						'<h2 id="' + key + '" class="addConnectorChoiceButton">' + modules[key].name + '</h2>' + 
@@ -21,6 +22,7 @@ function Connector() {
 						'<div id="' + key + 'AddForm" class="addConnectorForm"></div>' +
 					'</div>';
 		}
+		html += '</div>';
 		$('#dashboardContent').html(html);
 	}
 
@@ -109,7 +111,6 @@ function Connector() {
 	}
 	this.addConnectorCallback = function(data) {
 		if (parseInt(data.error, 10) == 0) {
-			alert('Connecteur ajouté');
 			get(Competitor).init(get(Competitor).getId());
 		} else {
 			$('#addConnectorError').html(data.data);
@@ -125,7 +126,6 @@ function Connector() {
 	}
 	this.deleteCallback = function(data) {
 		if (parseInt(data.error, 10) == 0) {
-			alert("Connecteur supprimé");
 			get(Competitor).init(get(Competitor).getId());
 		} else {
 			alert(data.data);

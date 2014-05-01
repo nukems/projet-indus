@@ -5,16 +5,21 @@ function Controllers_UserModuleController() {
 	/**
 	*	Ajoute d'un connecteur a un concurrent
 	*/
-	this.add = function() {
+	this.add = function(instances) {
+		var Ajax = instances.getInstance('Core_Ajax');
 		var modules = require('../../../modules/modules.js').modules;
-		var competitorId = POST.data.competitorId;
-		var moduleName = POST.data.moduleName;
-		var fields = POST.data.fields;
+
+		var connectorController = instances.getInstance("Entities_Connector");
+		connectorController.setInstances(instances);
+
+		var competitorId = instances.getPost().data.competitorId;
+		var moduleName = instances.getPost().data.moduleName;
+		var fields = instances.getPost().data.fields;
 		try {
-			if (!this.checkFields()) {
+			if (!this.checkFields(instances.getPost())) {
 				Ajax.setError("Les champs sont incorrects").send();
 			} else {
-				InstancesController.getInstance("Entities_Connector").add(competitorId, moduleName, fields, function(result) {
+				connectorController.add(competitorId, moduleName, fields, function(result) {
 					if (result) {
 						Ajax.setData({}).send();
 					} else {
@@ -30,7 +35,7 @@ function Controllers_UserModuleController() {
 	/**
 	*	Verifie que les champs passes pour l'ajout sont les bons et le format de chaque donnee OK
 	*/
-	this.checkFields = function() {
+	this.checkFields = function(POST) {
 		var modules = require('../../../modules/modules.js').modules;
 		var moduleName = POST.data.moduleName;
 		var fields = modules[moduleName].fields;
@@ -66,11 +71,14 @@ function Controllers_UserModuleController() {
 	/**
 	*	Suppression d'un connecteur pour un concurrent
 	*/
-	this.delete = function() {
-		var competitorId = POST.data.competitorId;
-		var moduleId = POST.data.moduleId;
+	this.delete = function(instances) {
+		var Ajax = instances.getInstance('Core_Ajax');
+		var competitorId = instances.getPost().data.competitorId;
+		var moduleId = instances.getPost().data.moduleId;
+		var connectorController = instances.getInstance("Entities_Connector");
+		connectorController.setInstances(instances);
 		
-		InstancesController.getInstance("Entities_Connector").delete(competitorId, moduleId, function(result) {
+		connectorController.delete(competitorId, moduleId, function(result) {
 			if (result) {
 				Ajax.setData({}).send();
 			} else {
@@ -82,13 +90,14 @@ function Controllers_UserModuleController() {
 	/**
 	*	Retourne les donnees concernant un module pour un concurrent precis
 	*/
-	this.get = function() {
-		var moduleName = POST.data.module_name;
-		var typeName = POST.data.type_name;
-		var connectorId = POST.data.connector_id;
-		var where = POST.data.where;
+	this.get = function(instances) {
+		var Ajax = instances.getInstance('Core_Ajax');
+		var connectorId = instances.getPost().data.connector_id;
+		var where = instances.getPost().data.where;
+		var connectorController = instances.getInstance("Entities_Connector");
+		connectorController.setInstances(instances);
 
-		InstancesController.getInstance("Entities_Connector").get(moduleName, typeName, connectorId, where, function(data) {
+		connectorController.get(connectorId, where, function(data) {
 			Ajax.setData(data).send();
 		});
 

@@ -67,7 +67,11 @@ function Routes() {
 			}
 		} else {
 			if (args.length == 1 || args[1] == 'dashboard') {
-				get(DashboardController).init();
+				var competitorId = null;
+				if (args[2]) {
+					competitorId = args[2];
+				}
+				get(DashboardController).init(competitorId);
 			}
 		}
 		

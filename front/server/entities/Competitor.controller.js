@@ -4,10 +4,7 @@ function Entities_Competitor() {
 	this.autoIncrement = "competitor_id";
 
 	var self = this;
-
-	this.userId = InstancesController.getInstance('Entities_User').getId();
-
-	this.userCollection = InstancesController.getInstance('Core_Database').getCollection('user');
+	this.instances;
 
 	/**
 	*	Retourne la liste de tous les concurrents pour un utilisateur
@@ -22,7 +19,7 @@ function Entities_Competitor() {
 	*	Ajoute un concurrent pour un utilisateur
 	*/
 	this.addCompetitorForUser = function(companyName, websiteUrl, callback) {
-		InstancesController.getInstance("Core_Database").getNextValue(self.autoIncrement, function(competitorId) {
+		this.getInstances().getInstance("Core_Database").getNextValue(self.autoIncrement, function(competitorId) {
 			self.userCollection.update({'_id': new require('mongodb').ObjectID(self.userId)},
 									   {$push: {"competitors": { 
 									   			"_id": competitorId,
@@ -73,6 +70,15 @@ function Entities_Competitor() {
 				return null;
 			}
 		});
+	}
+
+	this.getInstances = function() {
+		return this.instances;
+	}
+	this.setInstances = function(instances) {
+		this.instances = instances
+		this.userId = instances.getInstance('Entities_User').getId();
+		this.userCollection = instances.getInstance('Core_Database').getCollection('user');
 	}
 }
 

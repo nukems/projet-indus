@@ -3,10 +3,13 @@ function Controllers_CompetitorController() {
 	/**
 	*	Retourne le dashboard pour un concurrent
 	*/
-	this.getCompetitorDashboard = function() {
+	this.getCompetitorDashboard = function(instances) {
+		var Ajax = instances.getInstance('Core_Ajax');
+
 		try {
-			var competitorId = POST.data.id;
-			var competitorController = InstancesController.getInstance("Entities_Competitor");
+			var competitorId = instances.getPost().data.id;
+			var competitorController = instances.getInstance("Entities_Competitor");
+			competitorController.setInstances(instances);
 			
 			competitorController.getDataForCompetitor(competitorId, function(competitor) {
 				if (competitor == null) {

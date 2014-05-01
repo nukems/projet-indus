@@ -17,16 +17,22 @@ function Competitor() {
 	*/
 	this.displayCompetitor = function() {
 		var html = '<div>' + 
-						'<div id="competitorActions">' + 
-							'<button id="addConnectorToCompetitorButton">Ajouter un connecteur</button> ' +
-							'<button id="deleteCompetitorButton">Supprimer</button>' + 
-						'</div>' +
-						'<h1 id="competitorName">' + self.getName() + '</h1>';
+						'<div id="competitorHeader">' +
+							'<div id="competitorActions">' + 
+								'<button id="addConnectorToCompetitorButton" class="green">Ajouter un connecteur</button> ' +
+								'<button id="deleteCompetitorButton" class="red">Supprimer</button>' + 
+							'</div>' +
+							'<h1 id="competitorName">' + self.getName() + '</h1>';
 		if (self.getWebsite() != null) {
-			html += '<a href="' + self.getWebsite() + '">' + self.getWebsite() + '</a>';
+			var url = self.getWebsite();
+			if (url.indexOf("http") != 0) {
+				url = "http://" + url;
+			}
+			html += '<a href="' + url + '">' + self.getWebsite() + '</a>';
 		}
-		html += '<br /><br />';
-		html +=			'<div id="competitorDashboard">' + 
+		html +=				'<div style="clear: right;"></div>' +
+						'</div>' + 
+						'<div id="competitorDashboard">' + 
 							self.displayConnectors() +
 						'</div>' + 
 					'</div>';
@@ -34,15 +40,33 @@ function Competitor() {
 	}
 	this.displayConnectors = function() {
 		var html = '';
-		var connectors = self.getConnectors();
-		for (var i = 0; i < connectors.length; i++) {
-			html += '<div id="' + connectors[i]._id + '" class="connectorDisplay">' + 
-						'<button class="deleteConnector green" id="' + connectors[i]._id + '">Supprimer</button>' +
-						'<h2>Module ' + connectors[i].module_name + '</h2>' + 
-						JSON.stringify(connectors[i].config_fields) + 
-					'</div>';
+		if(self.getConnectors().length == 0) {
+			html += '<div style="text-align: center; padding: 50px;">Aucun connecteur</div>';
+		} else {
+			var connectors = self.getConnectors();
+			for (var i = 0; i < connectors.length; i++) {
+				html += '<div id="' + connectors[i]._id + '" class="connectorDisplay">' + 
+							'<button class="deleteConnector red little" id="deleteConnector' + connectors[i]._id + '" connector-id="' + connectors[i]._id + '"><img src="front/client/design/pictures/delete.png"/></button>' +
+							'<h2>Module ' + connectors[i].module_name + '</h2>' + 
+							self.displayConnector(connectors[i]._id, connectors[i].module_name, connectors[i].config_fields) +
+						'</div>';
+			}
 		}
+		
 		return html;
+	}
+	this.displayConnector = function(connectorId, moduleName, fields) {
+		//charger le script d'affichage
+		var fonction = "init";
+		$.getScript('modules/' + moduleName + '/display.js', function(data, textStatus, jqXHR) {
+			var i = new window[moduleName]();
+			i.init(connectorId, fields);
+		});
+  		return '<div id="connectorData' + connectorId + '">' + 
+  					'<div class="connectorLoading">' + 
+  						'Chargement des données et de l\'affichage du module...' +
+  					'</div>'  +
+  				'</div>';
 	}
 
 	/**
@@ -50,22 +74,25 @@ function Competitor() {
 	*/
 	this.competitorEvents = function() {
 		//supprimer un concurrent
-		$('#deleteCompetitorButton').click(function() {
-			if (confirm('Êtes-vous sûr de vouloir supprimer ce concurrent ?')) {
-				self.deleteCompetitor();
-			}
-			return false;
-		});
+		var anim = new Animations();
+		anim.holdToDelete("deleteCompetitorButton", self.deleteCompetitor);
 		//ajouter un connecteur a un concurrent
 		$('#addConnectorToCompetitorButton').click(function() {
 			get(Connector).initAdd();
 		});
 
 		//supprimer un connecteur a un concurrent
-		$('.deleteConnector').click(function() {
+		for (var i = 0; i < self.connectors.length; i++) {
+			var anim = new Animations();
+			anim.holdToDelete('deleteConnector' + self.connectors[i]._id, function(id) {
+				get(Connector).delete($('#' +id).attr('connector-id'));
+				return false;
+			})
+		};
+		/*$('.deleteConnector').click(function() {
 			get(Connector).delete($(this).attr('id'));
 			return false;
-		});
+		});*/
 	}
 
 	/**

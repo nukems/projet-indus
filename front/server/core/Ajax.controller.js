@@ -2,6 +2,8 @@ function Core_Ajax() {
 
 	var self = this;
 
+	this.instances;
+
 	//defini si la requete ajax est un succes ou non
 	this.error = 0;
 	this.data;
@@ -10,13 +12,13 @@ function Core_Ajax() {
 	*	Terminer la requete au serveur et envoyer des donnees
 	*/
 	this.send = function() {
-		InstancesController.getInstance('Core_Database').close();
+		self.getInstances().getInstance('Core_Database').close();
 		var dataToSend = {
 			"error": this.error,
 			"data": self.data
 		};
-		res.writeHead(200, {"Content-Type": "text/html"});
-		res.end(JSON.stringify(dataToSend));
+		self.getInstances().getRes().writeHead(200, {"Content-Type": "text/html"});
+		self.getInstances().getRes().end(JSON.stringify(dataToSend));
 	}
 
 	/**
@@ -35,6 +37,22 @@ function Core_Ajax() {
 		this.data = data;
 		this.error = 1;
 		return this;
+	}
+
+	/**
+	*	Ecriture de la reponse
+	*	@data un objet JSON
+	*/
+	this.write = function(data) {
+		self.getInstances().getRes().writeHead(200, {"Content-Type": "text/html"});
+		self.getInstances().getRes().end(JSON.stringify(data));
+	}
+
+	this.getInstances = function() {
+		return self.instances;
+	}
+	this.setInstances = function(instances) {
+		self.instances = instances;
 	}
 
 }

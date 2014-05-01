@@ -2,10 +2,10 @@ function DashboardController() {
 
 	var self = this;
 
-	this.init = function() {
+	this.init = function(competitorId) {
 		self.displayBase();
-		self.eventsBase();
-		 self.getCompetitors();
+		self.eventsBase(competitorId);
+		self.getCompetitors();
 	}
 
 	/**
@@ -14,15 +14,19 @@ function DashboardController() {
 	//affichage de la structure du dashboard
 	this.displayBase = function() {
 		var html = '<div id="dashboardMain">' + 
-						'<div id="dashboardHeader">' + 
-							'<div id="dashboardHeaderUser">' + 
-								get(User).getFirstName() + ' ' + get(User).getName() + 
-								'<br />' + 
-								'<a href="#!" id="logOutButton" style="color: #eeeeee;">Déconnexion</a>' +
-							'</div>' +
-						'</div>' + 
 						'<div id="dashboardTable">' + 
 							'<div id="dashboardMenu">' + 
+								'<div id="dashboardMenuHeader">' +
+									'<img src="front/client/design/pictures/default.jpg" id="userAvatar"/>' + 
+									'<div id="dashboardMenuHeaderName">' + 
+										get(User).getFirstName() + ' ' + get(User).getName() + 
+										'<br />' + 
+										'<a href="#!" id="logOutButton"">Déconnexion</a>' +
+									'</div>' +
+									'<div style="clear: left;"></div>' +
+								'</div>' +
+								'<div id="dashboardMenuContent">' + 
+								'</div>' +
 							'</div>' + 
 							'<div id="dashboardContent">' + 
 								'Commencez par choisir un concurrent dans le menu de gauche' +
@@ -40,18 +44,18 @@ function DashboardController() {
 						list[i].company_name + 
 					'</div>';
 		}
-		html += '<button id="addCompetitor">Ajouter un concurrent</button>';
-		$('#dashboardMenu').html(html);
+		html += '<button id="addCompetitor" class="green">Ajouter un concurrent</button>';
+		$('#dashboardMenuContent').html(html);
 	}
 
 	this.displayAddCompetitor = function() {
 		var html = '<form method="post" id="addCompetitorForm">' + 
-						'<label for="addCompetitorName">Nom du concurrent* :</label>' +
+						'<label for="addCompetitorName">Nom du concurrent :</label>' +
 						'<input type="text" name="addCompetitorName" id="addCompetitorName"/><br />' + 
-						'<label for="addCompetitorWebsite">Site web :</label>' + 
-						'<input type="text" name="addCompetitorWebsite" id="addCompetitorWebsite"/><br />' + 
+						'<label for="addCompetitorWebsite" style="padding-top: 3px;">Site web (optionnel) :</label>' + 
+						'<input type="text" name="addCompetitorWebsite" id="addCompetitorWebsite" value="http://"/><br />' + 
 						'<button id="addCompetitorButton" class="green">Ajouter</button> ' + 
-						'<button id="cancelAddCompetitor">Annuler</button>' +
+						' ou <a href="#" id="cancelAddCompetitor">Annuler</a>' +
 					'</form>';
 		$('#addCompetitor').replaceWith(html);
 	}
@@ -60,11 +64,14 @@ function DashboardController() {
 	*	EVENTS
 	*/
 	//evenements de base du dashboard
-	this.eventsBase = function() {
+	this.eventsBase = function(competitorId) {
 		$('#logOutButton').off().click(function() {
 			self.logOut();
 			return false;
 		});
+		if (competitorId != null) {
+			get(Competitor).init(competitorId);
+		}
 	}
 
 	//evenements du menu
@@ -75,6 +82,7 @@ function DashboardController() {
 		});
 		$('.dashboardMenuItem').off().click(function() {
 			var id = $(this).attr("id");
+			get(Routes).goTo('#!/dashboard/' + id);
 			get(Competitor).init(id);
 		});
 	}
@@ -86,8 +94,9 @@ function DashboardController() {
 			return false;
 		});
 		$('#cancelAddCompetitor').off().click(function() {
-			$('#addCompetitorForm').replaceWith('<button id="addCompetitor">Ajouter un concurrent</button>');
+			$('#addCompetitorForm').replaceWith('<button id="addCompetitor" class="green">Ajouter un concurrent</button>');
 			self.eventsMenu();
+			return false;
 		});
 	}
 

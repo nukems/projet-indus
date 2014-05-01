@@ -1,40 +1,46 @@
-global.http = require('http');
-global.url = require('url');
-
 global.env = require("./lib/config.js").getConfig();
+global.ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+global.port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
+/**
+*	Creation du serveur
+*	Handle de nouvelles requetes
+*/
+http = require('http');
 var server = http.createServer(function(req, res) {
 	console.log("Handle request from " + req.connection.remoteAddress);
+	global.host = "http://" + req.headers.host + "/front/";
+
 	try {
-		global.req = req;
-		global.res = res;
-		getPostData(init);
+		init(req, res);
 	} catch(err) {
 		fatalError(err);
 	}
 });
 
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-server.listen( port, ipaddress, function(){
+/**
+*	Ecoute
+*/
+server.listen(port, ipaddress, function() {
     console.log((new Date()) + ' Server is listening on port ' + port);
 });
+
 
 /**
 *	Recuperation des donnees POST de la requete
 */
-function getPostData(callback) {
+function getPost(req, callback) {
 	var qs = require('querystring');
     var body = '';
     req.on('data', function (data) {
         body += data;
     });
     req.on('end', function () {
-        global.POST = qs.parse(body);
+        POST = qs.parse(body);
         if (POST.data) {
         	POST.data = JSON.parse(POST.data);
         }
-        callback(req, res);
+        callback(POST);
     });
 }
 
@@ -42,33 +48,35 @@ function getPostData(callback) {
 *	Initialisation du serveur pour la requete
 *	Execution du code 
 */
-function init() {
+function init(req, res) {
 	try {
 		//initialisation de l'autoload
 		var i = require('./front/server/core/Instances.controller.js').controller;
-		global.InstancesController = new i();
+		instances = new i();
+		instances.setReq(req);
+		instances.setRes(res);
 
-		//initialisation de la gestion des routes
-		global.RoutesController = InstancesController.getInstance('Core_Routes_Routes');
-		RoutesController.setUrl(req.url);
-		//url de l'application
-		global.host = "http://" + req.headers.host + "/front/";
 
-		//initialisation des evenements
-		global.EventEmitter = require('events').EventEmitter;
+		//recuperation des donnees POST
+		getPost(req, function(post) {
+			instances.setPost(post);
+			//initialisation de la gestion des routes
+			instances.getInstance('Core_Routes_Routes').setUrl(instances.getReq().url);
 
-		var isAjax = POST.isAjax; //si ajax, un Flag dans les donnees POST permet de le determiner
-		
-		if(isAjax) { //c'est une requete ajax
-			console.log("AJAX request : " + req.url);
-			console.log("\n");
-			ajaxInit();
-		} else { //c'est une requete normale, on envoi juste le code de base de la page ou un element statique (image, ...)
-			console.log("GET " + req.url);
-			console.log("\n");
-			var StaticController = InstancesController.getInstance('Core_Routes_Static');
-			StaticController.exec();
-		}
+			//initialisation ecriture de la reponse
+			instances.getInstance('Core_Ajax').setInstances(instances);
+
+			//si ajax, un Flag dans les donnees POST permet de le determiner
+			if (post.isAjax) { //c'est une requete ajax
+				console.log("AJAX request : " + instances.getReq().url);
+				console.log("");
+				ajax(instances);
+			} else { //c'est une requete normale, on envoi juste le code de base de la page ou un element statique (image, ...)
+				console.log("GET " + instances.getReq().url);
+				console.log("");
+				instances.getInstance('Core_Routes_Static').exec(instances);
+			}
+		});
 	} catch(err) {
 		fatalError(err);
 	}
@@ -77,17 +85,16 @@ function init() {
 /**
 *	Initialisation du serveur pour une requete ajax
 */
-function ajaxInit() {
+function ajax(instances) {
 	try {
 		//initialisation de la connexion avec le base de donnees
-		var db = InstancesController.getInstance('Core_Database');
+		var db = instances.getInstance('Core_Database');
 		db.connect(function() {
 			try {
-				global.Ajax = InstancesController.getInstance('Core_Ajax');
 				//autoconnexion si token indique
-				InstancesController.getInstance('Controllers_UserController').init(function() {
+				instances.getInstance('Controllers_UserController').init(instances, function() {
 					try {
-						RoutesController.exec(); //on execute le code de la route appelee
+						instances.getInstance('Core_Routes_Routes').exec(instances); //on execute le code de la route appelee
 					} catch(err) {
 						fatalError(err);
 					}
@@ -111,8 +118,9 @@ function fatalError(err) {
 		'error': err
 	};
 
-	res.writeHead(200, {"Content-Type": "text/html"});
-	res.end(JSON.stringify(data));
+	var i = require('./front/server/core/Instances.controller.js').controller;
+	var ajaxController = i.getInstance("Core_Ajax");
+	ajaxController.write(data);
 }
 
 global.fatalError = fatalError;

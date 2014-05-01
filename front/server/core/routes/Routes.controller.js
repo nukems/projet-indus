@@ -78,7 +78,7 @@ function Core_Routes_Routes() {
 	/**
 	*	Effectue une fonction en fonction de l'url demandee
 	*/
-	this.exec = function() {
+	this.exec = function(instances) {
 		var urlParts = this.url.split('?');
 		var uriParts = urlParts[0].split('/'); //parties de l'url
 		var error404 = false;
@@ -98,8 +98,8 @@ function Core_Routes_Routes() {
 		if (error404 || !object.controller) { //rien de trouve pour l'url
 			fatalError("404");
 		} else { //on execute la bonne fonction
-			var controller = InstancesController.getInstance(object.controller);
-			controller[object.function]();
+			var controller = instances.getInstance(object.controller);
+			controller[object.function](instances);
 		}
 	}
 	
