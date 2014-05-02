@@ -3,16 +3,14 @@ var ConfigChecker = require('./../../back/ConfigChecker.js');
 
 var accessToken = "CAADTa5xIkQUBACN5WetnSYdjAjn2Ddn1ZBkQ0gwnMzCY67hk4JlHUk4fQDvHbUlAR5mUlRL2SBIQKS6JsC25zY6sOzGHYbZAoUrBZBNAUgHrzFs3IqwdXCMzE1kwQtU4pp6y3agL2e6lZCBWHHgwAdjtXqdZCK0YRZCFXnQj2gR7Inz4WNPZBZA9oSjbZBt3iGWsZD";
 
-var counterCallbackInfoPage = 0;
+var counterCallbackInfoPageFBRequest = 0;
+var counterCallbackPostFBRequest = 0;
 var counterCallbackPost = 0;
 
 function execute(callback) {
 	console.log("Execution du module facebook");
 
 	ConfigChecker.get("facebook", function(linkFacebook){
-
-		//console.log('Facebook/main.js - linkFacebook');
-		//console.log(linkFacebook);
 
 		for(var i = 0; i < linkFacebook.length; i++)
 		{
@@ -25,28 +23,21 @@ function execute(callback) {
 }
 
 function checkCallback(callback) {
-	if(counterCallbackInfoPage == 0 && counterCallbackPost == 0)
+	console.log('Counters infoRequest = ' + counterCallbackInfoPageFBRequest + ' / postRequest = ' + counterCallbackPostFBRequest + ' / post = ' + counterCallbackPost);
+	if(counterCallbackInfoPageFBRequest == 0 && counterCallbackPostFBRequest == 0 && counterCallbackPost == 0)
 		callback();
-};
+}
 
 /*
  *   Execute facebook request to get page's infos
  */
 function doInfoPageFacebookRequest(linkFacebook, index, callback) {
 
-	counterCallbackInfoPage++;
-
-	//console.log('Facebook/main.js');
-	//console.log('doInfoPageFacebookRequest/url/' + index);
-	//console.log('/' + linkFacebook[index].fields.pageName + '?fields=likes,talking_about_count');
+	counterCallbackInfoPageFBRequest++;
 
 	facebook.get(('/' + linkFacebook[index].fields.pageName + '?fields=likes,talking_about_count'), function(response) {
 
 		response = JSON.parse(response);
-
-		//console.log('Facebook/main.js');
-		//console.log('doInfoPageFacebookRequest/response/' + index);
-		//console.log(response);
 
 		if(!response.error)
 		{
@@ -60,47 +51,41 @@ function doInfoPageFacebookRequest(linkFacebook, index, callback) {
 			};
 
 			var constraints = {
-				"user_id" : linkFacebook[index].user_id,
-				"module_name" : "facebook",
-				"type_name" : "info_page",
-			}
+				"user_id"    : linkFacebook[index].user_id,
+				"module_name": "facebook",
+				"type_name"  : "info_page"
+			};
 
-			ConfigChecker.add(constraints, dataFBPage, function(){counterCallbackInfoPage--;checkCallback(callback);});
+			ConfigChecker.add(constraints, dataFBPage, function(){counterCallbackInfoPageFBRequest--;checkCallback(callback);});
 		}
 		else
 		{
 			console.log("Error : Problem on the info page result request for competitor " + linkFacebook[index].competitor_id + " and connector " + linkFacebook[index].connector_id + "\n" + response.error.message);
-			counterCallbackInfoPage--;
+
+			counterCallbackInfoPageFBRequest--;
 			checkCallback(callback);
 		}
 
 	});
-};
-
+}
 
 /*
  *   Execute facebook request to get each post's infos
  */
 function doPostFacebookRequest(linkFacebook, index, callback) {
 
-	counterCallbackPost++;
-
-	//console.log('Facebook/main.js');
-	//console.log('doPostFacebookRequest/url/' + index);
-	//console.log('/' + linkFacebook[index].fields.pageName + '/statuses/?fields=likes.limit(1).summary(true),comments.limit(1).summary(true),message,updated_time&&access_token=' + accessToken);
+	counterCallbackPostFBRequest++;
 
 	facebook.get(('/' + linkFacebook[index].fields.pageName + '/statuses/?fields=likes.limit(1).summary(true),comments.limit(1).summary(true),message,updated_time&&access_token=' + accessToken), function(response) {
 
 		response = JSON.parse(response);
 
-		//console.log('Facebook/main.js');
-		//console.log('doPostFacebookRequest/response/' + index);
-		//console.log(response);
-
 		if(!response.error)
 		{
 			for(var j = 0; j < response.data.length; j++)
 			{
+				counterCallbackPost++;
+
 				var likes = 0;
 				var comments = 0;
 
@@ -136,12 +121,12 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 		else
 		{
 			console.log("Error : Problem on the post result request for competitor " + linkFacebook[index].competitor_id + " and connector " + linkFacebook[index].connector_id + "\n" + response.error.message);
-			counterCallbackPost--;
-			checkCallback(callback);
 		}
+
+		counterCallbackPostFBRequest--;
+		checkCallback(callback);
 
 	});
 };
-
 
 exports.execute = execute;
