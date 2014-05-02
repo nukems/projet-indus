@@ -113,7 +113,7 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 					"module_name" : "facebook",
 					"type_name" : "post",
 					"field" : "id"
-				}
+				};
 
 				ConfigChecker.update(constraints, dataFBPost, function(){counterCallbackPost--;checkCallback(callback);});
 			}
@@ -127,6 +127,6 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 		checkCallback(callback);
 
 	});
-};
+}
 
 exports.execute = execute;
