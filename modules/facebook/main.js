@@ -11,8 +11,8 @@ function execute(callback) {
 
 	ConfigChecker.get("facebook", function(linkFacebook){
 
-		console.log('Facebook/main.js - linkFacebook');
-		console.log(linkFacebook);
+		//console.log('Facebook/main.js - linkFacebook');
+		//console.log(linkFacebook);
 
 		for(var i = 0; i < linkFacebook.length; i++)
 		{
@@ -36,17 +36,17 @@ function doInfoPageFacebookRequest(linkFacebook, index, callback) {
 
 	counterCallbackInfoPage++;
 
-	console.log('Facebook/main.js');
-	console.log('doInfoPageFacebookRequest/url/' + index);
-	console.log('/' + linkFacebook[index].fields.pageName + '?fields=likes,talking_about_count');
+	//console.log('Facebook/main.js');
+	//console.log('doInfoPageFacebookRequest/url/' + index);
+	//console.log('/' + linkFacebook[index].fields.pageName + '?fields=likes,talking_about_count');
 
 	facebook.get(('/' + linkFacebook[index].fields.pageName + '?fields=likes,talking_about_count'), function(response) {
 
 		response = JSON.parse(response);
 
-		console.log('Facebook/main.js');
-		console.log('doInfoPageFacebookRequest/response/' + index);
-		console.log(response);
+		//console.log('Facebook/main.js');
+		//console.log('doInfoPageFacebookRequest/response/' + index);
+		//console.log(response);
 
 		if(!response.error)
 		{
@@ -85,17 +85,17 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 
 	counterCallbackPost++;
 
-	console.log('Facebook/main.js');
-	console.log('doPostFacebookRequest/url/' + index);
-	console.log('/' + linkFacebook[index].fields.pageName + '/statuses/?fields=likes.limit(1).summary(true),comments.limit(1).summary(true),message,updated_time&&access_token=' + accessToken);
+	//console.log('Facebook/main.js');
+	//console.log('doPostFacebookRequest/url/' + index);
+	//console.log('/' + linkFacebook[index].fields.pageName + '/statuses/?fields=likes.limit(1).summary(true),comments.limit(1).summary(true),message,updated_time&&access_token=' + accessToken);
 
 	facebook.get(('/' + linkFacebook[index].fields.pageName + '/statuses/?fields=likes.limit(1).summary(true),comments.limit(1).summary(true),message,updated_time&&access_token=' + accessToken), function(response) {
 
 		response = JSON.parse(response);
 
-		console.log('Facebook/main.js');
-		console.log('doPostFacebookRequest/response/' + index);
-		console.log(response);
+		//console.log('Facebook/main.js');
+		//console.log('doPostFacebookRequest/response/' + index);
+		//console.log(response);
 
 		if(!response.error)
 		{

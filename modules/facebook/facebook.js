@@ -8,8 +8,8 @@ exports.get = function(apiPath, callback) {
 		method: 'GET'
 	};
 
-	console.log('Facebok.js/options');
-	console.log(options);
+	//console.log('Facebok.js/options');
+	//console.log(options);
 
 	var buffer = '';
 	var request = https.get(options, function(result){
