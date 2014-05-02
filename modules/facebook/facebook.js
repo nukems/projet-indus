@@ -8,6 +8,9 @@ exports.get = function(apiPath, callback) {
 		method: 'GET'
 	};
 
+	console.log('Facebok.js/options');
+	console.log(options);
+
 	var buffer = '';
 	var request = https.get(options, function(result){
 
@@ -21,6 +24,7 @@ exports.get = function(apiPath, callback) {
 			callback(buffer);
 		});
 	});
+
 	request.on('error', function(e){
 		console.log('error from facebook.get(): ' + e.message);
 	});
