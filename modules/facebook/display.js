@@ -17,7 +17,7 @@ function facebook() {
 														"where": {type: "info_page"}}, function(data) {
 
 			var html = 'Page ' + fields.pageName + '<br />' + 
-					   '<div id="canvas' + connectorId + '" style="width: 600px; height: 400px;"></div>';
+					   '<div id="canvas' + connectorId + '" style="min-width: 600px; height: 400px;"></div>';
 
 			$('#connectorData' + connectorId).html(html);
 			self.displayLikesAndShares(data.data, connectorId);

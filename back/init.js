@@ -35,6 +35,3 @@ if (args.length <= 2) {
 	init();
 }
 
-console.log('');
-console.log('Ending init.js');
-console.log('*************************');

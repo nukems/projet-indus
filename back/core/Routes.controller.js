@@ -21,6 +21,10 @@ function Core_Routes() {
 			module.execute(function() {
 				console.log('Execution du module '  + moduleName + ' avec succes');
 				//fermeture connexion
+				console.log('');
+				console.log('Ending init.js');
+				console.log('*************************');
+				process.exit(0);
 			});
 		} catch (e) {
 			console.log("ERROR EXECUTION MODULE : " + e);
