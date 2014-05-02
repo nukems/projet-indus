@@ -7,16 +7,16 @@ exports.get = function(apiPath, callback) {
 		path: apiPath,
 		method: 'GET'
 	};
-	 
+
 	var buffer = '';
 	var request = https.get(options, function(result){
-		
+
 		result.setEncoding('utf8');
-		
+
 		result.on('data', function(chunk) {
 			buffer += chunk;
 		});
-	 
+
 		result.on('end', function(){
 			callback(buffer);
 		});
@@ -24,6 +24,6 @@ exports.get = function(apiPath, callback) {
 	request.on('error', function(e){
 		console.log('error from facebook.get(): ' + e.message);
 	});
-	 
+
 	request.end();
 }
