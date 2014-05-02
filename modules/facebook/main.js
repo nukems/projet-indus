@@ -23,7 +23,7 @@ function execute(callback) {
 }
 
 function checkCallback(callback) {
-	console.log('Counters infoRequest = ' + counterCallbackInfoPageFBRequest + ' / postRequest = ' + counterCallbackPostFBRequest + ' / post = ' + counterCallbackPost);
+	//console.log('Counters infoRequest = ' + counterCallbackInfoPageFBRequest + ' / postRequest = ' + counterCallbackPostFBRequest + ' / post = ' + counterCallbackPost);
 	if(counterCallbackInfoPageFBRequest == 0 && counterCallbackPostFBRequest == 0 && counterCallbackPost == 0)
 		callback();
 }
