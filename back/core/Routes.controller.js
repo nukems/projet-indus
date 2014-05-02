@@ -18,8 +18,15 @@ function Core_Routes() {
 
 		try {
 			var module = require("../../modules/" + moduleName + "/main.js");
+			var date = new Date().getTime();
+			console.log('Execution du module '  + moduleName + ' commencée @ ' + date);
+
 			module.execute(function() {
 				console.log('Execution du module '  + moduleName + ' avec succes');
+				var date2 = new Date().getTime();
+				console.log('Execution du module '  + moduleName + ' terminée @ ' + date2);
+				var d = date2 - date;
+				console.log('Execution du module '  + moduleName + ' terminée en ' + d);
 				//fermeture connexion
 				console.log('');
 				console.log('Ending init.js');
