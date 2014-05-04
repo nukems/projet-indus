@@ -11,7 +11,7 @@ function facebook() {
 		self.connectorId = connectorId;
 
 		
-		$('#connectorData' + connectorId).append('Page ' + fields.pageName + '<br />');
+		$('#connectorData' + connectorId).html('Page ' + fields.pageName + '<br />');
 		//recuperation des donnees
 		//where est un tableau qui contient les criteres de selection, a la maniere mongodb
 		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId, 
@@ -56,7 +56,7 @@ function facebook() {
 			 likes.push({x: new Date(data[i].date), y: data[i].info.fans});
 			 shares.push({x: new Date(data[i].date), y: data[i].info.shared});
 		}
-		
+
 		var chart = new CanvasJS.Chart("canvas" + connectorId, {
 
 		toolTip: {
