@@ -31,8 +31,6 @@ function facebook() {
 			 likes.push({x: new Date(data[i].date), y: data[i].info.fans});
 			 shares.push({x: new Date(data[i].date), y: data[i].info.shared});
 		}
-		console.log(likes);
-		console.log(shares);
 		var chart = new CanvasJS.Chart("canvas" + connectorId, {
 
 	    title:{

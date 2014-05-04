@@ -12,7 +12,7 @@ a {
 }
 
 h1 {
-	font-size: 20px;
+	font-size: 23px;
 	font-weight: bold;
 	margin: 0px 0px 10px 0px;
 }
@@ -52,4 +52,32 @@ button.red {
 button.little {
 	padding: 6px;
 	line-height: 13px;
+}
+
+button[disabled="disabled"] {
+	opacity: 0.5;
+}
+
+/**
+*	Chargement
+*/
+.loadingDiv {
+	text-align: center;
+	padding: 30px;
+}
+
+/**
+*	Notifications
+*/
+#notifications {
+	position: fixed;
+	margin: 10px;
+}
+.notification {
+	background-color: white;
+	border: 2px solid #cccccc;
+	padding: 10px;
+	margin: 10px;
+	width: 250px;
+	cursor: not-allowed;
 }

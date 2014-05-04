@@ -74,6 +74,7 @@ function Connector() {
 	*/
 	//requete permettant de recuperer la liste des modules
 	this.getList = function() {
+		$('#dashboardContent').html(get(Animations).getLoaderDiv());
 		get(Ajax).send('modules/', null, self.getListCallback);
 	}
 	this.getListCallback = function(data) {
@@ -83,11 +84,12 @@ function Connector() {
 
 	//requete permettant de recuperer les champs pour le module a ajouter
 	this.getFieldsForAdd = function() {
+		$('#' + self.getConnectorName() + 'AddForm').html(get(Animations).getLoaderDiv());
 		get(Ajax).send('modules/configuration', {"name": self.getConnectorName()}, self.getFieldsForAddCallback);
 	}
 	this.getFieldsForAddCallback = function(data) {
 		if (parseInt(data.error, 10) != 0) {
-			$('#dashboardContent').html(data.data);
+			get(Animations).displayNotification(data.data);
 		} else {
 			self.displayAdd(data.data.module);
 			self.addEvents();
@@ -95,6 +97,7 @@ function Connector() {
 	}
 
 	this.addConnector = function() {
+		$('#addConnectorForm button, #cancelAddConnector').attr('disabled', 'disabled');
 		var data = {
 			competitorId: get(Competitor).getId(),
 			moduleName: self.getConnectorName(),
@@ -110,14 +113,17 @@ function Connector() {
 		return fields;
 	}
 	this.addConnectorCallback = function(data) {
+		$('#addConnectorForm button, #cancelAddConnector').removeAttr('disabled');
 		if (parseInt(data.error, 10) == 0) {
 			get(Competitor).init(get(Competitor).getId());
+			get(Animations).displayNotification("Connecteur ajouté avec succès");
 		} else {
 			$('#addConnectorError').html(data.data);
 		}
 	}
 
 	this.delete = function(id) {
+		$('#dashboardContent').html(get(Animations).getLoaderDiv());
 		var data = {
 			competitorId: get(Competitor).getId(),
 			moduleId: id
@@ -126,9 +132,10 @@ function Connector() {
 	}
 	this.deleteCallback = function(data) {
 		if (parseInt(data.error, 10) == 0) {
+			get(Animations).displayNotification("Connecteur supprimé avec succès");
 			get(Competitor).init(get(Competitor).getId());
 		} else {
-			alert(data.data);
+			get(Animations).displayNotification(data.data);
 		}
 	}
 

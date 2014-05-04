@@ -28,7 +28,7 @@ function Competitor() {
 			if (url.indexOf("http") != 0) {
 				url = "http://" + url;
 			}
-			html += '<a href="' + url + '">' + self.getWebsite() + '</a>';
+			html += '<a target="_blank" href="' + url + '">' + self.getWebsite() + '</a>';
 		}
 		html +=				'<div style="clear: right;"></div>' +
 						'</div>' + 
@@ -58,6 +58,9 @@ function Competitor() {
 	this.displayConnector = function(connectorId, moduleName, fields) {
 		//charger le script d'affichage
 		var fonction = "init";
+		$.ajaxSetup({
+			cache: true
+		});
 		$.getScript('modules/' + moduleName + '/display.js', function(data, textStatus, jqXHR) {
 			var i = new window[moduleName]();
 			i.init(connectorId, fields);
@@ -99,6 +102,7 @@ function Competitor() {
 	*	REQUEST
 	*/
 	this.getCompetitor = function() {
+		$('#dashboardContent').html('<div class="loadingDiv"><img src="front/client/design/pictures/loader.gif"/></div>');
 		get(Ajax).send('user/competitor', {"id": self.getId()}, self.getCompetitorCallback);
 	}
 	this.getCompetitorCallback = function(data) {
@@ -109,20 +113,22 @@ function Competitor() {
 			self.displayCompetitor();
 			self.competitorEvents();
 		} else {
-			alert(data.data);
+			get(Animations).displayNotification(data.data);
 		}
 	}
 
 	this.deleteCompetitor = function() {
+		$('#dashboardContent').html(get(Animations).getLoaderDiv());
 		get(Ajax).send('user/competitors/delete', {"id": self.getId()}, self.deleteCompetitorCallback);
 	}
 	this.deleteCompetitorCallback = function(data) {
 		if(parseInt(data.error, 10) == 0) {
 			$('.dashboardMenuItem[id="' + self.getId()  +'"]').remove();
 			self.setId(null);
-			$('#dashboardContent').html("Concurrent supprimé");
+			get(Animations).displayNotification("Concurrent supprimé");
+			get(DashboardController).displayBaseContent();
 		} else {
-			alert(data.data);
+			get(Animations).displayNotification(data.data);
 		}
 	}
 

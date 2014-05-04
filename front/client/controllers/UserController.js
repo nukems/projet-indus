@@ -3,12 +3,12 @@ function UserController() {
 	var self = this;
 
 	//initilisation d'un utilisateur : autoconnexion
-	this.init = function() {
+	this.init = function(callback) {
 		var autologinKey = get(Cookie).val('autologin');
 		if (autologinKey != null) { //cle d'autoconnexion trouvee
-			self.autoLogInRequest(autologinKey);
+			self.autoLogInRequest(autologinKey, callback);
 		} else {
-			get(Routes).goTo('#!');
+			callback(0);
 		}
 	}
 
@@ -87,6 +87,7 @@ function UserController() {
 	*	REQUETES
 	*/
 	this.logInRequest = function() {
+		$('#logInForm button').attr('disabled', 'disabled');
 		var data = {
 			mail: $('#logInMail').val(),
 			password: $('#logInPassword').val()
@@ -94,6 +95,7 @@ function UserController() {
 		get(Ajax).send('user/log-in', data, self.logInCallback);
 	}
 	this.logInCallback = function(data) {
+		$('#logInForm button').removeAttr('disabled');
 		if (data.error == 1) {
 			$('#logInError').html(data.data);
 		} else {
@@ -108,6 +110,7 @@ function UserController() {
 	}
 
 	this.signInRequest = function() {
+		$('#signInForm button').attr('disabled', 'disabled');
 		var data = {
 			name: $('#signInName').val(),
 			firstName: $('#signInFirstName').val(),
@@ -118,22 +121,23 @@ function UserController() {
 		get(Ajax).send('user/sign-in', data, self.signInCallback);
 	}
 	this.signInCallback = function(data) {
+		$('#signInForm button').removeAttr('disabled');
 		if (parseInt(data.error, 10) == 1) {
 			$('#signInError').html(data.data);
 		} else {
-			alert("Inscription réussie");
-			get(Routes).goTo('#!');
+			get(Animations).displayNotification('Inscription réussie, vous pouvez dès à présent vous connecter');
+			get(Routes).goTo('#!/connexion');
 		}
 	}
 
-	this.autoLogInRequest = function(key) {
-		get(Ajax).send('user/auto-log-in', {'key': key}, self.autoLogInCallback);
-	}
-	this.autoLogInCallback = function(data) {
-		if (data.error == 0) {
-			self.logInCallback(data);
-		} else {
-			get(Routes).goTo('#!');
-		}
+	this.autoLogInRequest = function(key, callback) {
+		get(Ajax).send('user/auto-log-in', {'key': key}, function(data) {
+			if (data.error == 0) {
+				self.logInCallback(data);
+				callback(1);
+			} else {
+				callback(0);
+			}
+		});
 	}
 }

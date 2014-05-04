@@ -55,24 +55,40 @@ function Routes() {
 	}
 
 	/**
+	*	Changer l'url de la page sans modifier la page affichee
+	*/
+	this.changeUrl = function(uri) {
+		$.History.go(uri);
+	}
+
+	/**
 	*	Modification de la page courante
 	*/
 	this.go = function(uri) {
 		var args = uri.split('/');
-		if (!get(User).isLogged()) {
+		if (!get(User).isLogged()) { //pas connecte
 			if(args.length > 1 && args[1] == 'inscription') {
 				get(UserController).signIn();
 			} else {
 				get(UserController).logIn();
 			}
-		} else {
-			if (args.length == 1 || args[1] == 'dashboard') {
-				var competitorId = null;
-				if (args[2]) {
-					competitorId = args[2];
+		} else { //connecte
+			if (args.length == 1 || args[1] == 'dashboard') { //dashboard
+				if(get(DashboardController).isInitiated()) { //dashboard deja affiche
+					self.goToCompetitor(args);
+				} else { //sinon, on affiche le dashboard avant tout
+					get(DashboardController).init(function() {
+						self.goToCompetitor(args);
+					});
 				}
-				get(DashboardController).init(competitorId);
 			}
+		}
+	}
+
+	this.goToCompetitor = function(args) {
+		if (args[2]) {
+			competitorId = parseInt(args[2], 10);
+			get(Competitor).init(competitorId);
 		}
 		
 	}

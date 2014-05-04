@@ -97,6 +97,7 @@ function Core_Routes_Static() {
     					'<script type="text/javascript" src="http://127.0.0.1:8080/modules/facebook/display.js"></script>' +  
     				'</head>' + 
     				'<body>' +
+    					'<div id="notifications"></div>' +
     					'<div id="content"></div>' + 
     				'</body>' + 
     			'</html>');

@@ -7,6 +7,8 @@ function Animations() {
 	this.id
 	this.interval;
 
+	this.notification = 0;
+
 	this.holdToDelete = function(id, callback) {
 		this.id = id;
 		var elem = $('#' + id);
@@ -32,6 +34,32 @@ function Animations() {
 			self.i = 3;
 			$('#' + self.id).html(self.text);
 		});
+		elem.mouseleave(function() {
+			clearInterval(self.interval);
+			self.i = 3;
+			$('#' + self.id).html(self.text);
+		});
+	}
+
+	this.getLoaderDiv = function() {
+		return '<div class="loadingDiv"><img src="front/client/design/pictures/loader.gif"/></div>';
+	}
+
+	this.displayNotification = function(content) {
+		self.notification++;
+		var n = self.notification;
+		var html = '<div class="notification" id="notification' + n + '">' + content + '</div>';
+		$('#notifications').append(html);
+		$('#notification' + n).click(function() {
+			$(this).fadeOut(200, function() {
+				$(this).remove();
+			});
+		});
+		setTimeout(function() {
+			$('#notification' + n).fadeOut(200, function() {
+				$(this).remove();
+			});
+		}, 3000);
 	}
 
 }
