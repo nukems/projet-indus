@@ -1,6 +1,7 @@
 var facebook = require('./facebook.js');
 var ConfigChecker = require('./../../back/ConfigChecker.js');
 
+// Access Token illimité avec manage_pages
 var accessToken = "CAADTa5xIkQUBACN5WetnSYdjAjn2Ddn1ZBkQ0gwnMzCY67hk4JlHUk4fQDvHbUlAR5mUlRL2SBIQKS6JsC25zY6sOzGHYbZAoUrBZBNAUgHrzFs3IqwdXCMzE1kwQtU4pp6y3agL2e6lZCBWHHgwAdjtXqdZCK0YRZCFXnQj2gR7Inz4WNPZBZA9oSjbZBt3iGWsZD";
 
 var counterCallbackInfoPageFBRequest = 0;
@@ -76,10 +77,10 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 
 	counterCallbackPostFBRequest++;
 
-	facebook.get(('/' + linkFacebook[index].fields.pageName + '/statuses/?fields=likes.limit(1).summary(true),comments.limit(1).summary(true),message,updated_time&&access_token=' + accessToken), function(response) {
-
+	facebook.get(('/' + linkFacebook[index].fields.pageName + '/posts/?fields=likes.limit(1).summary(true),comments.limit(1).summary(true),message&&access_token=' + accessToken), function(response) {
+		
 		response = JSON.parse(response);
-
+			
 		if(!response.error)
 		{
 			for(var j = 0; j < response.data.length; j++)
@@ -88,11 +89,14 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 
 				var likes = 0;
 				var comments = 0;
+				var message = 'None';
 
 				if(response.data[j].likes != undefined)
 					likes = response.data[j].likes.summary.total_count;
 				if(response.data[j].comments != undefined)
 					comments = response.data[j].comments.summary.total_count;
+				if(response.data[j].message != undefined)
+					message = response.data[j].message;
 
 				var dataFBPost = {
 					"connector_name" : "facebook",
@@ -101,11 +105,11 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 					"competitor_id" : linkFacebook[index].competitor_id,
 					"connector_id" : linkFacebook[index].connector_id,
 					"info" : {
-						"id" : parseInt(response.data[j].id),
+						"id" : response.data[j].id,
 						"likes" : likes,
 						"comments" : comments,
-						"message" : response.data[j].message,
-						"updated_time" : response.data[j].updated_time}
+						"message" : message,
+						"created_time" : response.data[j].created_time}
 				};
 
 				var constraints = {

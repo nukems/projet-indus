@@ -112,7 +112,10 @@ function checkAllFields(typeObject, data)
 		for(var i = 0; i < typeObject.fields.length; i++)
 		{
 			if(data.info[typeObject.fields[i]] == null)
+			{	
+				console.log("Problem on " + typeObject.fields[i])
 				return 0;
+			}
 		}
 
 		return 1;
