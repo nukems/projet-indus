@@ -2,9 +2,14 @@ function DashboardController() {
 
 	var self = this;
 
-	this.init = function(competitorId) {
+	this.isInitiatedValue = 0;
+
+	this.init = function(callback) {
 		self.displayBase();
-		self.eventsBase(competitorId);
+		self.displayBaseContent();
+		self.eventsBase();
+		self.initiate();
+		callback();
 		self.getCompetitors();
 	}
 
@@ -26,14 +31,19 @@ function DashboardController() {
 									'<div style="clear: left;"></div>' +
 								'</div>' +
 								'<div id="dashboardMenuContent">' + 
+									'<div class="loadingDiv"><img src="front/client/design/pictures/loader.gif"/></div>' +
 								'</div>' +
 							'</div>' + 
 							'<div id="dashboardContent">' + 
-								'Commencez par choisir un concurrent dans le menu de gauche' +
+								
 							'</div>' + 
 						'</div>' +
 					'</div>';
 		$('#content').html(html);
+	}
+	this.displayBaseContent = function() {
+		var html = '<div id="emptyDashboard">Commencez par choisir un concurrent dans le menu de gauche</div>';
+		$('#dashboardContent').html(html);
 	}
 
 	//Affichage la liste des concurrents pour un utilisateur
@@ -64,14 +74,12 @@ function DashboardController() {
 	*	EVENTS
 	*/
 	//evenements de base du dashboard
-	this.eventsBase = function(competitorId) {
+	this.eventsBase = function() {
 		$('#logOutButton').off().click(function() {
+			self.destroy();
 			self.logOut();
 			return false;
 		});
-		if (competitorId != null) {
-			get(Competitor).init(competitorId);
-		}
 	}
 
 	//evenements du menu
@@ -83,7 +91,6 @@ function DashboardController() {
 		$('.dashboardMenuItem').off().click(function() {
 			var id = $(this).attr("id");
 			get(Routes).goTo('#!/dashboard/' + id);
-			get(Competitor).init(id);
 		});
 	}
 
@@ -120,11 +127,12 @@ function DashboardController() {
 			self.displayCompetitorsList(data.data.competitors);
 			self.eventsMenu();
 		} else {
-			alert(data.data);
+			get(Animations).displayNotification(data.data);
 		}
 	}
 
 	this.addCompetitor = function() {
+		$('#addCompetitorButton, #cancelAddCompetitor').attr("disabled", "disabled");
 		var data = {
 			"companyName": $('#addCompetitorName').val(),
 			"websiteUrl": $('#addCompetitorWebsite').val()
@@ -132,11 +140,26 @@ function DashboardController() {
 		get(Ajax).sendOne('user/competitors/add', data, self.addCompetitorCallback);
 	}
 	this.addCompetitorCallback = function(data) {
+		$('#addCompetitorButton, #cancelAddCompetitor').removeAttr('disabled');
 		if(parseInt(data.error, 10) == 0) {
+			get(Animations).displayNotification("Concurrent ajouté");
 			self.getCompetitors();
 		} else {
-			alert(data.data);
+			get(Animations).displayNotification(data.data);
 		}
+	}
+
+	/**
+	*	GETTERS et SETTERS
+	*/
+	this.isInitiated = function() {
+		return this.isInitiatedValue == 1;
+	}
+	this.initiate = function() {
+		this.isInitiatedValue = 1;
+	}
+	this.destroy = function() {
+		this.isInitiatedValue = 0;
 	}
 
 }
