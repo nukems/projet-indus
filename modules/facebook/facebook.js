@@ -7,10 +7,7 @@ exports.get = function(apiPath, callback) {
 		path: apiPath,
 		method: 'GET'
 	};
-
-	//console.log('Facebok.js/options');
-	//console.log(options);
-
+	
 	var buffer = '';
 	var request = https.get(options, function(result){
 

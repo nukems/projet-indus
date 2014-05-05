@@ -36,17 +36,6 @@ function facebook() {
 			});
 		});
 		
-		/*get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId, 
-														"moduleName": "facebook", 
-														"where": {}}, function(data) {
-
-			var html = 'Page ' + fields.pageName + '<br />' + 
-					   '<div id="canvas' + connectorId + '" style="min-width: 600px; height: 400px;"></div>';
-
-			$('#connectorData' + connectorId).html(html);
-			self.displayLikesSharePosts(data.data, connectorId);
-		});*/
-		
 	}
 
 	this.displayLikesAndShares = function(data, connectorId) {

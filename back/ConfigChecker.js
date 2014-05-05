@@ -4,7 +4,7 @@
 function get(module_name, callback) {
 	var module_info = [];
 
-	InstancesController.getInstance('Core_Database').getCollection("user").find({"competitors.connectors.module_name" : module_name},{"_id" : 1, "competitors.connectors.config_fields" : 1, "competitors.connectors._id" : 1, "competitors._id" : 1}).toArray(function(err, module){
+	InstancesController.getInstance('Core_Database').getCollection("user").find({"competitors.connectors.module_name" : module_name},{"_id" : 1, "competitors.connectors.config_fields" : 1, "competitors.connectors._id" : 1, "competitors._id" : 1, "competitors.connectors.module_name" : 1}).toArray(function(err, module){
 		if(err == null || module != null)
 		{
 			for(var i = 0; i < module.length; i++)
@@ -14,7 +14,10 @@ function get(module_name, callback) {
 				{
 					var connectors = competitors[j].connectors;
 					for(var k = 0; k < connectors.length; k++)
-						module_info.push({"user_id" : module[i]._id, "competitor_id" : competitors[j]._id, "connector_id" : connectors[k]._id, "fields" : connectors[k].config_fields});
+					{
+						if(connectors[k].module_name == module_name)
+							module_info.push({"user_id" : module[i]._id, "competitor_id" : competitors[j]._id, "connector_id" : connectors[k]._id, "fields" : connectors[k].config_fields});
+					}
 				}
 			}
 			callback(module_info);
