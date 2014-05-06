@@ -93,6 +93,14 @@ function DashboardController() {
 			var id = $(this).attr("id");
 			get(Routes).goTo('#!/dashboard/' + id);
 		});
+		$(window).scroll(function() {
+			if ($('#dashboardConnectorsList').offset().top - $(window).scrollTop() < 0) {
+				$('#dashboardConnectorsList').css({'position': 'fixed', 'top': 0});
+			} else if ($('#dashboardMenuContent').offset().top + $('#dashboardMenuContent').outerHeight() - $(window).scrollTop() > 0) {
+				$('#dashboardConnectorsList').css('position', 'static');
+			}
+		});
+		
 	}
 
 	//evenements d'ajouts
