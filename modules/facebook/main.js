@@ -55,8 +55,7 @@ function doInfoPageFacebookRequest(linkFacebook, index, callback) {
 				"user_id"    : linkFacebook[index].user_id,
 				"module_name": "facebook",
 				"type_name"  : "info_page",
-				"fields": {"date": new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0), 
-						   "connector_id": linkFacebook[index].connector_id} 
+				"field": "date" 
 			};
 
 			ConfigChecker.update(constraints, dataFBPage, function(){
@@ -121,7 +120,7 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 					"user_id" : linkFacebook[index].user_id,
 					"module_name" : "facebook",
 					"type_name" : "post",
-					"fields" :  {"info.id": response.data[j].id}
+					"field" : "id"
 				};
 
 				ConfigChecker.update(constraints, dataFBPost, function(){counterCallbackPost--;checkCallback(callback);});

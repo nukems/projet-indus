@@ -79,8 +79,11 @@ function update(constraints, data, callback) {
 
 	if(dataCheck == 1)
 	{
-		var arr = constraints.fields;
+		var key = 'info.' + constraints.field;
+		var arr = {};
+		arr[key] = data.info[constraints.field];
 		arr["type"] = constraints.type_name;
+
 		InstancesController.getInstance('Core_Database').getCollection("user_" + constraints.user_id).update(arr, data, {upsert: true}, function(err, result){callback();});
 	}
 	else if(dataCheck == 0)

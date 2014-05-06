@@ -70,23 +70,19 @@ function Entities_Connector() {
 		} else {
 			var conditions = self.getConditions(where);
 			conditions.connector_id = connectorId;
-			collection.find(conditions, function(err, request) {
-				if (options && options != null) {
-					if (options.sort && options.sort != null) {
-						request.sort(options.sort);
-					}
-					if (options["limit"]) {
-						request.limit(options["limit"]);
-					}
+			var request = collection.find(conditions);
+			if (options.sort && options.sort != null) {
+				request.sort(options.sort);
+			}
+			if (options["limit"]) {
+				request.limit(options["limit"]);
+			}
+			request.toArray(function(err, items) {
+				if (err) {
+					console.log(err);
 				}
-				request.toArray(function(err, items) {
-					if (err) {
-						console.log(err);
-					}
-					callback(items);
-				});
+				callback(items);
 			});
-			
 		}
 	}
 
