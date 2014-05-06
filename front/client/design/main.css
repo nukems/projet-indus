@@ -104,6 +104,7 @@ button[disabled="disabled"] {
 #window {
 	margin: auto;
 	background-color: white;
+	overflow: auto;
 }
 #closeWindow {
 	float: right;

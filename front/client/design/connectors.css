@@ -38,15 +38,21 @@
 .facebookPostDate {
 	width: 80px;
 }
+.facebookPostType {
+	width: 28px;
+}
 .facebookPostTime {
 	color: #cccccc;
 	font-size: 0.8em;
 }
 .facebookPostLikes {
-	width: 60px;
+	width: 55px;
 }
 .facebookPostComments {
-	width: 60px;
+	width: 55px;
+}
+.facebookPostShares {
+	width: 55px;
 }
 
 .facebookPostPopupMeta {

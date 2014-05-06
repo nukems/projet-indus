@@ -18,7 +18,7 @@ function Window() {
 						'</div>' +
 					'</div>';
 		$('#windows').html(html);
-		$('#window').css("marginTop", ($(window).outerHeight() - $('#window').outerHeight()) / 2).fadeIn();
+		$('#window').css("marginTop", ($(window).outerHeight() - $('#window').outerHeight()) / 2).fadeIn().css('maxHeight', $(window).height() - 20);
 		$('#closeWindow').off().click(function() {
 			self.close();
 		});

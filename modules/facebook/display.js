@@ -225,10 +225,22 @@ function facebook() {
 			}
 			html += '<tr class="' + lineClass + 'facebookLastPostsTr facebookLastPostsTr' + self.connectorId + '" post-id="' + data[i].info.id + '">' + 
 						'<td class="facebookPostDate">' + moment(data[i].info.created_time).format('MM/DD/YYYY') + '<br />' +
-						'<span class="facebookPostTime">' + moment(data[i].info.created_time).format('HH[h]MM') + '</td>' +
+						'<span class="facebookPostTime">' + moment(data[i].info.created_time).format('HH[h]mm') + '</td>' +
+						'<td class="facebookPostType"><img title="' + data[i].info.type + '" src="front/client/design/pictures/';
+			if (data[i].info.type == "link") {
+				html += 'facebookLink.png';
+			} else if (data[i].info.type == "video") {
+				html += 'facebookVideo.png';
+			} else if (data[i].info.type == "photo") {
+				html += 'facebookPicture.png';
+			} else {
+				html += 'facebookStatus.png';
+			}
+			html +=		'"/></td>' + 
 						'<td class="facebookPostContent">' + data[i].info.message + '</td>' +
 						'<td class="facebookPostLikes"><img src="front/client/design/pictures/like.png"/> ' + data[i].info.likes + '</td>' +
 						'<td class="facebookPostComments"><img src="front/client/design/pictures/comment.png"/> ' + data[i].info.comments + '</td>' +
+						'<td class="facebookPostShares"><img src="front/client/design/pictures/share.png"/> ' + data[i].info.shares + '</td>' +
 					'</tr>';
 		}
 		html += '</table></div>';
@@ -286,7 +298,7 @@ function facebook() {
 	*	AFFICHAGE D'UN POST EN PARTICULIER
 	**********************************/
 	this.getPost = function(postId) {
-		get(Window).create("Voir un post", get(Animations).getLoaderDiv(), 450);
+		get(Window).create("Voir un post", get(Animations).getLoaderDiv(), 600);
 		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId, 
 														"moduleName": "facebook", 
 														"where": {
@@ -305,15 +317,23 @@ function facebook() {
 		});
 	}
 	this.displayPost = function(data) {
-		var html = '<div class="facebookPostPopupContent">' + 
-						data[0].info.message + 
+		var html = '<div class="facebookPostPopupContent">';
+		if (data[0].info.type == "link") {
+			html += 'Lien : <a target="_blank" href="' + data[0].info.link + '">' + data[0].info.link + '</a><br /><br />';
+		} else if (data[0].info.type == "photo") {
+			html += '<div style="text-align: center; margin-bottom: 5px;"><img style="max-width: 550px; max-height: 300px;" src="' + data[0].info.picture + '"/></div>';
+		} else if (data[0].info.type == "video") {
+			html += 'Vidéo : <a target="_blank" href="' + data[0].info.link + '">' + data[0].info.link + '</a><br /><br />';
+		}
+		html +=			data[0].info.message + 
 					'</div>' + 
 					'<div class="facebookPostPopupMeta">' +
 						'<div style="float: right;">' + 
 							'<img src="front/client/design/pictures/like.png"/> ' + data[0].info.likes + 
 							' &middot <img src="front/client/design/pictures/comment.png"/> ' + data[0].info.comments +
+							' &middot <img src="front/client/design/pictures/share.png"/> ' + data[0].info.shares +
 						'</div>' +
-						'Publié le ' + moment(data[0].info.created_time).format('MM/DD/YYYY à HH[h]MM') +   
+						'Publié le ' + moment(data[0].info.created_time).format('MM/DD/YYYY à HH[h]mm') +   
 					'</div>';
 		get(Window).content(html);
 	}

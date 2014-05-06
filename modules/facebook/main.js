@@ -84,7 +84,7 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 
 	counterCallbackPostFBRequest++;
 
-	facebook.get(('/' + linkFacebook[index].fields.pageName + '/posts/?fields=likes.limit(1).summary(true),comments.limit(1).summary(true),message&&access_token=' + accessToken), function(response) {
+	facebook.get(('/' + linkFacebook[index].fields.pageName + '/posts/?fields=likes.limit(1).summary(true),comments.limit(1).summary(true),message,shares,type,link,picture&&access_token=' + accessToken), function(response) {
 		
 		response = JSON.parse(response);
 			
@@ -96,7 +96,10 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 
 				var likes = 0;
 				var comments = 0;
+				var shares = 0;
 				var message = 'None';
+				var link = "";
+				var picture = "";
 
 				if(response.data[j].likes != undefined)
 					likes = response.data[j].likes.summary.total_count;
@@ -104,6 +107,12 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 					comments = response.data[j].comments.summary.total_count;
 				if(response.data[j].message != undefined)
 					message = response.data[j].message;
+				if(response.data[j].shares != undefined) 
+					shares = response.data[j].shares.count;
+				if(response.data[j].link != undefined)
+					link = response.data[j].link;
+				if(response.data[j].type == 'photo')
+					picture = response.data[j].picture;
 
 				var dataFBPost = {
 					"connector_name" : "facebook",
@@ -116,6 +125,10 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 						"likes" : likes,
 						"comments" : comments,
 						"message" : message,
+						"shares": shares,
+						"link": link,
+						"picture": picture,
+						"type": response.data[j].type,
 						"created_time" : response.data[j].created_time}
 				};
 
