@@ -94,10 +94,11 @@ function Controllers_UserModuleController() {
 		var Ajax = instances.getInstance('Core_Ajax');
 		var connectorId = instances.getPost().data.connector_id;
 		var where = instances.getPost().data.where;
+		var options = instances.getPost().data.options;
 		var connectorController = instances.getInstance("Entities_Connector");
 		connectorController.setInstances(instances);
 
-		connectorController.get(connectorId, where, function(data) {
+		connectorController.get(connectorId, where, options, function(data) {
 			Ajax.setData(data).send();
 		});
 

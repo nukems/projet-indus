@@ -48,13 +48,14 @@ function DashboardController() {
 
 	//Affichage la liste des concurrents pour un utilisateur
 	this.displayCompetitorsList = function(list) {
-		var html = '';
+		var html =  '<button class="transparent" id="addCompetitor"><img src="front/client/design/pictures/add.png"/></button>' + 
+					'<h2>Concurrents</h2>';
 		for(var i = 0; i < list.length; i++) {
 			html += '<div class="dashboardMenuItem" id="' + list[i]._id + '">' + 
 						list[i].company_name + 
 					'</div>';
 		}
-		html += '<button id="addCompetitor" class="green">Ajouter un concurrent</button>';
+		html += '<div id="dashboardConnectorsList"></div>';
 		$('#dashboardMenuContent').html(html);
 	}
 
@@ -101,7 +102,7 @@ function DashboardController() {
 			return false;
 		});
 		$('#cancelAddCompetitor').off().click(function() {
-			$('#addCompetitorForm').replaceWith('<button id="addCompetitor" class="green">Ajouter un concurrent</button>');
+			$('#addCompetitorForm').replaceWith('<button class="transparent" id="addCompetitor"><img src="front/client/design/pictures/add.png"/></button>');
 			self.eventsMenu();
 			return false;
 		});

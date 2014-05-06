@@ -10,141 +10,313 @@ function facebook() {
 	this.init = function(connectorId, fields) {
 		self.connectorId = connectorId;
 
-		
-		$('#connectorData' + connectorId).html('Page ' + fields.pageName + '<br />');
-		//recuperation des donnees
-		//where est un tableau qui contient les criteres de selection, a la maniere mongodb
+		//dates debut et gin
+		moment.lang('fr');
+		var dateEnd = moment().add('days', 1);
+		var dateBefore = moment().subtract('days', 15);
+
+		//affichage de base
+		var html = '<div class="moduleHeader">' + 
+						'<h2>Facebook ' + fields.pageName + '</h2>' + 
+						'<a target="_blank" href="https://www.facebook.com/' + fields.pageName + '">https://www.facebook.com/' + fields.pageName + '</a>' +
+						'<div style="clear: right;"></div>' +
+					'</div>' +
+					/*'<div style="margin-top: 10px;">' +
+						'<form method="post">Du ' + 
+						'<input type="text" id="facebookBDate" value="' + dateBefore.format('MM/DD/YYYY') + '"/>' + 
+						' au ' +
+						'<input type="text" id="facebookEDate" value="' + dateEnd.format('MM/DD/YYYY') + '"/>' +
+						' <button class="green">Ok</button>' +
+					'</div>' +*/
+					'<h2 style="margin-top: 15px;">Nouveaux "J\'aime" et partages</h2>' +
+					'<div style="clear: right;"></div>' +
+					'<div id="graphNewLikesAndShares' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' + 
+					'<h2>Total des "J\'aime" et partages</h2>' +
+					'<div id="graphTotalLikesAndShares' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' + 
+					'<div class="moduleSeparator"></div>' +
+					'<table class="facebookBottomTable">' + 
+						'<tr>' + 
+							'<td style="width: 50%; vertical-align: top; border-right: 10px solid #eeeeee;">' + 
+								'<h2>Posts et importance</h2>' +
+								'<div id="graphHotPosts' + connectorId + '" style="height: 400px;"></div>' +
+							'</td>' + 
+							'<td style="vertical-align: top">' + 
+								'<h2>Derniers posts</h2>' +
+								'<div id="lastPosts' + connectorId + '"></div>' +
+							'</td>' + 
+						'</tr>' + 
+					'</table>';
+		$('#connectorData' + connectorId).html(html);
+
+		self.getLikesAndShares(dateBefore, dateEnd);
+		self.getLastPosts();
+		self.getHotPosts(dateBefore, dateEnd);
+	}
+
+	/*****************************
+	*	AFFICHAGE GRAPHIQUES LIKES AND SHARES
+	*****************************/
+	this.getLikesAndShares = function(dateBefore, dateEnd, connectorId) {
 		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId, 
 														"moduleName": "facebook", 
-														"where": {type: "info_page"}}, function(data) {
-
-			var html =  '<div id="canvas' + connectorId + '" style="min-width: 600px; height: 400px;"></div>';
-					   
-
-			$('#connectorData' + connectorId).append(html);
-			self.displayLikesAndShares(data.data, connectorId);
-			
-			get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId,
-															"moduleName": "facebook",
-															"where": {type: "post"}}, function(data) {
-																
-				var html = '<div id="canvas-post' + connectorId + '" style="min-width: 600px; height: 400px;float:left;"></div>' +
-						   '<div id="post-detail" style="float:left"><div><h1>Post detail</h1></div><p>No post selected</p></div>';
-				
-				$('#connectorData' + connectorId).append(html);
-				self.displayPosts(data.data, connectorId);
-			});
+														"where": {
+															type: {
+																type: "string",
+																condition: {"$eq": "info_page"}
+															},
+															date: {
+																type: "date",
+																condition: {"$gt": new Date(dateBefore), "$lt": new Date(dateEnd)}
+															}
+														},
+														"options": {"sort": {"date": 1}}},
+		function(data) {
+			self.displayLikesAndShares(dateBefore, dateEnd, data.data);
 		});
-		
-		/*get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId, 
+	}
+
+	/**
+	*	Affichage des graphiques avec les likes et shares
+	*/
+	this.displayLikesAndShares = function(dateBefore, dateEnd, data) {
+		var newLikes = [];
+		var newShares = [];
+		var totalLikes = [];
+		var totalShares = [];
+
+		var j = 0;
+		//pour toutes les dates sur 15 jours
+		while (dateBefore.format('MM/DD/YYYY') != dateEnd.format('MM/DD/YYYY')) { 
+			if (j != 0) { //la premiere valeur n'est la que pour le calcul des nouveaux likes et shared
+				var totalData = self.getData(dateBefore, data);
+				newLikes.push({x: j, label: dateBefore.format('MM/DD/YYYY'), y: totalData.newLikes});
+				newShares.push({x: j, label: dateBefore.format('MM/DD/YYYY'), y: totalData.newShared});
+				totalLikes.push({x: j, label: dateBefore.format('MM/DD/YYYY'), y: totalData.totalLikes});
+				totalShares.push({x: j, label: dateBefore.format('MM/DD/YYYY'), y: totalData.totalShared});
+			}
+			dateBefore.add('days', 1);
+			j++;
+		}
+
+		var axisX = {tickColor: "#cccccc", tickLength: 3, tickThickness: 1, lineThickness: 1, interlacedColor: "#fafafa", labelFontSize: 10};
+		var axisY = {minimum: 0, tickColor: "#cccccc", tickThickness: 0, lineThickness: 1, gridThickness: 1, labelFontSize: 10};
+
+		//affichage du graphique total
+		var chart = new CanvasJS.Chart("graphTotalLikesAndShares" + self.connectorId, {
+			toolTip: {
+				shared: true,
+				borderColor: '#cccccc',
+				content: function(e) {
+					var ratio = (e.entries[1].dataPoint.y / e.entries[0].dataPoint.y * 100).toFixed(2);
+					if (e.entries[0].dataPoint.y == 0) {
+						ratio = 0;
+					}
+					return e.entries[0].dataPoint.label + "<br />" + ratio + "% en parlent<br />Likes : " + e.entries[0].dataPoint.y + "<br />Shares : " + e.entries[1].dataPoint.y;
+				}
+			}, 
+			axisX: axisX, 
+			axisY: axisY, 
+			data: [   
+		        { 
+		        	type: "area",
+		        	markerType: "square",
+		        	color: "rgba(164, 138, 212, 0.5)",
+		        	dataPoints: totalLikes
+		       	},
+		       	{
+		       	    type: "area",
+		        	color: "rgba(0,135,147,.3)",
+		        	markerType: "square",
+		        	dataPoints: totalShares       
+		       	}]
+	     	}
+	     );
+
+	    chart.render();
+
+	    //affichage du graphique new
+		var chart2 = new CanvasJS.Chart("graphNewLikesAndShares" + self.connectorId, {
+			axisX: axisX, axisY: axisY, axisY2: axisY, 
+			data: [   
+		        { 
+		        	type: "area",
+		        	markerType: "square",
+		        	color: "rgba(164, 138, 212, 0.5)",
+		        	dataPoints: newLikes
+		       	},
+		       	{
+		       	    type: "area",
+		       	    axisYType: "secondary",
+		        	color: "rgba(0,135,147,.3)",
+		        	markerType: "square",
+		        	dataPoints: newShares       
+		       	}]
+	     	}
+	     );
+
+	    chart2.render();
+	}
+
+	/**
+	*	Retourne le nombre de nouveaux likes/shares et totaux pour une date
+	*/
+	this.getData = function(date, data) {
+		var i = 0; 
+		while (i < data.length && date.format('MM/DD/YYYY') != moment(data[i].date).format('MM/DD/YYYY')) {
+			i++;
+		}
+		if (i < data.length) {
+			var newLikes = 0;
+			var newShared = 0;
+			if (i > 0) {
+				var newLikes = data[i].info.fans - data[i - 1].info.fans;
+				if (newLikes < 0) {
+					newLikes = 0;
+				}
+				var newShared = data[i].info.shared - data[i - 1].info.shared;
+				if (newShared < 0) {
+					newShared = 0;
+				}
+			}
+			return {
+				'totalShared': data[i].info.shared,
+				'totalLikes': data[i].info.fans,
+				'newLikes': newLikes,
+				'newShared': newShared,
+			};
+		} else {
+			return {
+				'totalShared': 0,
+				'totalLikes': 0,
+				'newLikes': 0,
+				'newShared': 0
+			};
+		}
+	}
+
+	/********************************
+	*	AFFICHAGE LISTE DES DERNIERS POSTS
+	********************************/
+	this.getLastPosts = function() {
+		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId, 
 														"moduleName": "facebook", 
-														"where": {}}, function(data) {
-
-			var html = 'Page ' + fields.pageName + '<br />' + 
-					   '<div id="canvas' + connectorId + '" style="min-width: 600px; height: 400px;"></div>';
-
-			$('#connectorData' + connectorId).html(html);
-			self.displayLikesSharePosts(data.data, connectorId);
-		});*/
-		
+														"where": {
+															type: {
+																type: "string",
+																condition: {"$eq": "post"}
+															}
+														},
+														"options": {"sort": {"info.created_time": -1}, "limit": 25}},
+		function(data) {
+			self.displayLastPosts(data.data);
+		});
 	}
 
-	this.displayLikesAndShares = function(data, connectorId) {
-		var likes = [];
-		var shares = [];
-		for(var i = 0; i < data.length; i++) {
-			 likes.push({x: new Date(data[i].date), y: data[i].info.fans});
-			 shares.push({x: new Date(data[i].date), y: data[i].info.shared});
-		}
-
-		var chart = new CanvasJS.Chart("canvas" + connectorId, {
-
-		toolTip: {
-			shared: true,
-			content: function(e) {
-				var ratio = (e.entries[1].dataPoint.y / e.entries[0].dataPoint.y * 100).toFixed(2);
-				return e.entries[0].dataPoint.x + "<br />" + ratio + "% en parlent<br />Likes : " + e.entries[0].dataPoint.y + "<br />Shares : " + e.entries[1].dataPoint.y;
+	this.displayLastPosts = function(data) {
+		var html = '<div class="facebookLastPostsDiv"><table class="facebookLastPosts">';
+		var lineClass;
+		for (var i = 0; i < data.length; i++) {
+			if (i % 2 == 0) {
+				lineClass = 'facebookPostGreyLine ';
+			} else {
+				lineClass = '';
 			}
-		},
-	    title:{
-	        text: "Likes et partages"              
-	    }, data: [//array of dataSeries              
-	        { //dataSeries object
+			html += '<tr class="' + lineClass + 'facebookLastPostsTr facebookLastPostsTr' + self.connectorId + '" post-id="' + data[i].info.id + '">' + 
+						'<td class="facebookPostDate">' + moment(data[i].info.created_time).format('MM/DD/YYYY') + '<br />' +
+						'<span class="facebookPostTime">' + moment(data[i].info.created_time).format('HH[h]MM') + '</td>' +
+						'<td class="facebookPostContent">' + data[i].info.message + '</td>' +
+						'<td class="facebookPostLikes"><img src="front/client/design/pictures/like.png"/> ' + data[i].info.likes + '</td>' +
+						'<td class="facebookPostComments"><img src="front/client/design/pictures/comment.png"/> ' + data[i].info.comments + '</td>' +
+					'</tr>';
+		}
+		html += '</table></div>';
+		$('#lastPosts' + self.connectorId).html(html);
+		$('.facebookLastPostsTr' + self.connectorId).click(function() {
+			self.getPost($(this).attr('post-id'));
+		});
+	}
 
-	         /*** Change type "column" to "bar", "area", "line" or "pie"***/
-	         type: "line",
-	         dataPoints: likes,
-     		 showInLegend: true,
-			 legendText: "Likes"
-	         
-	       },
-	       { //dataSeries object
-
-	         /*** Change type "column" to "bar", "area", "line" or "pie"***/
-	         type: "line",
-	         dataPoints: shares,
-     		 showInLegend: true,
-			 legendText: "Shares"
-	         
-	       }
-	       ]
-	     });
-
-	    chart.render();
+	/********************************
+	*	AFFICHAGE POSTS PAR IMPORTANCE
+	********************************/
+	this.getHotPosts = function(dateBefore, dateEnd) {
+		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId,
+														"moduleName": "facebook",
+														"where": {
+															type: {
+																type: "string", 
+																condition: {"$eq": "post"}
+															}
+														},
+														"options": {}}, 
+		function(data) {
+			self.displayHotPosts(data.data);
+		});
 	}
 	
-	this.displayLikesSharePosts = function(data, connectorId) {
-		var likes = [];
-		var shares = [];
+	this.displayHotPosts = function(data) {
 		var posts = [];
-		for(var i = 0; i < data.length; i++) {
-			if(data[i].type == "info_page")
-			{
-				likes.push({x: new Date(data[i].date), y: data[i].info.fans});
-				shares.push({x: new Date(data[i].date), y: data[i].info.shared});
-			}
-			
-			if(data[i].type == "post")
-			{
-				posts.push({x: new Date(data[i].info.created_time), y: data[i].info.comments, z: data[i].info.likes, message: data[i].info.message});
-			}
+		for(var i = 0; i < data.length; i++) {			
+			posts.push({x: new Date(data[i].info.created_time), y: data[i].info.comments, z: data[i].info.likes, id: data[i].info.id});
 		}
+
+		var axisX = {tickColor: "#cccccc", tickLength: 3, tickThickness: 1, lineThickness: 1, interlacedColor: "#fafafa", valueFormatString: "MM/DD/YYYY", labelFontSize: 10};
+		var axisY = {minimum: 0, tickColor: "#cccccc", tickThickness: 0, lineThickness: 1, gridThickness: 1, labelFontSize: 10};
 		
-		var chart = new CanvasJS.Chart("canvas" + connectorId, {
-			
-		zoomEnabled: true,
-	    title:{
-	        text: "Likes, share and posts"              
-	    }, data: [//array of dataSeries              
-	        { //dataSeries object
-
-	         /*** Change type "column" to "bar", "area", "line" or "pie"***/
-	         type: "line",
-	         dataPoints: likes
-	         
-	       },
-	       { //dataSeries object
-
-	         /*** Change type "column" to "bar", "area", "line" or "pie"***/
-	         type: "line",
-	         dataPoints: shares
-	         
-	       },
-	       { //dataSeries object
-
-	         /*** Change type "column" to "bar", "area", "line" or "pie"***/
-	         type: "bubble",
-	         dataPoints: posts,
-			 toolTipContent: "{x} : {message}"
-	         
-	       }
-	       ]
+		var chart = new CanvasJS.Chart("graphHotPosts" + self.connectorId, {	
+			zoomEnabled: true,
+			axisX: axisX, axisY: axisY,
+		    data: [{
+				type: "bubble",
+		        dataPoints: posts,
+		        color: "rgba(164, 138, 212, 0.8)",
+				toolTipContent: "Cliquez pour voir le message",
+				click: function(e){
+			   		self.getPost(e.dataPoint.id);
+			 	}
+		    }]
 	     });
 
 	    chart.render();
 	}
+
+	/**********************************
+	*	AFFICHAGE D'UN POST EN PARTICULIER
+	**********************************/
+	this.getPost = function(postId) {
+		get(Window).create("Voir un post", get(Animations).getLoaderDiv(), 450);
+		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId, 
+														"moduleName": "facebook", 
+														"where": {
+															type: {
+																type: "string",
+																condition: {"$eq": "post"}
+															},
+															"info.id": {
+																type: "string",
+																condition: {"$eq": postId}
+															}
+														},
+														"options": {}},
+		function(data) {
+			self.displayPost(data.data);
+		});
+	}
+	this.displayPost = function(data) {
+		var html = '<div class="facebookPostPopupContent">' + 
+						data[0].info.message + 
+					'</div>' + 
+					'<div class="facebookPostPopupMeta">' +
+						'<div style="float: right;">' + 
+							'<img src="front/client/design/pictures/like.png"/> ' + data[0].info.likes + 
+							' &middot <img src="front/client/design/pictures/comment.png"/> ' + data[0].info.comments +
+						'</div>' +
+						'Publié le ' + moment(data[0].info.created_time).format('MM/DD/YYYY à HH[h]MM') +   
+					'</div>';
+		get(Window).content(html);
+	}
 	
-	this.displayPosts = function(data, connectorId) {
+	/*this.displayPosts = function(data, connectorId) {
 		var posts = [];
 		for(var i = 0; i < data.length; i++) {
 			posts.push({x: new Date(data[i].info.created_time), y: data[i].info.comments, z: data[i].info.likes, message: data[i].info.message});
@@ -158,7 +330,6 @@ function facebook() {
 	    }, data: [//array of dataSeries              
 	       { //dataSeries object
 
-	         /*** Change type "column" to "bar", "area", "line" or "pie"***/
 	         type: "bubble",
 	         dataPoints: posts,
 			 toolTipContent: "{x} : {message}<br />Likes : {z}<br />Comments : {y}",
@@ -171,6 +342,6 @@ function facebook() {
 	     });
 
 	    chart.render();
-	}
+	}*/
 
 }

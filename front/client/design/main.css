@@ -40,6 +40,7 @@ button {
 	border: 0px;
 	border-radius: 3px;
 	cursor: pointer;
+	font-family: "Open Sans";
 }
 button.green {
 	background-color: #8AC54D;
@@ -52,6 +53,14 @@ button.red {
 button.little {
 	padding: 6px;
 	line-height: 13px;
+}
+button.transparent {
+	background-color: transparent;
+	border: none;
+	border-radius: 0px;
+}
+button img {
+	vertical-align: middle;
 }
 
 button[disabled="disabled"] {
@@ -80,4 +89,32 @@ button[disabled="disabled"] {
 	margin: 10px;
 	width: 250px;
 	cursor: not-allowed;
+}
+
+/**
+*	WINDOW
+*/
+#windowBackground {
+	background-color: rgba(204, 204, 204, 0.3);
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	z-index: 100;
+}
+#window {
+	margin: auto;
+	background-color: white;
+}
+#closeWindow {
+	float: right;
+	padding: 3px;
+}
+#windowTitle {
+	font-size: 16px;
+	padding: 10px;
+	color: white;
+	background-color: #a48ad4;
+}
+#windowContent {
+	padding: 10px;
 }

@@ -1,0 +1,55 @@
+/**
+*	Facebook
+*/
+.facebookBottomTable {
+	table-layout: fixed; 
+	width: 100%; 
+	margin: -10px -10px -12px -10px;
+	border: 0px;
+}
+.facebookBottomTable td {
+	padding: 10px;
+}
+.facebookLastPostsDiv {
+	max-height: 400px;
+	overflow: auto;
+}
+.facebookLastPosts {
+	font-size: 0.8em;
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+}
+.facebookLastPosts td {
+	padding: 4px 8px;
+}
+.facebookLastPostsTr:hover {
+	background-color: #eeeeee;
+	cursor: pointer;
+}
+.facebookPostGreyLine {
+	background-color: #f4f4f4;
+}
+.facebookPostContent {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.facebookPostDate {
+	width: 80px;
+}
+.facebookPostTime {
+	color: #cccccc;
+	font-size: 0.8em;
+}
+.facebookPostLikes {
+	width: 60px;
+}
+.facebookPostComments {
+	width: 60px;
+}
+
+.facebookPostPopupMeta {
+	padding-top: 10px;
+	color: #cccccc;
+}

@@ -79,16 +79,19 @@ function Core_Routes_Static() {
     					'<link rel="stylesheet" type="text/css" href="' + host + 'client/design/main.css">' + 
     					'<link rel="stylesheet" type="text/css" href="' + host + 'client/design/dashboard.css">' + 
     					'<link rel="stylesheet" type="text/css" href="' + host + 'client/design/user.css">' + 
+    					'<link rel="stylesheet" type="text/css" href="' + host + 'client/design/connectors.css">' + 
     					'<script type="text/javascript" src="' + host + 'client/core/libs/jquery.min.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/libs/jquery.history.min.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/libs/jquery.base64.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/libs/canvasjs.min.js"></script>' +
+    					'<script type="text/javascript" src="' + host + 'client/core/libs/moment.js"></script>' +
     					'<script type="text/javascript" src="' + host + 'client/core/main.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/ajax.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/core/routes.js"></script>' +
     					'<script type="text/javascript" src="' + host + 'client/core/cookie.js"></script>' +
     					'<script type="text/javascript" src="' + host + 'client/core/instances.js"></script>' +
     					'<script type="text/javascript" src="' + host + 'client/core/animations.js"></script>' + 
+    					'<script type="text/javascript" src="' + host + 'client/core/window.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/entities/user.js"></script>' + 
     					'<script type="text/javascript" src="' + host + 'client/controllers/UserController.js"></script>' +  
     					'<script type="text/javascript" src="' + host + 'client/controllers/DashboardController.js"></script>' + 
@@ -97,6 +100,7 @@ function Core_Routes_Static() {
     					'<script type="text/javascript" src="http://127.0.0.1:8080/modules/facebook/display.js"></script>' +  
     				'</head>' + 
     				'<body>' +
+    					'<div id="windows"></div>' +
     					'<div id="notifications"></div>' +
     					'<div id="content"></div>' + 
     				'</body>' + 

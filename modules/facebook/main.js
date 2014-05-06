@@ -42,10 +42,11 @@ function doInfoPageFacebookRequest(linkFacebook, index, callback) {
 
 		if(!response.error)
 		{
+			var date = new Date();
 			var dataFBPage = {
 				"connector_name" : "facebook",
 				"type" : "info_page",
-				"date" : new Date(),
+				"date" : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
 				"competitor_id" : linkFacebook[index].competitor_id,
 				"connector_id" : linkFacebook[index].connector_id,
 				"info" : {"fans" : response.likes, "shared" : response.talking_about_count}
@@ -54,10 +55,14 @@ function doInfoPageFacebookRequest(linkFacebook, index, callback) {
 			var constraints = {
 				"user_id"    : linkFacebook[index].user_id,
 				"module_name": "facebook",
-				"type_name"  : "info_page"
+				"type_name"  : "info_page",
+				"field": "date" 
 			};
 
-			ConfigChecker.add(constraints, dataFBPage, function(){counterCallbackInfoPageFBRequest--;checkCallback(callback);});
+			ConfigChecker.update(constraints, dataFBPage, function(){
+				counterCallbackInfoPageFBRequest--;
+				checkCallback(callback);
+			});
 		}
 		else
 		{
