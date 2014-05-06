@@ -11,14 +11,6 @@ var modules = {
 			}
 		}
 	},
-	'page_index': {
-		'name': 'Connecteur page d\'acceuil',
-		'description': 'Récupération des mises à jour d\'une page d\'accueil',
-		'folderUrl': 'page_index',
-		'fields': {
-
-		}
-	},
 	'twitter': {
 		'name': 'Connecteur twitter',
 		'description': "Ce connecteur permet l'analyse des followers et des tweet de la page",

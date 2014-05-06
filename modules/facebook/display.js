@@ -21,22 +21,25 @@ function facebook() {
 						'<a target="_blank" href="https://www.facebook.com/' + fields.pageName + '">https://www.facebook.com/' + fields.pageName + '</a>' +
 						'<div style="clear: right;"></div>' +
 					'</div>' +
-					/*'<div style="margin-top: 10px;">' +
-						'<form method="post">Du ' + 
-						'<input type="text" id="facebookBDate" value="' + dateBefore.format('MM/DD/YYYY') + '"/>' + 
-						' au ' +
-						'<input type="text" id="facebookEDate" value="' + dateEnd.format('MM/DD/YYYY') + '"/>' +
-						' <button class="green">Ok</button>' +
-					'</div>' +*/
+					'<div class="facebookLegend">' +
+						'<div class="facebookLegendItem" style="background-color: rgba(164, 138, 212, 0.5);"></div> Likes ' +
+						'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Shares' +
+					'</div>' +
 					'<h2 style="margin-top: 15px;">Nouveaux "J\'aime" et partages</h2>' +
-					'<div style="clear: right;"></div>' +
 					'<div id="graphNewLikesAndShares' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' + 
+					'<div class="facebookLegend">' +
+						'<div class="facebookLegendItem" style="background-color: rgba(164, 138, 212, 0.5);"></div> Likes ' +
+						'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Shares' +
+					'</div>' +
 					'<h2>Total des "J\'aime" et partages</h2>' +
 					'<div id="graphTotalLikesAndShares' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' + 
 					'<div class="moduleSeparator"></div>' +
 					'<table class="facebookBottomTable">' + 
 						'<tr>' + 
 							'<td style="width: 50%; vertical-align: top; border-right: 10px solid #eeeeee;">' + 
+								'<div class="facebookLegend" style="font-size: 0.8em;">' +
+									'<div class="facebookLegendItem" style="background-color: rgba(164, 138, 212, 0.8); border-radius: 5px;"></div> Post' +
+								'</div>' +
 								'<h2>Posts et importance</h2>' +
 								'<div id="graphHotPosts' + connectorId + '" style="height: 400px;"></div>' +
 							'</td>' + 
@@ -284,7 +287,7 @@ function facebook() {
 				type: "bubble",
 		        dataPoints: posts,
 		        color: "rgba(164, 138, 212, 0.8)",
-				toolTipContent: "Cliquez pour voir le message",
+				toolTipContent: "Cliquez pour voir le message<br />{y} comments<br />{z} likes",
 				click: function(e){
 			   		self.getPost(e.dataPoint.id);
 			 	}
@@ -321,12 +324,14 @@ function facebook() {
 		if (data[0].info.type == "link") {
 			html += 'Lien : <a target="_blank" href="' + data[0].info.link + '">' + data[0].info.link + '</a><br /><br />';
 		} else if (data[0].info.type == "photo") {
-			html += '<div style="text-align: center; margin-bottom: 5px;"><img style="max-width: 550px; max-height: 300px;" src="' + data[0].info.picture + '"/></div>';
+			html += '<img style="max-width: 200px; max-height: 200px; float: left; margin-right: 10px; margin-bottom: 5px;" src="' + data[0].info.picture + '"/>' +
+					'<a target="_blank" href="' + data[0].info.link + '">' + data[0].info.link + '</a><br />';
 		} else if (data[0].info.type == "video") {
 			html += 'Vidéo : <a target="_blank" href="' + data[0].info.link + '">' + data[0].info.link + '</a><br /><br />';
 		}
 		html +=			data[0].info.message + 
 					'</div>' + 
+					'<div style="clear: left;"></div>' +
 					'<div class="facebookPostPopupMeta">' +
 						'<div style="float: right;">' + 
 							'<img src="front/client/design/pictures/like.png"/> ' + data[0].info.likes + 

@@ -1,6 +1,16 @@
 /**
 *	Facebook
 */
+.facebookLegend {
+	float: right;
+	padding: 5px;
+}
+.facebookLegendItem {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+}
+
 .facebookBottomTable {
 	table-layout: fixed; 
 	width: 100%; 
