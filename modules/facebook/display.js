@@ -103,7 +103,7 @@ function facebook() {
 		}
 
 		var axisX = {tickColor: "#cccccc", tickLength: 3, tickThickness: 1, lineThickness: 1, interlacedColor: "#fafafa", labelFontSize: 10};
-		var axisY = {minimum: 0, tickColor: "#cccccc", tickThickness: 0, lineThickness: 1, gridThickness: 1, labelFontSize: 10};
+		var axisY = {minimum: 0, tickColor: "#cccccc", tickThickness: 0, lineThickness: 1, gridThickness: 0, labelFontSize: 10};
 
 		//affichage du graphique total
 		var chart = new CanvasJS.Chart("graphTotalLikesAndShares" + self.connectorId, {
@@ -141,7 +141,7 @@ function facebook() {
 
 	    //affichage du graphique new
 		var chart2 = new CanvasJS.Chart("graphNewLikesAndShares" + self.connectorId, {
-			axisX: axisX, axisY: axisY, axisY2: axisY, 
+			axisX: axisX, axisY: axisY, axisY2: {minimum: 0, tickColor: "#cccccc", tickThickness: 0, lineThickness: 1, gridThickness: 0, labelFontSize: 10}, 
 			data: [   
 		        { 
 		        	type: "area",

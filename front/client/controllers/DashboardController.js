@@ -52,6 +52,7 @@ function DashboardController() {
 					'<h2>Concurrents</h2>';
 		for(var i = 0; i < list.length; i++) {
 			html += '<div class="dashboardMenuItem" id="' + list[i]._id + '">' + 
+						'<img src="front/client/design/pictures/bell.png" title="Pas de nouvelles données" class="bell"/> ' + 
 						list[i].company_name + 
 					'</div>';
 		}
