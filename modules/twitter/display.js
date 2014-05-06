@@ -16,7 +16,12 @@ function twitter() {
 		//where est un tableau qui contient les criteres de selection, a la maniere mongodb
 		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId, 
 														"moduleName": "twitter", 
-														"where": {type: "info_page"}}, function(data) {
+														"where": {
+															type: {
+																type: "string",
+																condition: {"$eq": "info_page"}
+															}
+														}}, function(data) {
 
 			var html =  '<div id="canvas' + connectorId + '" style="min-width: 600px; height: 400px;"></div>';
 					   
