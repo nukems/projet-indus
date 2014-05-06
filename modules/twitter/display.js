@@ -18,7 +18,7 @@ function twitter() {
 														"moduleName": "twitter", 
 														"where": {
 															type: {
-																type: "string",
+																type:"string",
 																condition: {"$eq": "info_page"}
 															}
 														}}, function(data) {

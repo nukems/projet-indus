@@ -81,6 +81,7 @@ function update(constraints, data, callback) {
 	{
 		var arr = constraints.fields;
 		arr["type"] = constraints.type_name;
+		console.log(arr);
 		InstancesController.getInstance('Core_Database').getCollection("user_" + constraints.user_id).update(arr, data, {upsert: true}, function(err, result){callback();});
 	}
 	else if(dataCheck == 0)
