@@ -84,6 +84,7 @@ function facebook() {
 		var totalLikes = [];
 		var totalShares = [];
 
+
 		var j = 0;
 		//pour toutes les dates sur 15 jours
 		while (dateBefore.format('MM/DD/YYYY') != dateEnd.format('MM/DD/YYYY')) { 
@@ -131,6 +132,7 @@ function facebook() {
 		       	}]
 	     	}
 	     );
+
 
 	    chart.render();
 
@@ -315,33 +317,4 @@ function facebook() {
 					'</div>';
 		get(Window).content(html);
 	}
-	
-	/*this.displayPosts = function(data, connectorId) {
-		var posts = [];
-		for(var i = 0; i < data.length; i++) {
-			posts.push({x: new Date(data[i].info.created_time), y: data[i].info.comments, z: data[i].info.likes, message: data[i].info.message});
-		}
-		
-		var chart = new CanvasJS.Chart("canvas-post" + connectorId, {
-			
-		zoomEnabled: true,
-	    title:{
-	        text: "Post"              
-	    }, data: [//array of dataSeries              
-	       { //dataSeries object
-
-	         type: "bubble",
-	         dataPoints: posts,
-			 toolTipContent: "{x} : {message}<br />Likes : {z}<br />Comments : {y}",
-			 click: function(e){
-			   $('#post-detail').html('<div><h1>Post detail</h1></div><p>' + e.dataPoint.message + '</p>');
-			 },
-	         
-	       }
-	       ]
-	     });
-
-	    chart.render();
-	}*/
-
 }
