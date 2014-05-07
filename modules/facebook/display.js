@@ -301,7 +301,7 @@ function facebook() {
 	*	AFFICHAGE D'UN POST EN PARTICULIER
 	**********************************/
 	this.getPost = function(postId) {
-		get(Window).create("Voir un post", get(Animations).getLoaderDiv(), 600);
+		get(Window).create("Voir un post", get(Animations).getLoaderDiv(), 800);
 		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId, 
 														"moduleName": "facebook", 
 														"where": {
@@ -320,18 +320,30 @@ function facebook() {
 		});
 	}
 	this.displayPost = function(data) {
-		var html = '<div class="facebookPostPopupContent">';
+		var html = '<div class="facebookPostPopupContent">' + 
+						'<div style="float: left; text-align: center;">';
 		if (data[0].info.type == "link") {
-			html += 'Lien : <a target="_blank" href="' + data[0].info.link + '">' + data[0].info.link + '</a><br /><br />';
+			html += '<img src="front/client/design/pictures/facebookLink.png" style="margin-top: 2px;"/>' + 
+					'</div>' + 
+					'<div style="padding-left: 40px;">' + 
+						'<a target="_blank" href="' + data[0].info.link + '">' + data[0].info.link + '</a><br />';
 		} else if (data[0].info.type == "photo") {
-			html += '<img style="max-width: 200px; max-height: 200px; float: left; margin-right: 10px; margin-bottom: 5px;" src="' + data[0].info.picture + '"/>' +
-					'<a target="_blank" href="' + data[0].info.link + '">' + data[0].info.link + '</a><br />';
+			html += '<div style="float: left; width: 200px; text-align: center;">' + 
+						'<img style="max-width: 200px; max-height: 200px;" src="' + data[0].info.picture + '"/><br />' +
+						'<a target="_blank" href="' + data[0].info.link + '">Taille réelle</a>' +
+					'</div>' + 
+					'</div>' +
+					'<div style="margin-left: 200px;">';
 		} else if (data[0].info.type == "video") {
-			html += 'Vidéo : <a target="_blank" href="' + data[0].info.link + '">' + data[0].info.link + '</a><br /><br />';
+			html += '<img src="front/client/design/pictures/facebookVideo.png" style="margin-top: 2px;"/>' + 
+					'</div>' + 
+					'<div style="margin-left: 40px;">' + 
+						'<a target="_blank" href="' + data[0].info.link + '">' + data[0].info.link + '</a><br />';
 		}
-		html +=			data[0].info.message + 
+		html +=			self.linkify(self.nl2br(data[0].info.message, true)) + 
 					'</div>' + 
 					'<div style="clear: left;"></div>' +
+					'<div class="facebookHr"></div>' +
 					'<div class="facebookPostPopupMeta">' +
 						'<div style="float: right;">' + 
 							'<img src="front/client/design/pictures/like.png"/> ' + data[0].info.likes + 
@@ -342,4 +354,15 @@ function facebook() {
 					'</div>';
 		get(Window).content(html);
 	}
+
+	this.nl2br = function(str, is_xhtml) {
+    	var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';
+    	return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
+	}
+	this.linkify = function(text) {  
+        var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;  
+        return text.replace(urlRegex, function(url) {  
+            return '<a target="_blank" href="' + url + '">' + url + '</a>';  
+        });  
+    }
 }
