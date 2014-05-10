@@ -125,6 +125,7 @@ function doTweetsTwitterRequest(linkTwitter, index, callback) {
 					"user_id" : linkTwitter[index].user_id,
 					"module_name" : "twitter",
 					"type_name" : "tweet",
+					"notification": 1,
 					"fields" : {"info.id": body[j].id_str}
 				};
 

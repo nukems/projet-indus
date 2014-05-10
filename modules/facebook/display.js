@@ -26,6 +26,7 @@ function facebook() {
 						'<a target="_blank" href="https://www.facebook.com/' + fields.pageName + '">https://www.facebook.com/' + fields.pageName + '</a>' +
 						'<div style="clear: right;"></div>' +
 					'</div>' +
+					'<div id="facebookNotifications' + connectorId + '"></div>' +
 					'<div class="facebookLegend">' +
 						'<div class="facebookLegendItem" style="background-color: rgba(59, 89, 152, 0.3);"></div> Likes ' +
 						'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Shares' +
@@ -271,14 +272,19 @@ function facebook() {
 					'</table>' +
 					'<div class="facebookLastPostsDiv">' + 
 					'<table class="facebookLastPosts">';
-		var lineClass;
+		var lineClass, notification;
+		var newPosts = 0;
 		for (var i = 0; i < data.length; i++) {
+			notification = '';
+			lineClass = '';
 			if (i % 2 == 0) {
 				lineClass = 'facebookPostGreyLine ';
-			} else {
-				lineClass = '';
 			}
-			html += '<tr class="' + lineClass + 'facebookLastPostsTr facebookLastPostsTr' + self.connectorId + '" post-id="' + data[i].info.id + '">' +
+			if (data[i].notification == 1) {
+				newPosts++;
+				notification = ' style="background-color: #efe7b2;"';
+			}
+			html += '<tr class="' + lineClass + 'facebookLastPostsTr facebookLastPostsTr' + self.connectorId + '" post-id="' + data[i].info.id + '" ' + notification + '>' +
 						'<td class="facebookPostDate">' + moment(data[i].info.created_time).format('MM/DD/YYYY') + '<br />' +
 						'<span class="facebookPostTime">' + moment(data[i].info.created_time).format('HH[h]mm') + '</td>' +
 						'<td class="facebookPostType"><img title="' + data[i].info.type + '" src="front/client/design/pictures/';
@@ -300,6 +306,10 @@ function facebook() {
 		}
 		html += '</table></div>';
 		$('#lastPosts' + self.connectorId).html(html);
+
+		if (newPosts > 0) {
+			$('#facebookNotifications' + self.connectorId).html('<div class="facebookNotificationsContent"><img src="front/client/design/pictures/bell.png"/> Il y a ' + newPosts + ' nouveaux posts</div>');
+		}
 
 		//voir un post
 		$('.facebookLastPostsTr' + self.connectorId).click(function() {

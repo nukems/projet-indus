@@ -63,28 +63,40 @@ function Entities_Connector() {
 	*/
 	this.get = function(connectorId, where, options, callback) {
 		//recuperation de la bonne collection
-		var collection = this.getInstances().getInstance('Core_Database').getCollection("user_" + self.userId);
+		try {
+			var collection = this.getInstances().getInstance('Core_Database').getCollection("user_" + self.userId);
 
-		if (collection == null) {
-			fatalError("Aucune donnée pour cet utilisateur");
-		} else {
-			var conditions = self.getConditions(where);
-			conditions.connector_id = connectorId;
-			var request = collection.find(conditions);
-			if (options && options != null) {
-				if (options.sort && options.sort != null) {
-					request.sort(options.sort);
+			if (collection == null) {
+				fatalError("Aucune donnée pour cet utilisateur");
+			} else {
+				//creation de la clause where mongodb
+				var conditions = self.getConditions(where);
+				conditions.connector_id = connectorId;
+				//selection des documents
+				var request = collection.find(conditions);
+				//si tri ou limite
+				if (options && options != null) {
+					if (options.sort && options.sort != null) {
+						request.sort(options.sort);
+					}
+					if (options["limit"]) {
+						request.limit(options["limit"]);
+					}
 				}
-				if (options["limit"]) {
-					request.limit(options["limit"]);
-				}
+				//retourne les documents
+				request.toArray(function(err, items) {
+					if (err) {
+						console.log(err);
+					}
+					//mise des notifications a 0
+					collection.update(conditions, {$set: {"notification": 0}}, {multi: true}, function(err, result) {
+						callback(items);
+					});	
+				});
+				
 			}
-			request.toArray(function(err, items) {
-				if (err) {
-					console.log(err);
-				}
-				callback(items);
-			});
+		} catch(e) {
+			fatalError('Problème lors de la récupération des données');
 		}
 	}
 

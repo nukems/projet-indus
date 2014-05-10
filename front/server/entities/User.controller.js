@@ -192,6 +192,38 @@ function Entities_User() {
 	}
 
 	/**
+	*	Retourne le nombre de nouveaux elements pour chaque connecteur de l'utilisateur
+	*/
+	this.getNotifications = function(callback) {
+		this.userCollection.find({"_id": new require('mongodb').ObjectID(self.getId())}, {"competitors._id": 1}).toArray(function(err, items) {
+			if (err == null && items && items.length > 0) {
+				//on construit un tableau avec les ids des concurrents
+				var competitors = [];
+				for(var i = 0; i < items[0].competitors.length; i++) {
+					competitors.push(items[0].competitors[i]._id);
+				}
+				var userCollection = self.instances.getInstance('Core_Database').getCollection("user_" + self.getId());
+				userCollection.find({"competitor_id": {$in: competitors}, "notification": 1}, {"competitor_id": 1}).toArray(function(err, items) {
+					callback(self.countNotifications(items));
+				});	
+			} else {
+				callback(null);
+			}
+		});
+	}
+	this.countNotifications = function(items) {
+		var competitors = {};
+		for (var i = 0; i < items.length; i++) {
+			if (competitors[items[i].competitor_id]) {
+				competitors[items[i].competitor_id]++;
+			} else {
+				competitors[items[i].competitor_id] = 1;
+			}
+		}
+		return competitors;
+	}
+
+	/**
 	*	Retourne vrai si l'utilisateur est logge (token != null)  ou faux sinon
 	*/
 	this.isLogged = function() {

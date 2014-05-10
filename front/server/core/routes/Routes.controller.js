@@ -26,6 +26,10 @@ function Core_Routes_Routes() {
 				'controller': 'Controllers_CompetitorController',
 				'function' : 'getCompetitorDashboard'
 			},
+			'notifications': {
+				'controller': 'Controllers_UserController',
+				'function': 'notifications'
+			},
 			'competitors': {
 				'': { //recuperation de la liste des concurrents
 					'controller': 'Controllers_CompetitorsController',

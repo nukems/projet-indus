@@ -3,6 +3,7 @@ function DashboardController() {
 	var self = this;
 
 	this.isInitiatedValue = 0;
+	this.notificationsTimeout;
 
 	this.init = function(callback) {
 		self.displayBase();
@@ -82,6 +83,7 @@ function DashboardController() {
 			self.logOut();
 			return false;
 		});
+		self.getNotifications();
 	}
 
 	//evenements du menu
@@ -92,6 +94,7 @@ function DashboardController() {
 		});
 		$('.dashboardMenuItem').off().click(function() {
 			var id = $(this).attr("id");
+			$(this).children('img').attr('src', 'front/client/design/pictures/bell.png');
 			get(Routes).goTo('#!/dashboard/' + id);
 		});
 		$(window).scroll(function() {
@@ -121,6 +124,7 @@ function DashboardController() {
 	*	REQUESTS
 	*/
 	this.logOut = function() {
+		clearTimeout(self.notificationsTimeout);
 		get(Ajax).sendOne('user/log-out', null, self.logOutCallback);
 	}
 	this.logOutCallback = function(data) {
@@ -158,6 +162,19 @@ function DashboardController() {
 		} else {
 			get(Animations).displayNotification(data.data);
 		}
+	}
+
+	//recuperation des notifications toutes les 30 secondes
+	this.getNotifications = function() {
+		get(Ajax).send('user/notifications', null, self.getNotificationsCallback);
+	}
+	this.getNotificationsCallback = function(data) {
+		$('.dashboardMenuItem > img').attr('src', "front/client/design/pictures/bell.png");
+		for(var key in data.data.notifications) {
+			console.log(key);
+			$('.dashboardMenuItem[id="' + key + '"] > img').attr('src', 'front/client/design/pictures/activeBell.png');
+		}
+		self.notificationsTimeout = setTimeout(self.getNotifications, 30000);
 	}
 
 	/**

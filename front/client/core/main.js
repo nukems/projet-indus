@@ -4,9 +4,7 @@ function Main() {
 		get(Routes).init();
 		get(UserController).init(function(result) {
 			if (result == 1) {
-				get(DashboardController).init(function() {
-
-				});
+				
 			} else {
 				get(Routes).goTo('#!/connexion');
 			}

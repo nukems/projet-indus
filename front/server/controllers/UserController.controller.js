@@ -145,6 +145,16 @@ function Controllers_UserController() {
 			});
 		}
 	}
+
+	this.notifications = function(instances) {
+		var userController = instances.getInstance("Entities_User");
+		userController.setInstances(instances);
+		var Ajax = instances.getInstance('Core_Ajax');
+
+		userController.getNotifications(function(notifications) {
+			Ajax.setData({"notifications": notifications}).send();
+		});
+	}
 }
 
 exports.controller = Controllers_UserController;

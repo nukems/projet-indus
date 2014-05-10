@@ -137,6 +137,7 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 						"user_id" : linkFacebook[index].user_id,
 						"module_name" : "facebook",
 						"type_name" : "post",
+						"notification": 1,
 						"fields" : {"info.id": response.data[j].id}
 					};
 

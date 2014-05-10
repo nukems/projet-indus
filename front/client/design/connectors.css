@@ -1,6 +1,17 @@
 /**
 *	Facebook
 */
+.facebookNotificationsContent {
+	border-bottom: 10px solid #eeeeee;
+	padding: 10px;
+	margin: -10px -10px 0px -10px;
+	font-weight: bold;
+}
+.facebookNotificationsContent > img {
+	vertical-align: middle;
+	position: relative;
+	top: -1px;
+}
 .facebookLegend {
 	float: right;
 	padding: 5px;
@@ -21,7 +32,7 @@
 	padding: 10px;
 }
 .facebookLastPostsDiv {
-	max-height: 400px;
+	height: 400px;
 	overflow-y: scroll;
 }
 .facebookLastPosts {
@@ -91,6 +102,17 @@
 /**
 *	Twitter
 */
+.twitterNotificationsContent {
+	border-bottom: 10px solid #eeeeee;
+	padding: 10px;
+	margin: -10px -10px 0px -10px;
+	font-weight: bold;
+}
+.twitterNotificationsContent > img {
+	vertical-align: middle;
+	position: relative;
+	top: -1px;
+}
 .twitterLegend {
 	float: right;
 	padding: 5px;
@@ -111,7 +133,7 @@
 	padding: 10px;
 }
 .twitterLastTweetsDiv {
-	max-height: 400px;
+	height: 400px;
 	overflow-y: scroll;
 }
 .twitterLastTweets {

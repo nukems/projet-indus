@@ -22,6 +22,7 @@ function twitter() {
 						'<a target="_blank" style="color: #eeeeee;" href="https://twitter.com/' + fields.pageName + '">https://twitter.com/' + fields.pageName + '</a>' +
 						'<div style="clear: right;"></div>' +
 					'</div>' +
+					'<div id="twitterNotifications' + connectorId + '"></div>' +
 					'<div class="twitterLegend">' +
 						'<div class="twitterLegendItem" style="background-color: rgba(0, 192, 247, 0.3);"></div> Tweets ' +
 						'<div class="twitterLegendItem" style="background-color: rgba(83, 145, 127, 0.3);"></div> Followers' +
@@ -240,14 +241,19 @@ function twitter() {
 					'</table>' +
 					'<div class="twitterLastTweetsDiv">' + 
 					'<table class="twitterLastTweets">';
-		var lineClass;
+		var newTweets = 0;
+		var lineClass, notification;
 		for (var i = 0; i < data.length; i++) {
+			lineClass = '';
+			notification = '';
 			if (i % 2 == 0) {
 				lineClass = 'twitterTweetGreyLine ';
-			} else {
-				lineClass = '';
 			}
-			html += '<tr class="' + lineClass + 'twitterLastTweetsTr twitterLastTweetsTr' + self.connectorId + '" post-id="' + data[i].info.id + '">' +
+			if (data[i].notification == 1) {
+				newTweets++;
+				notification = ' style="background-color: #efe7b2;"';
+			}
+			html += '<tr class="' + lineClass + 'twitterLastTweetsTr twitterLastTweetsTr' + self.connectorId + '" post-id="' + data[i].info.id + '" ' + notification + '>' +
 						'<td class="twitterTweetDate">' + moment(data[i].info.created_time).format('MM/DD/YYYY') + '<br />' +
 						'<span class="twitterTweetTime">' + moment(data[i].info.created_time).format('HH[h]mm') + '</td>' +
 						'<td class="twitterTweetContent">' + data[i].info.message + '</td>' +
@@ -257,6 +263,9 @@ function twitter() {
 		}
 		html += '</table></div>';
 		$('#lastTweets' + self.connectorId).html(html);
+		if (newTweets > 0) {
+			$('#twitterNotifications' + self.connectorId).html('<div class="twitterNotificationsContent"><img src="front/client/design/pictures/bell.png"/> Il y a ' + newTweets + ' nouveaux tweets</div>');
+		}
 
 		//voir un post
 		$('.twitterLastTweetsTr' + self.connectorId).click(function() {

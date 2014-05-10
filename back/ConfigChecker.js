@@ -39,6 +39,9 @@ function add(constraints, data, callback) {
 
 	if(dataCheck == 1)
 	{
+		if(constraints.notification && constraints.notification == 1) {
+			data.notification = 1;
+		}
 		InstancesController.getInstance('Core_Database').getCollection("user_" + constraints.user_id).insert(data, function(err, result){
 			if(err == null | result != null)
 				console.log("Data has been added");
@@ -81,8 +84,12 @@ function update(constraints, data, callback) {
 	{
 		var arr = constraints.fields;
 		arr["type"] = constraints.type_name;
-		InstancesController.getInstance('Core_Database').getCollection("user_" + constraints.user_id).update(arr, data, {upsert: true}, function(err, result){
-			callback();
+		InstancesController.getInstance('Core_Database').getCollection("user_" + constraints.user_id).update(arr, data, function(err, result){
+			if (result == 0) {
+				add(constraints, data, callback);
+			} else {
+				callback();
+			}
 		});
 	}
 	else if(dataCheck == 0)
