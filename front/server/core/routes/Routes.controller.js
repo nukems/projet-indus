@@ -55,7 +55,7 @@ function Core_Routes_Routes() {
 					'delete': { //suppression d'un module pour un concurrent
 						'controller': 'Controllers_UserModuleController',
 						'function' : 'delete'
-					}, 
+					},
 					'get': { //retourne des donnees pour un module pour un competiteur
 						'controller': 'Controllers_UserModuleController',
 						'function': 'get'
@@ -92,7 +92,7 @@ function Core_Routes_Routes() {
 				break;
 			} else { //pas de controller pour cet url
 				error404 = true;
-			}			
+			}
 			i++;
 		}
 		if (error404 || !object.controller) { //rien de trouve pour l'url
@@ -102,7 +102,7 @@ function Core_Routes_Routes() {
 			controller[object.function](instances);
 		}
 	}
-	
+
 	/**
 	*	GETTERS et SETTERS
 	*/
