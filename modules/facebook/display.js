@@ -21,13 +21,8 @@ function facebook() {
 		var dateBefore = moment().subtract('days', 15);
 
 		//affichage de base
-<<<<<<< HEAD
 		var html = '<div class="moduleHeader" style="background-color: #3b5998;">' + 
 						'<h2>Facebook ' + fields.displayName + '</h2>' + 
-=======
-		var html = '<div class="moduleHeader">' +
-						'<h2>Facebook ' + fields.pageName + '</h2>' +
->>>>>>> fbb5733d84a0525962434ee46a65e3b060865282
 						'<a target="_blank" href="https://www.facebook.com/' + fields.pageName + '">https://www.facebook.com/' + fields.pageName + '</a>' +
 						'<div style="clear: right;"></div>' +
 					'</div>' +
@@ -51,20 +46,18 @@ function facebook() {
 									'<div class="facebookLegendItem" style="background-color: #3b5998; border-radius: 5px;"></div> Post' +
 								'</div>' +
 								'<h2>Posts et importance</h2>' +
-<<<<<<< HEAD
 								'<div id="graphHotPosts' + connectorId + '" style="height: 430px;"></div>' +
 							'</td>' + 
 							'<td style="vertical-align: top">' + 
-=======
-								'<div id="graphHotPosts' + connectorId + '" style="height: 400px;"></div>' +
-							'</td>' +
-							'<td style="vertical-align: top">' +
->>>>>>> fbb5733d84a0525962434ee46a65e3b060865282
 								'<h2>Derniers posts</h2>' +
 								'<div id="lastPosts' + connectorId + '"></div>' +
 							'</td>' +
 						'</tr>' +
-					'</table>';
+					'</table>' + 
+					'<div class="facebookCloud">' + 
+						'<h2>Nuage de mots</h2>' +
+						'<div id="facebookCloud' + connectorId + '"></div>' +
+					'</div>';
 		$('#connectorData' + connectorId).html(html);
 
 		self.getLikesAndShares(dateBefore, dateEnd);
@@ -134,7 +127,7 @@ function facebook() {
 				}
 			},
 			axisX: axisX,
-			axisY: axisY,
+			axisY: axisY, axisY2: {minimum: 0, tickColor: "#cccccc", tickThickness: 0, lineThickness: 1, gridThickness: 0, labelFontSize: 10},
 			data: [
 		        {
 		        	type: "area",
@@ -144,6 +137,7 @@ function facebook() {
 		       	},
 		       	{
 		       	    type: "area",
+		       	    axisYType: "secondary",
 		        	color: "rgba(0,135,147,.3)",
 		        	markerType: "square",
 		        	dataPoints: totalShares
@@ -218,7 +212,6 @@ function facebook() {
 	*	AFFICHAGE LISTE DES DERNIERS POSTS
 	********************************/
 	this.getLastPosts = function() {
-<<<<<<< HEAD
 		var where = {
 			type: {
 				type: "string",
@@ -235,17 +228,6 @@ function facebook() {
 														"moduleName": "facebook", 
 														"where": where,
 														"options": {"sort": self.sortLastPosts, "limit": 25}},
-=======
-		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId,
-														"moduleName": "facebook",
-														"where": {
-															type: {
-																type: "string",
-																condition: {"$eq": "post"}
-															}
-														},
-														"options": {"sort": {"info.created_time": -1}, "limit": 25}},
->>>>>>> fbb5733d84a0525962434ee46a65e3b060865282
 		function(data) {
 			self.displayLastPosts(data.data);
 			self.getCloudWords(data.data);
@@ -269,8 +251,8 @@ function facebook() {
 									'<option value="">Tout</option>' + 
 									'<option value="status" ' + selected["status"] + '>Statuts</option>' + 
 									'<option value="link" ' + selected["link"] + '>Liens</option>' +
-									'<option value="photo" ' + selected["photo"] + '>Image</option>' + 
-									'<option value="video" ' + selected["video"] + '>Vidéo</option>' + 
+									'<option value="photo" ' + selected["photo"] + '>Images</option>' + 
+									'<option value="video" ' + selected["video"] + '>Vidéos</option>' + 
 								'</select>' +  
 							'</th>' + 
 							'<th class="facebookPostLikes">' + 
@@ -339,6 +321,7 @@ function facebook() {
 			}
 			self.lastPostsType = val;
 			self.getLastPosts();
+			self.getHotPosts(null, null);
 		});
 	}
 
@@ -346,15 +329,22 @@ function facebook() {
 	*	AFFICHAGE POSTS PAR IMPORTANCE
 	********************************/
 	this.getHotPosts = function(dateBefore, dateEnd) {
+		var where = {
+			type: {
+				type: "string",
+				condition: {"$eq": "post"}
+			}
+		};
+		if (self.lastPostsType != null) {
+			where['info.type'] = {
+				type: "string",
+				condition: {"$eq": self.lastPostsType}
+			};
+		}
 		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId,
 														"moduleName": "facebook",
-														"where": {
-															type: {
-																type: "string",
-																condition: {"$eq": "post"}
-															}
-														},
-														"options": {}},
+														"where": where,
+														"options": {"sort": self.sortLastPosts}},
 		function(data) {
 			self.displayHotPosts(data.data);
 		});
@@ -363,7 +353,7 @@ function facebook() {
 	this.displayHotPosts = function(data) {
 		var posts = [];
 		for(var i = 0; i < data.length; i++) {
-			posts.push({x: new Date(data[i].info.created_time), y: data[i].info.comments, z: data[i].info.likes, id: data[i].info.id});
+			posts.push({x: new Date(data[i].info.created_time), y: data[i].info.comments, z: data[i].info.likes, id: data[i].info.id, date: moment(data[i].info.created_time).format('MM/DD/YYYY, HH[h]mm')});
 		}
 
 		var axisX = {tickColor: "#cccccc", tickLength: 3, tickThickness: 1, lineThickness: 1, interlacedColor: "#fafafa", valueFormatString: "MM/DD/YYYY", labelFontSize: 10};
@@ -379,7 +369,7 @@ function facebook() {
 				type: "bubble",
 		        dataPoints: posts,
 		        color: "rgba(59, 89, 152, 0.8)",
-				toolTipContent: "Cliquez pour voir le message<br />{y} comments<br />{z} likes",
+				toolTipContent: "Cliquez pour voir le message<br />{date}<br />{y} comments<br />{z} likes",
 				click: function(e){
 			   		self.getPost(e.dataPoint.id);
 			 	}
@@ -498,12 +488,18 @@ function facebook() {
 			return a < b ? -1 : (a > b ? 1 : 0);
 		});
 
-		for (var i = tuples.length - 10; i < tuples.length; i++) {
-			var key = tuples[i][0];
-			var value = tuples[i][1];
-
-			console.log(key + " : " + value);
+		var html = '';
+		if(tuples.length > 0) {
+			var maxValue = tuples[tuples.length - 1][1];
+			for (var i = tuples.length - 1; i > tuples.length - 10; i--) {
+				var key = tuples[i][0];
+				var value = tuples[i][1];
+				html += '<span class="facebookCloudWord" style="font-size: ' + (value / maxValue * 30) + 'px;">' + key + '</span> ';
+			}
+		} else {
+			html += 'Aucun mot trouvé';
 		}
+		$('#facebookCloud' + self.connectorId).html(html);
 	}
 
 	this.formatWord = function(word) {

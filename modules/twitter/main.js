@@ -46,8 +46,8 @@ function doInfoPageTwitterRequest(linkTwitter, index, callback) {
 		
 		body = JSON.parse(body);		
 		
-		if(error == null)
-		{
+		if(error == null) {
+			var date = new Date();
 			var dataTwitterPage = {
 				"connector_name" : "twitter",
 				"type" : "info_page",
@@ -60,10 +60,14 @@ function doInfoPageTwitterRequest(linkTwitter, index, callback) {
 			var constraints = {
 				"user_id"    : linkTwitter[index].user_id,
 				"module_name": "twitter",
-				"type_name"  : "info_page"
+				"type_name"  : "info_page",
+				"fields" : {
+					"date": new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
+					"connector_id": linkTwitter[index].connector_id
+				}
 			};
 
-			ConfigChecker.add(constraints, dataTwitterPage, function(){counterCallbackInfoPageTwitterRequest--;checkCallback(callback);});
+			ConfigChecker.update(constraints, dataTwitterPage, function(){counterCallbackInfoPageTwitterRequest--;checkCallback(callback);});
 		}
 		else
 		{
@@ -98,13 +102,11 @@ function doTweetsTwitterRequest(linkTwitter, index, callback) {
 	}, function (error, response, body) {
 		
 		body = JSON.parse(body);
-		
 		if(error == null)
 		{
 			for(var j = 0; j < body.length; j++)
 			{
 				counterCallbackTweet++;
-
 				var dataTwitterTweet = {
 					"connector_name" : "twitter",
 					"type" : "tweet",

@@ -114,32 +114,37 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 				if(response.data[j].type == 'photo')
 					picture = response.data[j].picture;
 
-				var dataFBPost = {
-					"connector_name" : "facebook",
-					"type" : "post",
-					"date" : new Date(),
-					"competitor_id" : linkFacebook[index].competitor_id,
-					"connector_id" : linkFacebook[index].connector_id,
-					"info" : {
-						"id" : response.data[j].id,
-						"likes" : likes,
-						"comments" : comments,
-						"message" : message,
-						"shares": shares,
-						"link": link,
-						"picture": picture,
-						"type": response.data[j].type,
-						"created_time" : response.data[j].created_time}
-				};
+				if (!(message == "None" && response.data[j].type == "status")) {
+					var dataFBPost = {
+						"connector_name" : "facebook",
+						"type" : "post",
+						"date" : new Date(),
+						"competitor_id" : linkFacebook[index].competitor_id,
+						"connector_id" : linkFacebook[index].connector_id,
+						"info" : {
+							"id" : response.data[j].id,
+							"likes" : likes,
+							"comments" : comments,
+							"message" : message,
+							"shares": shares,
+							"link": link,
+							"picture": picture,
+							"type": response.data[j].type,
+							"created_time" : response.data[j].created_time}
+					};
 
-				var constraints = {
-					"user_id" : linkFacebook[index].user_id,
-					"module_name" : "facebook",
-					"type_name" : "post",
-					"fields" : {"info.id": response.data[j].id}
-				};
+					var constraints = {
+						"user_id" : linkFacebook[index].user_id,
+						"module_name" : "facebook",
+						"type_name" : "post",
+						"fields" : {"info.id": response.data[j].id}
+					};
 
-				ConfigChecker.update(constraints, dataFBPost, function(){counterCallbackPost--;checkCallback(callback);});
+					ConfigChecker.update(constraints, dataFBPost, function(){counterCallbackPost--;checkCallback(callback);});
+				} else {
+					counterCallbackPost--;
+					checkCallback(callback);
+				}
 			}
 		}
 		else
