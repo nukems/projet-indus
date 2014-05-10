@@ -143,4 +143,30 @@ function doTweetsTwitterRequest(linkTwitter, index, callback) {
 	
 };
 
+function checkAdd(fields, callback) {
+	console.log(fields);
+	request.get(
+	{
+		url:'https://api.twitter.com/1.1/users/lookup.json?screen_name=' + fields.pageName, 
+		oauth: {
+			consumer_key: 'kqrFKLzLOWSExxpHE0MTvOqVh'
+			, consumer_secret: 'wtoELfW5QfCRtIcowjgDUSUnaW9nEPy9JF1Q8ErHRaX26pxn8z'
+			, token: '66474348-k5bva9A4lALFAFMO1KZIPDOuOC3tMfNFAFyBDaHoB'
+			, token_secret: 'FU1Ku9MwMoez1vJw5fieZ0L8rjcY4ODHDL3YabGsOxHbI'
+				}
+	}, function (error, response, body) {
+		
+		body = JSON.parse(body);		
+		
+		if (body.errors && body.errors.length > 0) {
+			callback("Le nom de page est incorrect");
+			
+		} else {
+			callback(true);
+		}
+
+		
+	});
+}
 exports.execute = execute;
+exports.checkAdd = checkAdd;

@@ -32,7 +32,7 @@ function Entities_Competitor() {
 				if (item == 0 || err != null) {
 					callback(false);
 				} else {
-					callback(true);
+					callback(competitorId);
 				}
 			});	
 		});

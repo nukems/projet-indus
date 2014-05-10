@@ -19,13 +19,20 @@ function Controllers_UserModuleController() {
 			if (!this.checkFields(instances.getPost())) {
 				Ajax.setError("Les champs sont incorrects").send();
 			} else {
-				connectorController.add(competitorId, moduleName, fields, function(result) {
-					if (result) {
-						Ajax.setData({}).send();
+				var moduleInstance = require("../../../modules/" + moduleName + "/main.js");
+				moduleInstance.checkAdd(fields, function(result) {
+					if (result === true) {
+						connectorController.add(competitorId, moduleName, fields, function(result) {
+							if (result) {
+								Ajax.setData({}).send();
+							} else {
+								Ajax.setError("Problème lors de l'ajout du connecteur");
+							}	
+						});
 					} else {
-						Ajax.setError("Problème lors de l'ajout du connecteur");
-					}	
-				});
+						Ajax.setError(result).send();
+					}
+				});	
 			}
 		} catch(err) {
 			fatalError(err);

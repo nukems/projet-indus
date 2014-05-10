@@ -158,4 +158,17 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 	});
 }
 
+function checkAdd(fields, callback) {
+	facebook.get(('/' + fields.pageName), function(response) {
+
+		response = JSON.parse(response);
+		if (!response.error) {
+			callback(true);
+		} else {
+			callback("Le nom (ou identifiant) de la page est incorrect");
+		}
+	});
+}
+
 exports.execute = execute;
+exports.checkAdd = checkAdd;

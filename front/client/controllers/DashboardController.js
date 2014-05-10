@@ -154,6 +154,7 @@ function DashboardController() {
 		if(parseInt(data.error, 10) == 0) {
 			get(Animations).displayNotification("Concurrent ajouté");
 			self.getCompetitors();
+			get(Competitor).init(data.data.id);
 		} else {
 			get(Animations).displayNotification(data.data);
 		}

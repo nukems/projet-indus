@@ -34,10 +34,10 @@ function Controllers_CompetitorsController() {
 			var competitorController = instances.getInstance("Entities_Competitor");
 			competitorController.setInstances(instances);
 			competitorController.addCompetitorForUser(companyName, websiteUrl, function(added) {
-				if (added == false) {
+				if (added === false) {
 					Ajax.setError("Impossible d'ajouter le concurrent").send();
 				} else {
-					Ajax.setData({}).send();
+					Ajax.setData({"id": added}).send();
 				}
 			});
 		}
