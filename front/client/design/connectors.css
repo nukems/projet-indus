@@ -22,7 +22,7 @@
 }
 .facebookLastPostsDiv {
 	max-height: 400px;
-	overflow: auto;
+	overflow-y: scroll;
 }
 .facebookLastPosts {
 	font-size: 0.8em;
@@ -30,8 +30,12 @@
 	table-layout: fixed;
 	border-collapse: collapse;
 }
-.facebookLastPosts td {
+.facebookLastPosts td, .facebookLastPostsTr th {
 	padding: 4px 8px;
+}
+.facebookLastPostsTr th {
+	text-align: left;
+	background-color: #eeeeee;
 }
 .facebookLastPostsTr:hover {
 	background-color: #eeeeee;

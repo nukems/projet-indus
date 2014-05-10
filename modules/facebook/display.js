@@ -4,6 +4,11 @@ function facebook() {
 
 	this.connectorId = null;
 
+	this.sortLastPosts = {"info.created_time": -1};
+	this.lastPostsType;
+
+	this.types = ["status", "link", "photo", "video"];
+
 	/**
 	* Le div qui doit contenir les donnees affichees est "connectorData{connectorId}"
 	*/
@@ -16,19 +21,19 @@ function facebook() {
 		var dateBefore = moment().subtract('days', 15);
 
 		//affichage de base
-		var html = '<div class="moduleHeader">' + 
-						'<h2>Facebook ' + fields.pageName + '</h2>' + 
+		var html = '<div class="moduleHeader" style="background-color: #3b5998;">' + 
+						'<h2>Facebook ' + fields.displayName + '</h2>' + 
 						'<a target="_blank" href="https://www.facebook.com/' + fields.pageName + '">https://www.facebook.com/' + fields.pageName + '</a>' +
 						'<div style="clear: right;"></div>' +
 					'</div>' +
 					'<div class="facebookLegend">' +
-						'<div class="facebookLegendItem" style="background-color: rgba(164, 138, 212, 0.5);"></div> Likes ' +
+						'<div class="facebookLegendItem" style="background-color: rgba(59, 89, 152, 0.3);"></div> Likes ' +
 						'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Shares' +
 					'</div>' +
 					'<h2 style="margin-top: 15px;">Nouveaux "J\'aime" et partages</h2>' +
 					'<div id="graphNewLikesAndShares' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' + 
 					'<div class="facebookLegend">' +
-						'<div class="facebookLegendItem" style="background-color: rgba(164, 138, 212, 0.5);"></div> Likes ' +
+						'<div class="facebookLegendItem" style="background-color: rgba(59, 89, 152, 0.3);"></div> Likes ' +
 						'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Shares' +
 					'</div>' +
 					'<h2>Total des "J\'aime" et partages</h2>' +
@@ -38,10 +43,10 @@ function facebook() {
 						'<tr>' + 
 							'<td style="width: 50%; vertical-align: top; border-right: 10px solid #eeeeee;">' + 
 								'<div class="facebookLegend" style="font-size: 0.8em;">' +
-									'<div class="facebookLegendItem" style="background-color: rgba(164, 138, 212, 0.8); border-radius: 5px;"></div> Post' +
+									'<div class="facebookLegendItem" style="background-color: #3b5998; border-radius: 5px;"></div> Post' +
 								'</div>' +
 								'<h2>Posts et importance</h2>' +
-								'<div id="graphHotPosts' + connectorId + '" style="height: 400px;"></div>' +
+								'<div id="graphHotPosts' + connectorId + '" style="height: 430px;"></div>' +
 							'</td>' + 
 							'<td style="vertical-align: top">' + 
 								'<h2>Derniers posts</h2>' +
@@ -124,7 +129,7 @@ function facebook() {
 		        { 
 		        	type: "area",
 		        	markerType: "square",
-		        	color: "rgba(164, 138, 212, 0.5)",
+		        	color: "rgba(59, 89, 152, 0.3)",
 		        	dataPoints: totalLikes
 		       	},
 		       	{
@@ -146,7 +151,7 @@ function facebook() {
 		        { 
 		        	type: "area",
 		        	markerType: "square",
-		        	color: "rgba(164, 138, 212, 0.5)",
+		        	color: "rgba(59, 89, 152, 0.3)",
 		        	dataPoints: newLikes
 		       	},
 		       	{
@@ -203,22 +208,64 @@ function facebook() {
 	*	AFFICHAGE LISTE DES DERNIERS POSTS
 	********************************/
 	this.getLastPosts = function() {
+		var where = {
+			type: {
+				type: "string",
+				condition: {"$eq": "post"}
+			}
+		};
+		if (self.lastPostsType != null) {
+			where['info.type'] = {
+				type: "string",
+				condition: {"$eq": self.lastPostsType}
+			};
+		}
 		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId, 
 														"moduleName": "facebook", 
-														"where": {
-															type: {
-																type: "string",
-																condition: {"$eq": "post"}
-															}
-														},
-														"options": {"sort": {"info.created_time": -1}, "limit": 25}},
+														"where": where,
+														"options": {"sort": self.sortLastPosts, "limit": 25}},
 		function(data) {
 			self.displayLastPosts(data.data);
 		});
 	}
 
 	this.displayLastPosts = function(data) {
-		var html = '<div class="facebookLastPostsDiv"><table class="facebookLastPosts">';
+		var selected = [];
+		for (var i in self.types) {
+			if (self.lastPostsType == self.types[i]) {
+				selected[self.types[i]] = 'selected';
+			} else {
+				selected[self.types[i]] = '';
+			}
+		}
+		var html =  '<table class="facebookLastPosts" style="margin-bottom: 1px;">' + 
+						'<tr class="facebookLastPostsTr">' + 
+							'<th colspan="2">' + 
+								'Afficher : ' + 
+								'<select id="changeFacebookLastPostsType">' + 
+									'<option value="">Tout</option>' + 
+									'<option value="status" ' + selected["status"] + '>Statuts</option>' + 
+									'<option value="link" ' + selected["link"] + '>Liens</option>' +
+									'<option value="photo" ' + selected["photo"] + '>Image</option>' + 
+									'<option value="video" ' + selected["video"] + '>Vidéo</option>' + 
+								'</select>' +  
+							'</th>' + 
+							'<th class="facebookPostLikes">' + 
+								'<img class="sortFacebookPosts" type="info.likes" sort="-1" src="front/client/design/pictures/arrowDown.png"/>' +
+								'<img class="sortFacebookPosts" type="info.likes" sort="1" src="front/client/design/pictures/arrowUp.png"/>' +
+							'</th>' + 
+							'<th class="facebookPostComments">' + 
+								'<img class="sortFacebookPosts" type="info.comments" sort="-1" src="front/client/design/pictures/arrowDown.png"/>' +
+								'<img class="sortFacebookPosts" type="info.comments" sort="1" src="front/client/design/pictures/arrowUp.png"/>' +
+							'</th>' + 
+							'<th class="facebookPostShares" style="padding-right: 20px;">' + 
+								'<img class="sortFacebookPosts" type="info.shares" sort="-1" src="front/client/design/pictures/arrowDown.png"/>' +
+								'<img class="sortFacebookPosts" type="info.shares" sort="1" src="front/client/design/pictures/arrowUp.png"/>' +
+							'</th>' +
+						'</tr>' + 
+					'</table>' +
+					'<div class="facebookLastPostsDiv">' + 
+					'<table class="facebookLastPosts">';
 		var lineClass;
 		for (var i = 0; i < data.length; i++) {
 			if (i % 2 == 0) {
@@ -248,8 +295,27 @@ function facebook() {
 		}
 		html += '</table></div>';
 		$('#lastPosts' + self.connectorId).html(html);
+
+		//voir un post
 		$('.facebookLastPostsTr' + self.connectorId).click(function() {
 			self.getPost($(this).attr('post-id'));
+		});
+		//trier par likes, shares, comments
+		$('.sortFacebookPosts').click(function() {
+			var type = $(this).attr('type');
+			var value = parseInt($(this).attr('sort'), 10);
+			self.sortLastPosts = {};
+			self.sortLastPosts[type] = value;
+			self.getLastPosts();
+		});
+		//n'afficher qu'un type
+		$('#changeFacebookLastPostsType').change(function() {
+			var val = $(this).val();
+			if (val == '') {
+				val = null;
+			}
+			self.lastPostsType = val;
+			self.getLastPosts();
 		});
 	}
 
@@ -283,10 +349,13 @@ function facebook() {
 		var chart = new CanvasJS.Chart("graphHotPosts" + self.connectorId, {	
 			zoomEnabled: true,
 			axisX: axisX, axisY: axisY,
+			toolTip: {
+				animationEnabled: false
+			},
 		    data: [{
 				type: "bubble",
 		        dataPoints: posts,
-		        color: "rgba(164, 138, 212, 0.8)",
+		        color: "rgba(59, 89, 152, 0.8)",
 				toolTipContent: "Cliquez pour voir le message<br />{y} comments<br />{z} likes",
 				click: function(e){
 			   		self.getPost(e.dataPoint.id);
@@ -301,6 +370,7 @@ function facebook() {
 	*	AFFICHAGE D'UN POST EN PARTICULIER
 	**********************************/
 	this.getPost = function(postId) {
+		$('.canvasjs-chart-tooltip').css('display', 'none');
 		get(Window).create("Voir un post", get(Animations).getLoaderDiv(), 800);
 		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId, 
 														"moduleName": "facebook", 

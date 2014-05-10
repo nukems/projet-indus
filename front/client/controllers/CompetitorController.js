@@ -58,7 +58,7 @@ function Competitor() {
 		var connectors = self.getConnectors();
 		for (var i = 0; i < connectors.length; i++) {
 			html += '<div connector-id="' + connectors[i]._id + '" class="goToConnector">' + 
-						connectors[i].module_name.charAt(0).toUpperCase() + connectors[i].module_name.slice(1) + ' ' + connectors[i].config_fields.pageName + 
+						connectors[i].module_name.charAt(0).toUpperCase() + connectors[i].module_name.slice(1) + ' ' + connectors[i].config_fields.displayName + 
 					'</div>';
 		}
 		$('#dashboardConnectorsList').html(html);
