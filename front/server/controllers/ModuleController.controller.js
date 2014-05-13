@@ -14,7 +14,6 @@ function Controllers_ModuleController() {
 
 	this.getConfiguration = function(instances) {
 		var Ajax = instances.getInstance('Core_Ajax');
-		var name = POST.data.name;
 		var module = self.modules[name];
 		if(module != null) {
 			Ajax.setData({'module': module}).send();

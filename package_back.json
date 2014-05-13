@@ -9,6 +9,8 @@
 		"mongodb": "*",
 		"http": "*",
 		"url": "*"
+		"request": "2.34.0",
+		"oauth-1.0a": "*"
 	},
 
 	"devDependencies": {},

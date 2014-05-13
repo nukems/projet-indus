@@ -33,6 +33,18 @@ var modules = {
 				'description': "Nom de la page qui s'affichera sur l'interface"
 			}
 		}
+	},
+	'website': {
+		'name': "Connecteur de page d'accueil",
+		'description': "Ce connecteur permet le monitoring des pages d'accueil des concurrents",
+		'folderUrl': 'website',
+		'fields': {
+			'pageName': {
+				'type': 'string',
+				'name': 'Url de la page',
+				'description': "Url de la page d'accueil du concurrent"
+			}
+		}
 	}
 };
 
