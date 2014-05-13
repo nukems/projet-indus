@@ -384,6 +384,7 @@ function twitter() {
 
 	this.getCloudWords = function(data) {
 		var MIN_LENGTH = 5
+		var MAX_LENGTH = 15;
 
 		var occurrences = {};
 		var message;
@@ -392,15 +393,12 @@ function twitter() {
 		for (var i=0; i<data.length; i++)
 		{
 			message = data[i].info.message;
-			words = message.split(' ');
+			words = message.split(/\s/);
 			for (var j=0; j<words.length; j++)
 			{
-				word = words[j];
-
-				if (word == null || word.length < MIN_LENGTH)
+				word = this.formatWord(words[j]);
+				if (word == null || word.length < MIN_LENGTH || word.length > MAX_LENGTH)
 					continue;
-
-				word = this.formatWord(word);
 
 				if (occurrences[word] == null)
 					occurrences[word] = 1;
@@ -427,6 +425,7 @@ function twitter() {
 			for (var i = tuples.length - 1; i > tuples.length - 10; i--) {
 				var key = tuples[i][0];
 				var value = tuples[i][1];
+				console.log(key + " " + key.length);
 				html += '<span class="twitterCloudWord" style="font-size: ' + (value / maxValue * 30) + 'px;">' + key + '</span> ';
 			}
 		} else {
@@ -436,6 +435,7 @@ function twitter() {
 	}
 
 	this.formatWord = function(word) {
+		word = self.decodeHtml(word);
 		word = word.toLowerCase();
 		word = word.replace('â', 'a');
 		word = word.replace('à', 'a');
@@ -451,7 +451,39 @@ function twitter() {
 		word = word.replace('ù', 'u');
 		word = word.replace('"', '');
 		word = word.replace("'", '');
+		word = word.replace(".", '');
+		word = word.replace(",", '');
+		word = word.replace(":", '');
+		word = word.replace(";", '');
+		word = word.replace("!", '');
+		word = word.replace("?", '');
+		word = word.replace("(", '');
+		word = word.replace(")", '');
+		word = word.replace("=", '');
+		word = word.replace(">", '');
+		word = word.replace("<", '');
 		return word;
+	}
+
+	this.decodeHtml = function(a) {
+		return a.replace(/&([^;]+);/g, function(a, c) {
+			switch (c) {
+				case "amp":
+					return "&";
+				case "lt":
+					return "<";
+				case "gt":
+					return ">";
+				case "quot":
+					return '"';
+				default:
+					if ("#" == c.charAt(0)) {
+						var d = Number("0" + c.substr(1));
+						if (!isNaN(d)) return String.fromCharCode(d)
+					}
+					return a;
+			}
+		});
 	}
 
 }
