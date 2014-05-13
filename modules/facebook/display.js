@@ -27,34 +27,39 @@ function facebook() {
 						'<div style="clear: right;"></div>' +
 					'</div>' +
 					'<div id="facebookNotifications' + connectorId + '"></div>' +
-					'<div class="facebookLegend">' +
-						'<div class="facebookLegendItem" style="background-color: rgba(59, 89, 152, 0.3);"></div> Likes ' +
-						'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Shares' +
+					'<div style="background-color: white; margin: 0px -10px; padding: 10px;">' +
+						'<div class="facebookLegend">' +
+							'<div class="facebookLegendItem" style="background-color: rgba(59, 89, 152, 0.3);"></div> Likes ' +
+							'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Shares' +
+						'</div>' +
+						'<h2 >Nouveaux "J\'aime" et partages</h2>' +
+						'<div id="graphNewLikesAndShares' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' +
+						'<div class="facebookLegend">' +
+							'<div class="facebookLegendItem" style="background-color: rgba(59, 89, 152, 0.3);"></div> Likes ' +
+							'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Shares' +
+						'</div>' +
+						'<h2>Total des "J\'aime" et partages</h2>' +
+						'<div id="graphTotalLikesAndShares' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' +
 					'</div>' +
-					'<h2 style="margin-top: 15px;">Nouveaux "J\'aime" et partages</h2>' +
-					'<div id="graphNewLikesAndShares' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' +
-					'<div class="facebookLegend">' +
-						'<div class="facebookLegendItem" style="background-color: rgba(59, 89, 152, 0.3);"></div> Likes ' +
-						'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Shares' +
+					'<div style="margin: 0px -10px;">' + 
+						'<table class="facebookBottomTable">' +
+							'<tr>' +
+								'<td style="width: 50%; vertical-align: top; background-color: white;">' +
+									'<div class="facebookLegend" style="font-size: 0.8em;">' +
+										'<div class="facebookLegendItem" style="background-color: #3b5998; border-radius: 5px;"></div> Post' +
+									'</div>' +
+									'<h2>Posts et importance</h2>' +
+									'<div id="graphHotPosts' + connectorId + '" style="height: 430px;"></div>' +
+								'</td>' + 
+								'<td style="vertical-align: top;">' + 
+									'<div style="background-color: white; margin: -10px -10px -10px 0px; padding: 10px;">' + 
+										'<h2>Derniers posts</h2>' +
+										'<div id="lastPosts' + connectorId + '"></div>' +
+									'</div>' +
+								'</td>' +
+							'</tr>' +
+						'</table>' + 
 					'</div>' +
-					'<h2>Total des "J\'aime" et partages</h2>' +
-					'<div id="graphTotalLikesAndShares' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' +
-					'<div class="moduleSeparator"></div>' +
-					'<table class="facebookBottomTable">' +
-						'<tr>' +
-							'<td style="width: 50%; vertical-align: top; border-right: 10px solid #eeeeee;">' +
-								'<div class="facebookLegend" style="font-size: 0.8em;">' +
-									'<div class="facebookLegendItem" style="background-color: #3b5998; border-radius: 5px;"></div> Post' +
-								'</div>' +
-								'<h2>Posts et importance</h2>' +
-								'<div id="graphHotPosts' + connectorId + '" style="height: 430px;"></div>' +
-							'</td>' + 
-							'<td style="vertical-align: top">' + 
-								'<h2>Derniers posts</h2>' +
-								'<div id="lastPosts' + connectorId + '"></div>' +
-							'</td>' +
-						'</tr>' +
-					'</table>' + 
 					'<div class="facebookCloud">' + 
 						'<h2>Nuage de mots</h2>' +
 						'<div id="facebookCloud' + connectorId + '"></div>' +
@@ -297,8 +302,12 @@ function facebook() {
 			} else {
 				html += 'facebookStatus.png';
 			}
+			message = data[i].info.message;
+			if (message == "None") {
+				message = "Pas de contenu renseigné";
+			}
 			html +=		'"/></td>' +
-						'<td class="facebookPostContent">' + data[i].info.message + '</td>' +
+						'<td class="facebookPostContent">' + message + '</td>' +
 						'<td class="facebookPostLikes"><img src="front/client/design/pictures/like.png"/> ' + data[i].info.likes + '</td>' +
 						'<td class="facebookPostComments"><img src="front/client/design/pictures/comment.png"/> ' + data[i].info.comments + '</td>' +
 						'<td class="facebookPostShares"><img src="front/client/design/pictures/share.png"/> ' + data[i].info.shares + '</td>' +
@@ -309,6 +318,7 @@ function facebook() {
 
 		if (newPosts > 0) {
 			$('#facebookNotifications' + self.connectorId).html('<div class="facebookNotificationsContent"><img src="front/client/design/pictures/bell.png"/> Il y a ' + newPosts + ' nouveaux posts</div>');
+			$('#goToConnector' + self.connectorId + ' .notificationItem').html(newPosts).show();
 		}
 
 		//voir un post
@@ -433,7 +443,11 @@ function facebook() {
 					'<div style="margin-left: 40px;">' +
 						'<a target="_blank" href="' + data[0].info.link + '">' + data[0].info.link + '</a><br />';
 		}
-		html +=			self.linkify(self.nl2br(data[0].info.message, true)) +
+		message = data[0].info.message;
+		if (message == "None") {
+			message = "Pas de contenu renseigné";
+		}
+		html +=			self.linkify(self.nl2br(message, true)) +
 					'</div>' +
 					'<div style="clear: left;"></div>' +
 					'<div class="facebookHr"></div>' +

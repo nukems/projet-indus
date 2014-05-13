@@ -23,34 +23,39 @@ function twitter() {
 						'<div style="clear: right;"></div>' +
 					'</div>' +
 					'<div id="twitterNotifications' + connectorId + '"></div>' +
-					'<div class="twitterLegend">' +
-						'<div class="twitterLegendItem" style="background-color: rgba(0, 192, 247, 0.3);"></div> Tweets ' +
-						'<div class="twitterLegendItem" style="background-color: rgba(83, 145, 127, 0.3);"></div> Followers' +
+					'<div style="background-color: white; margin: 0px -10px; padding: 10px;">' +
+						'<div class="twitterLegend">' +
+							'<div class="twitterLegendItem" style="background-color: rgba(0, 192, 247, 0.3);"></div> Tweets ' +
+							'<div class="twitterLegendItem" style="background-color: rgba(83, 145, 127, 0.3);"></div> Followers' +
+						'</div>' +
+						'<h2 style="margin-top: 15px;">Nouveaux Tweets et Followers</h2>' +
+						'<div id="graphNewTweetsAndFollowers' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' +
+						'<div class="twitterLegend">' +
+							'<div class="twitterLegendItem" style="background-color: rgba(0, 192, 247, 0.3);"></div> Tweets ' +
+							'<div class="twitterLegendItem" style="background-color: rgba(83, 145, 127, 0.3);"></div> Followers' +
+						'</div>' +
+						'<h2>Total des Tweets et Followers</h2>' +
+						'<div id="graphTotalTweetsAndFollowers' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' +
 					'</div>' +
-					'<h2 style="margin-top: 15px;">Nouveaux Tweets et Followers</h2>' +
-					'<div id="graphNewTweetsAndFollowers' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' +
-					'<div class="twitterLegend">' +
-						'<div class="twitterLegendItem" style="background-color: rgba(0, 192, 247, 0.3);"></div> Tweets ' +
-						'<div class="twitterLegendItem" style="background-color: rgba(83, 145, 127, 0.3);"></div> Followers' +
-					'</div>' +
-					'<h2>Total des Tweets et Followers</h2>' +
-					'<div id="graphTotalTweetsAndFollowers' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' +
-					'<div class="moduleSeparator"></div>' +
-					'<table class="twitterBottomTable">' +
-						'<tr>' +
-							'<td style="width: 50%; vertical-align: top; border-right: 10px solid #eeeeee;">' +
-								'<div class="twitterLegend" style="font-size: 0.8em;">' +
-									'<div class="twitterLegendItem" style="background-color: rgba(0, 192, 247, 0.3); border-radius: 5px;"></div> Tweet' +
-								'</div>' +
-								'<h2>Tweets et importance</h2>' +
-								'<div id="graphHotTweets' + connectorId + '" style="height: 430px;"></div>' +
-							'</td>' + 
-							'<td style="vertical-align: top">' + 
-								'<h2>Derniers tweets</h2>' +
-								'<div id="lastTweets' + connectorId + '"></div>' +
-							'</td>' +
-						'</tr>' +
-					'</table>' + 
+					'<div style="margin: 0px -10px;">' + 
+						'<table class="twitterBottomTable">' +
+							'<tr>' +
+								'<td style="width: 50%; vertical-align: top; background-color: white;">' +
+									'<div class="twitterLegend" style="font-size: 0.8em;">' +
+										'<div class="twitterLegendItem" style="background-color: rgba(0, 192, 247, 0.3); border-radius: 5px;"></div> Tweet' +
+									'</div>' +
+									'<h2>Tweets et importance</h2>' +
+									'<div id="graphHotTweets' + connectorId + '" style="height: 430px;"></div>' +
+								'</td>' + 
+								'<td style="vertical-align: top">' + 
+									'<div style="background-color: white; margin: -10px -10px -10px 0px; padding: 10px;">' + 
+										'<h2>Derniers tweets</h2>' +
+										'<div id="lastTweets' + connectorId + '"></div>' +
+									'</div>' +
+								'</td>' +
+							'</tr>' +
+						'</table>' + 
+					"</div>" +
 					'<div class="twitterCloud">' + 
 						'<h2>Nuage de mots</h2>' +
 						'<div id="twitterCloud' + connectorId + '"></div>' +
@@ -265,6 +270,7 @@ function twitter() {
 		$('#lastTweets' + self.connectorId).html(html);
 		if (newTweets > 0) {
 			$('#twitterNotifications' + self.connectorId).html('<div class="twitterNotificationsContent"><img src="front/client/design/pictures/bell.png"/> Il y a ' + newTweets + ' nouveaux tweets</div>');
+			$('#goToConnector' + self.connectorId + ' .notificationItem').html(newTweets).show();
 		}
 
 		//voir un post

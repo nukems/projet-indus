@@ -78,6 +78,8 @@
 #dashboardContent {
 	display: table-cell;
 	background-color: #eeeeee;
+	background-image: url('pictures/background.jpg');
+	background-attachment: fixed;
 }
 #emptyDashboard {
 	margin: 15px;
@@ -184,7 +186,6 @@
 	background-color: white;
 }
 .connectorDisplay {
-	background-color: white;
 	padding: 10px;
 	margin: 0px 15px 30px 15px;
 }
@@ -201,9 +202,8 @@
 
 .moduleHeader {
 	background-color: #a48ad4;
-	margin: -10px -10px 10px -10px;
+	margin: -10px -10px 5px -10px;
 	padding: 10px;
-	border-bottom: 5px solid #eeeeee;
 }
 .moduleHeader h2 {
 	color: white;
@@ -218,6 +218,5 @@
 
 .moduleSeparator {
 	margin: 5px -10px 5px -10px;
-	background-color: #eeeeee;
 	height: 10px;
 }

@@ -90,6 +90,15 @@ button[disabled="disabled"] {
 	width: 250px;
 	cursor: not-allowed;
 }
+.notificationItem {
+	border-radius: 2px;
+	font-size: 0.8em;
+	float: right;
+	background-color: #a48ad4;
+	color: white;
+	padding: 1px 5px;
+	display: none;
+}
 
 /**
 *	WINDOW

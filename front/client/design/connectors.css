@@ -2,10 +2,10 @@
 *	Facebook
 */
 .facebookNotificationsContent {
-	border-bottom: 10px solid #eeeeee;
 	padding: 10px;
-	margin: -10px -10px 0px -10px;
+	margin: 0px -10px 10px -10px;
 	font-weight: bold;
+	background-color: white;
 }
 .facebookNotificationsContent > img {
 	vertical-align: middle;
@@ -25,8 +25,9 @@
 .facebookBottomTable {
 	table-layout: fixed; 
 	width: 100%; 
-	margin: -10px -10px -12px -10px;
 	border: 0px;
+	border-collapse: collapse;
+	margin-top: 10px;
 }
 .facebookBottomTable td {
 	padding: 10px;
@@ -91,9 +92,9 @@
 }
 
 .facebookCloud {
-	border-top: 10px solid #eeeeee;
+	background-color: white;
 	margin: 10px -10px 0px -10px;
-	padding: 10px 10px 0px 10px;
+	padding: 7px 10px 10px 10px;
 }
 .facebookCloudWord {
 	padding-right: 30px;
@@ -103,10 +104,10 @@
 *	Twitter
 */
 .twitterNotificationsContent {
-	border-bottom: 10px solid #eeeeee;
 	padding: 10px;
-	margin: -10px -10px 0px -10px;
+	margin: 0px -10px 10px -10px;
 	font-weight: bold;
+	background-color: white;
 }
 .twitterNotificationsContent > img {
 	vertical-align: middle;
@@ -126,8 +127,9 @@
 .twitterBottomTable {
 	table-layout: fixed; 
 	width: 100%; 
-	margin: -10px -10px -12px -10px;
 	border: 0px;
+	border-collapse: collapse;
+	margin-top: 10px;
 }
 .twitterBottomTable td {
 	padding: 10px;
@@ -190,9 +192,9 @@
 }
 
 .twitterCloud {
-	border-top: 10px solid #eeeeee;
+	background-color: white;
 	margin: 10px -10px 0px -10px;
-	padding: 10px 10px 0px 10px;
+	padding: 7px 10px 10px 10px;
 }
 .twitterCloudWord {
 	padding-right: 30px;
