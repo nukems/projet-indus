@@ -1,7 +1,7 @@
 var ConfigChecker = require('./../../back/ConfigChecker.js');
 
-var request = require('./../../back/node_modules/request');
-var OAuth   = require('./../../back/node_modules/oauth-1.0a');
+var request = require('./../../node_modules/request');
+var OAuth   = require('./../../node_modules/oauth-1.0a');
 
 var counterCallbackInfoPageTwitterRequest = 0;
 var counterCallbackTweetTwitterRequest = 0;
