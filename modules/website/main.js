@@ -9,6 +9,7 @@ function execute(callback)
 	{
 		for(var i = 0; i < linkWebsite.length; i++)
 		{
+			console.log("base");
 			console.log(linkWebsite[i]);
 
 			if(!isHttps(linkWebsite[i].fields.pageName))
@@ -48,10 +49,30 @@ function doWebsitePullRequest(data, index, callback)
 			}
 		};
 
-		ConfigChecker.update(constraints, dataWebsitePage, function()
+		var client = require('mongodb').MongoClient;
+
+		client.connect("mongodb://" + this.host + ":" + this.port + "/" + this.db, function(err, db)
 		{
-			console.log('upsert done');
+			console.log("user_" + data[i].user_id);
+			var collection = db.collection("user_" + data[i].user_id);
+			collection.find("{}");
 		});
+
+		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId,
+				"moduleName"                                          : "website",
+				"where"                                               : {},
+				"options"                                             : {"sort": {"date": -1}, "limit": 1}},
+			function(data)
+			{
+				console.log('data : ' + data);
+				/*
+				 ConfigChecker.update(constraints, dataWebsitePage, function()
+				 {
+				 console.log('upsert done');
+				 });
+				 */
+			}
+		);
 	});
 }
 

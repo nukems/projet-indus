@@ -3,7 +3,7 @@ var config = {
 		{
 			"name" : "content",
 			"fields" : [
-				"page",
+				"page", "update_type"
 			]
 		}
 	]
