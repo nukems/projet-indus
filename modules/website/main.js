@@ -1,5 +1,6 @@
 var exec = require('child_process').exec;
 var ConfigChecker = require('./../../back/ConfigChecker.js');
+global.env = require("./../../lib/config.js").getConfig();
 
 function execute(callback)
 {
@@ -51,13 +52,17 @@ function doWebsitePullRequest(data, index, callback)
 
 		var client = require('mongodb').MongoClient;
 
-		client.connect("mongodb://" + this.host + ":" + this.port + "/" + this.db, function(err, db)
+		client.connect("mongodb://" + env.database.host + ":" + env.database.port + "/" + "veille_concurentielle", function(err, db)
 		{
-			console.log("user_" + data[i].user_id);
-			var collection = db.collection("user_" + data[i].user_id);
-			collection.find("{}");
+			db.collection('user_' + data[index].user_id, function(err, collection){
+				collection.find({"connector_id": data[index].connector_id}, {}, {"limit": 1, "sort": [["date", "desc"]]}).toArray(function(err, items){
+					var old_content = items[0].info.page;
+					console.log("COMPARING")
+					newPageIsDifferent(old_content, stdout);
+				});
+			});
 		});
-
+/*
 		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId,
 				"moduleName"                                          : "website",
 				"where"                                               : {},
@@ -65,15 +70,21 @@ function doWebsitePullRequest(data, index, callback)
 			function(data)
 			{
 				console.log('data : ' + data);
-				/*
+
 				 ConfigChecker.update(constraints, dataWebsitePage, function()
 				 {
 				 console.log('upsert done');
 				 });
-				 */
+
 			}
-		);
+		);*/
 	});
+}
+
+function newPageIsDifferent(oldPage, newPage) {
+	var parser = new DOMParser();
+	var oldXml = parser.parseFromString(oldPage, 'text/xml');
+	var newXml = parser.parseFromString(newPage, 'text/xml');
 }
 
 function isHttps(url)
