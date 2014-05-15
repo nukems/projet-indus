@@ -21,6 +21,7 @@ function Controllers_CompetitorsController() {
 	*/
 	this.add = function(instances) {
 		var Ajax = instances.getInstance('Core_Ajax');
+		var POST = instances.getPost();
 		var companyName = POST.data.companyName;
 		var websiteUrl = POST.data.websiteUrl;
 		if (companyName == '') {
@@ -48,6 +49,7 @@ function Controllers_CompetitorsController() {
 	*/
 	this.delete = function(instances) {
 		var Ajax = instances.getInstance('Core_Ajax');
+		var POST = instances.getPost();
 		var competitorId = POST.data.id;
 		var competitorController = instances.getInstance("Entities_Competitor");
 		competitorController.setInstances(instances);

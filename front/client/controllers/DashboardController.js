@@ -153,6 +153,7 @@ function DashboardController() {
 		};
 		get(Ajax).sendOne('user/competitors/add', data, self.addCompetitorCallback);
 	}
+
 	this.addCompetitorCallback = function(data) {
 		$('#addCompetitorButton, #cancelAddCompetitor').removeAttr('disabled');
 		if(parseInt(data.error, 10) == 0) {

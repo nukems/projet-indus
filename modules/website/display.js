@@ -16,7 +16,8 @@ function website()
 		var date = moment().add('days', 0);
 
 		var html = '<div class="moduleHeader">' +
-			'<h2>Website : ' + fields.pageName + '</h2>' +
+			'<h2>Website : ' + fields.displayName + '</h2>' +
+			'<a target="_blank" href="' + fields.pageName + '">' + fields.pageName + '</a>' +
 			'<div style="clear: right;"></div>' +
 			'</div>' +
 			'<div id="target-website-update">' + '</div>' +
@@ -57,24 +58,4 @@ function website()
 		$('#target-website-page').html(iframe);
 	}
 
-	this.getLikesAndShares = function(dateBefore, dateEnd, connectorId)
-	{
-		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId,
-				"moduleName"                                          : "facebook",
-				"where"                                               : {
-					type: {
-						type     : "string",
-						condition: {"$eq": "info_page"}
-					},
-					date: {
-						type     : "date",
-						condition: {"$gt": new Date(dateBefore), "$lt": new Date(dateEnd)}
-					}
-				},
-				"options"                                             : {"sort": {"date": 1}}},
-			function(data)
-			{
-				self.displayLikesAndShares(dateBefore, dateEnd, data.data);
-			});
-	}
 }

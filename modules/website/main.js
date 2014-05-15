@@ -16,8 +16,8 @@ function execute(callback)
 	{
 		for(var i = 0; i < linkWebsite.length; i++)
 		{
-			console.log("base");
-			console.log(linkWebsite[i]);
+			//console.log("base");
+			//console.log(linkWebsite[i]);
 
 			if(!isHttps(linkWebsite[i].fields.pageName))
 			{
@@ -40,6 +40,7 @@ function doWebsitePullRequest(data, index, callback)
 		var client = require('mongodb').MongoClient;
 
 		client.connect("mongodb://" + env.database.username + ":" + env.database.password + "@" + env.database.host + ":" + env.database.port + "/" + "veille_concurentielle", function(err, db)
+		//client.connect("mongodb://" + env.database.host + ":" + env.database.port + "/" + "veille_concurentielle", function(err, db)
 		{
 			db.collection('user_' + data[index].user_id, function(err, collection)
 			{
@@ -47,7 +48,7 @@ function doWebsitePullRequest(data, index, callback)
 					["date", "desc"]
 				]}).toArray(function(err, items)
 					{
-						if (items.length == 0)
+						if(items.length == 0)
 						{
 							var dataWebsitePage = {
 								"connector_name": "website",
@@ -73,37 +74,40 @@ function doWebsitePullRequest(data, index, callback)
 								console.log('First added data for ' + data[index].connector_id);
 							});
 						}
-
-						var old_content = items[0].info.page;
-						var result = newPageIsDifferent(old_content, stdout);
-
-						console.log(data[index].connector_id + " : " + result);
-
-						if(result)
+						else
 						{
-							var dataWebsitePage = {
-								"connector_name": "website",
-								"type"          : "content",
-								"date"          : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
-								"competitor_id" : data[index].competitor_id,
-								"connector_id"  : data[index].connector_id,
-								"info"          : {"page": stdout, "update_type": result, "url": data[index].fields.pageName}
-							};
+							var old_content = items[0].info.page;
+							var result = newPageIsDifferent(old_content, stdout);
 
-							var constraints = {
-								"user_id"    : data[index].user_id,
-								"module_name": "website",
-								"type_name"  : "content",
-								"fields"     : {
-									"date"        : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
-									"connector_id": data[index].connector_id
-								}
-							};
+							console.log(data[index].connector_id + " : " + result);
 
-							ConfigChecker.update(constraints, dataWebsitePage, function()
+							if(result)
 							{
-								console.log('Updated page content');
-							});
+								var dataWebsitePage = {
+									"connector_name": "website",
+									"type"          : "content",
+									"date"          : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
+									"competitor_id" : data[index].competitor_id,
+									"connector_id"  : data[index].connector_id,
+									"info"          : {"page": stdout, "update_type": result, "url": data[index].fields.pageName}
+								};
+
+								var constraints = {
+									"user_id"    : data[index].user_id,
+									"module_name": "website",
+									"type_name"  : "content",
+									"fields"     : {
+										"date"        : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
+										"connector_id": data[index].connector_id
+									}
+								};
+
+								ConfigChecker.update(constraints, dataWebsitePage, function()
+								{
+									console.log('Updated page content');
+								});
+							}
+
 						}
 					});
 			});
@@ -237,4 +241,27 @@ function setHttpIfNot(url)
 	}
 }
 
+function checkAdd(fields, callback)
+{
+	exec('curl -sL -w "%{http_code}" ' + fields.pageName + ' -o /dev/null', function(error, stdout, stderr)
+	{
+		if(stdout == '200' || stdout == '302')
+		{
+			if(fields.displayName != '')
+			{
+				callback(true);
+			}
+			else
+			{
+				callback("Le nom de la page est incorrect");
+			}
+		}
+		else
+		{
+			callback("La page n'existe pas.");
+		}
+	});
+}
+
 exports.execute = execute;
+exports.checkAdd = checkAdd;

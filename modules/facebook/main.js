@@ -163,7 +163,7 @@ function checkAdd(fields, callback) {
 	facebook.get(('/' + fields.pageName), function(response) {
 
 		response = JSON.parse(response);
-		if (!response.error) {
+		if (!response.error && fields.displayName != '') {
 			callback(true);
 		} else {
 			callback("Le nom (ou identifiant) de la page est incorrect");

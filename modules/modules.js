@@ -43,6 +43,11 @@ var modules = {
 				'type': 'string',
 				'name': 'Url de la page',
 				'description': "Url de la page d'accueil du concurrent"
+			},
+			'displayName': {
+				'type': 'string',
+				'name': 'Nom de la page',
+				'description': "Nom de la page qui s'affichera sur l'interface"
 			}
 		}
 	}

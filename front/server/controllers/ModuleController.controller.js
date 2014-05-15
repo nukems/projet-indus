@@ -14,6 +14,7 @@ function Controllers_ModuleController() {
 
 	this.getConfiguration = function(instances) {
 		var Ajax = instances.getInstance('Core_Ajax');
+		var POST = instances.getPost();
 		var name = POST.data.name;
 		var module = self.modules[name];
 		if(module != null) {
