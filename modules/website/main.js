@@ -38,17 +38,47 @@ function doWebsitePullRequest(data, index, callback)
 		var date = new Date();
 
 		var client = require('mongodb').MongoClient;
-
-		client.connect("mongodb://" + env.database.username + ":" + env.database.password + "@" + env.database.host + ":" + env.database.port + "/" + "veille_concurentielle", function(err, db)
-		//client.connect("mongodb://" + env.database.host + ":" + env.database.port + "/" + "veille_concurentielle", function(err, db)
-		{
-			db.collection('user_' + data[index].user_id, function(err, collection)
-			{
-				collection.find({"connector_id": data[index].connector_id}, {}, {"limit": 1, "sort": [
-					["date", "desc"]
-				]}).toArray(function(err, items)
+		Database = InstancesController.getInstance('Core_Database');
+		Database.connect(function() {
+			var collection = Database.getCollection('user_' + data[index].user_id);
+			collection.find({"connector_id": data[index].connector_id}, {}, {"limit": 1, "sort": [
+				["date", "desc"]
+			]}).toArray(function(err, items)
+				{
+					if(items.length == 0)
 					{
-						if(items.length == 0)
+						var dataWebsitePage = {
+							"connector_name": "website",
+							"type"          : "content",
+							"date"          : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
+							"competitor_id" : data[index].competitor_id,
+							"connector_id"  : data[index].connector_id,
+							"info"          : {"page": stdout, "update_type": DIFF_GLB, "url": data[index].fields.pageName}
+						};
+
+						var constraints = {
+							"user_id"    : data[index].user_id,
+							"module_name": "website",
+							"type_name"  : "content",
+							"fields"     : {
+								"date"        : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
+								"connector_id": data[index].connector_id
+							}
+						};
+
+						ConfigChecker.update(constraints, dataWebsitePage, function()
+						{
+							console.log('First added data for ' + data[index].connector_id);
+						});
+					}
+					else
+					{
+						var old_content = items[0].info.page;
+						var result = newPageIsDifferent(old_content, stdout);
+
+						console.log(data[index].connector_id + " : " + result);
+
+						if(result)
 						{
 							var dataWebsitePage = {
 								"connector_name": "website",
@@ -56,7 +86,7 @@ function doWebsitePullRequest(data, index, callback)
 								"date"          : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
 								"competitor_id" : data[index].competitor_id,
 								"connector_id"  : data[index].connector_id,
-								"info"          : {"page": stdout, "update_type": DIFF_GLB, "url": data[index].fields.pageName}
+								"info"          : {"page": stdout, "update_type": result, "url": data[index].fields.pageName}
 							};
 
 							var constraints = {
@@ -71,46 +101,12 @@ function doWebsitePullRequest(data, index, callback)
 
 							ConfigChecker.update(constraints, dataWebsitePage, function()
 							{
-								console.log('First added data for ' + data[index].connector_id);
+								console.log('Updated page content');
 							});
 						}
-						else
-						{
-							var old_content = items[0].info.page;
-							var result = newPageIsDifferent(old_content, stdout);
 
-							console.log(data[index].connector_id + " : " + result);
-
-							if(result)
-							{
-								var dataWebsitePage = {
-									"connector_name": "website",
-									"type"          : "content",
-									"date"          : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
-									"competitor_id" : data[index].competitor_id,
-									"connector_id"  : data[index].connector_id,
-									"info"          : {"page": stdout, "update_type": result, "url": data[index].fields.pageName}
-								};
-
-								var constraints = {
-									"user_id"    : data[index].user_id,
-									"module_name": "website",
-									"type_name"  : "content",
-									"fields"     : {
-										"date"        : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
-										"connector_id": data[index].connector_id
-									}
-								};
-
-								ConfigChecker.update(constraints, dataWebsitePage, function()
-								{
-									console.log('Updated page content');
-								});
-							}
-
-						}
-					});
-			});
+					}
+				});
 		});
 		/*
 		 get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId,
@@ -243,8 +239,10 @@ function setHttpIfNot(url)
 
 function checkAdd(fields, callback)
 {
-	exec('curl -sL -w "%{http_code}" ' + fields.pageName + ' -o /dev/null', function(error, stdout, stderr)
+	exec('curl -sL -w "%{http_code}" ' + fields.pageName + ' -o /dev/null &', function(error, stdout, stderr)
 	{
+		console.log(stdout);
+		console.log(stderr);
 		if(stdout == '200' || stdout == '302')
 		{
 			if(fields.displayName != '')
