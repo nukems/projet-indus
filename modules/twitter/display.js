@@ -425,7 +425,6 @@ function twitter() {
 			for (var i = tuples.length - 1; i > tuples.length - 10; i--) {
 				var key = tuples[i][0];
 				var value = tuples[i][1];
-				console.log(key + " " + key.length);
 				html += '<span class="twitterCloudWord" style="font-size: ' + (value / maxValue * 30) + 'px;">' + key + '</span> ';
 			}
 		} else {
