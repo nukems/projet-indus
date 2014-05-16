@@ -1,2 +1,3 @@
 # facebook --fiveminutely facebook.log
 # twitter --fiveminutely twitter.log
+# website --hourly website.log

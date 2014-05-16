@@ -143,31 +143,34 @@ while [[ k -lt i ]]; do
 			# --hourly
 			echo "Calling (hourly) : node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &"
 			node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
-			# check if front is up or down
-			echo "Checking if front is still up..."
-			isFrontUp
-			if [[ $? -ne 200 ]]; then
-				echo "Error : front didn't send 200 status code, emailing admin..."
-				mailThatFrontIsDown
-			else
-				echo "Front sent 200 status code"
-			fi
 		fi
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[3]} ]]; then
 		if [[ $(date +%H) -eq 0 ]] && [[ $(date +%M) -eq 0 ]]; then
 			# --daily
 			echo "Calling (daily) : node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &"
 			node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
-			# Emptying log files
-			echo "Emptying log files..."
-			echo > $CRON_LOG
-			for log in ${logs[@]}; do
-        			echo > $LOG_REPO/$log
-			done
 		fi
 	fi
 	let k=k+1
 done
+
+if [[ $(date +%M) -eq 0 ]]; then
+    # check if front is up or down
+    echo "Checking if front is still up..."
+    isFrontUp
+    if [[ $? -ne 200 ]]; then
+        echo "Error : front didn't send 200 status code, emailing admin..."
+        mailThatFrontIsDown
+    else
+        echo "Front sent 200 status code"
+    fi
+    # Emptying log files
+    echo "Emptying log files..."
+    echo > $CRON_LOG
+    for log in ${logs[@]}; do
+            echo > $LOG_REPO/$log
+    done
+fi
 
 echo
 echo "Cron done"
