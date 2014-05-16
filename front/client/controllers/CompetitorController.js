@@ -105,7 +105,8 @@ function Competitor() {
 	this.connectorMenuEvents = function() {
 		$('.goToConnector').click(function() {
 			var value = $('#' + $(this).attr('connector-id')).offset().top;
-			$('html, body').animate({'scrollTop': value}, 200)
+			$('html, body').animate({'scrollTop': value}, 200),
+			$(this).children('.notificationItem').html('').hide();
 		});
 	}
 
