@@ -8,6 +8,8 @@ var DIFF_TXT = "Contenu";
 var DIFF_FCT = "Fonctionnalité";
 var DIFF_GLB = "Contenu";
 
+var counter = 0;
+
 function execute(callback)
 {
 	console.log("Execution du module website");
@@ -31,15 +33,25 @@ function execute(callback)
 
 }
 
+function checkCallback(callback)
+{
+	if(counter == 0)
+	{
+		callback();
+	}
+}
+
 function doWebsitePullRequest(data, index, callback)
 {
+	counter++;
 	exec('curl -X GET ' + data[index].fields.pageName, function(error, stdout, stderr)
 	{
 		var date = new Date();
 
 		var client = require('mongodb').MongoClient;
 		Database = InstancesController.getInstance('Core_Database');
-		Database.connect(function() {
+		Database.connect(function()
+		{
 			var collection = Database.getCollection('user_' + data[index].user_id);
 			collection.find({"connector_id": data[index].connector_id}, {}, {"limit": 1, "sort": [
 				["date", "desc"]
@@ -69,6 +81,8 @@ function doWebsitePullRequest(data, index, callback)
 						ConfigChecker.update(constraints, dataWebsitePage, function()
 						{
 							console.log('First added data for ' + data[index].connector_id);
+							counter--;
+							checkCallback(callback);
 						});
 					}
 					else
@@ -102,12 +116,15 @@ function doWebsitePullRequest(data, index, callback)
 							ConfigChecker.update(constraints, dataWebsitePage, function()
 							{
 								console.log('Updated page content');
+								counter--;
+								checkCallback(callback);
 							});
 						}
 
 					}
 				});
 		});
+
 		/*
 		 get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId,
 		 "moduleName"                                          : "website",
