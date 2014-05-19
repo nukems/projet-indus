@@ -13,49 +13,52 @@ function website()
 		self.connectorId = connectorId;
 
 		moment.lang('fr');
-		var date = moment().add('days', 0);
 
 		var html = '<div class="moduleHeader">' +
-			'<h2>Website : ' + fields.displayName + '</h2>' +
-			'<a target="_blank" href="' + fields.pageName + '">' + fields.pageName + '</a>' +
-			'<div style="clear: right;"></div>' +
-			'</div>' +
-			'<div id="target-website-update">' + '</div>' +
-			'<div id="target-website-page">' + '</div>' +
-			'</div>'
+						'<h2>Page d\'accueil ' + fields.displayName + '</h2>' +
+						'<a target="_blank" href="' + fields.pageName + '">' + fields.pageName + '</a>' +
+						'<div style="clear: right;"></div>' +
+					'</div>' +
+					'<div class="websiteModule">' + 
+						'<div class="websiteUpdate" id="websiteUpdate' + self.connectorId + '">' + '</div>' +
+						'<div id="websitePage' + self.connectorId + '">' + '</div>' +
+					'</div>';
 		$('#connectorData' + connectorId).html(html);
 
-		self.getWebsitePages(date, self.connectorId);
+		self.getWebsitePages(self.connectorId);
 	}
 
-	this.getWebsitePages = function(date, connectorId)
+	this.getWebsitePages = function(connectorId)
 	{
-		console.log(date);
 		get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId,
-				"moduleName"                                          : "website",
-				"where"                                               : {
+														"moduleName": "website",
+														"where": {
 					type: {
 						type     : "string",
 						condition: {"$eq": "content"}
-					},
-					date: {
-						type     : "date",
-						condition: {"$lt": new Date(date)}
 					}
 				},
 				"options"                                             : {"sort": {"date": -1}, "limit": 1}},
 			function(data)
 			{
-				console.log(data);
-				self.displayWebsitePages(date, data.data);
+				self.displayWebsitePages(data.data);
 			});
 	}
 
-	this.displayWebsitePages = function(date, data)
+	this.displayWebsitePages = function(data)
 	{
-		var iframe = "<iframe src='" + data[0].info.url + "'></iframe>"
-		$('#target-website-update').html(data[0].info.update_type);
-		$('#target-website-page').html(iframe);
+		var html = '';
+		var iframe = "<iframe class='websiteIframe' src='" + data[0].info.url + "'></iframe>";
+
+		if (data[0].notification == 1) {
+			html += '<div class="websiteNotification"><img src="front/client/design/pictures/bell.png"/> Nouvelle mise à jour</div>';
+			$('#goToConnector' + self.connectorId + ' .notificationItem').html(1).show();
+		}
+		html += "Dernier changement : <span style='font-weight: bold;'>" + data[0].info.update_type + "</span> le " + moment(data[0].date).format('DD/MM/YYYY [à] HH:mm');
+		
+		
+		$('#websiteUpdate' + self.connectorId).html(html);
+		$('#websitePage' + self.connectorId).html(iframe);
 	}
 
 }

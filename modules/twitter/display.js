@@ -43,6 +43,7 @@ function twitter() {
 								'<td style="width: 50%; vertical-align: top; background-color: white;">' +
 									'<div class="twitterLegend" style="font-size: 0.8em;">' +
 										'<div class="twitterLegendItem" style="background-color: rgba(0, 192, 247, 0.3); border-radius: 5px;"></div> Tweet' +
+										' <img src="front/client/design/pictures/help.png" class="twitterLegendHot"/>' +
 									'</div>' +
 									'<h2>Tweets et importance</h2>' +
 									'<div id="graphHotTweets' + connectorId + '" style="height: 430px;"></div>' +
@@ -100,13 +101,13 @@ function twitter() {
 
 		var j = 0;
 		//pour toutes les dates sur 15 jours
-		while (dateBefore.format('MM/DD/YYYY') != dateEnd.format('MM/DD/YYYY')) {
+		while (dateBefore.format('DD/MM/YYYY') != dateEnd.format('DD/MM/YYYY')) {
 			if (j != 0) { //la premiere valeur n'est la que pour le calcul des nouveaux likes et shared
 				var totalData = self.getData(dateBefore, data);
-				newTweets.push({x: j, label: dateBefore.format('MM/DD/YYYY'), y: totalData.newTweets});
-				newFollowers.push({x: j, label: dateBefore.format('MM/DD/YYYY'), y: totalData.newFollowers});
-				totalTweets.push({x: j, label: dateBefore.format('MM/DD/YYYY'), y: totalData.totalTweets});
-				totalFollowers.push({x: j, label: dateBefore.format('MM/DD/YYYY'), y: totalData.totalFollowers});
+				newTweets.push({x: j, label: dateBefore.format('DD/MM/YYYY'), y: totalData.newTweets});
+				newFollowers.push({x: j, label: dateBefore.format('DD/MM/YYYY'), y: totalData.newFollowers});
+				totalTweets.push({x: j, label: dateBefore.format('DD/MM/YYYY'), y: totalData.totalTweets});
+				totalFollowers.push({x: j, label: dateBefore.format('DD/MM/YYYY'), y: totalData.totalFollowers});
 			}
 			dateBefore.add('days', 1);
 			j++;
@@ -178,7 +179,7 @@ function twitter() {
 	*/
 	this.getData = function(date, data) {
 		var i = 0;
-		while (i < data.length && date.format('MM/DD/YYYY') != moment(data[i].date).format('MM/DD/YYYY')) {
+		while (i < data.length && date.format('DD/MM/YYYY') != moment(data[i].date).format('DD/MM/YYYY')) {
 			i++;
 		}
 		if (i < data.length) {
@@ -259,7 +260,7 @@ function twitter() {
 				notification = ' style="background-color: #efe7b2;"';
 			}
 			html += '<tr class="' + lineClass + 'twitterLastTweetsTr twitterLastTweetsTr' + self.connectorId + '" post-id="' + data[i].info.id + '" ' + notification + '>' +
-						'<td class="twitterTweetDate">' + moment(data[i].info.created_time).format('MM/DD/YYYY') + '<br />' +
+						'<td class="twitterTweetDate">' + moment(data[i].info.created_time).format('DD/MM/YYYY') + '<br />' +
 						'<span class="twitterTweetTime">' + moment(data[i].info.created_time).format('HH[h]mm') + '</td>' +
 						'<td class="twitterTweetContent">' + data[i].info.message + '</td>' +
 						'<td class="twitterTweetFavorites"><img class="twitterIcon" src="front/client/design/pictures/favorite.png"/> ' + data[i].info.favorite + '</td>' +
@@ -303,14 +304,18 @@ function twitter() {
 		function(data) {
 			self.displayHotTweets(data.data);
 		});
+
+		$('.twitterLegendHot').off().click(function() {
+			self.legendHotPosts();
+		});
 	}
 
 	this.displayHotTweets = function(data) {
 		var tweets = [];
 		for(var i = 0; i < data.length; i++) {
-			tweets.push({x: new Date(data[i].info.created_time), y: data[i].info.retweet, z: data[i].info.favorite, id: data[i].info.id, date: moment(data[i].info.created_time).format('MM/DD/YYYY, HH[h]mm')});
+			tweets.push({x: new Date(data[i].info.created_time), y: data[i].info.retweet, z: data[i].info.favorite, id: data[i].info.id, date: moment(data[i].info.created_time).format('DD/MM/YYYY, HH[h]mm')});
 		}
-		var axisX = {tickColor: "#cccccc", tickLength: 3, tickThickness: 1, lineThickness: 1, interlacedColor: "#fafafa", valueFormatString: "MM/DD/YYYY", labelFontSize: 10};
+		var axisX = {tickColor: "#cccccc", tickLength: 3, tickThickness: 1, lineThickness: 1, interlacedColor: "#fafafa", valueFormatString: "DD/MM/YYYY", labelFontSize: 10};
 		var axisY = {minimum: 0, tickColor: "#cccccc", tickThickness: 0, lineThickness: 1, gridThickness: 1, labelFontSize: 10};
 
 		var chart = new CanvasJS.Chart("graphHotTweets" + self.connectorId, {
@@ -331,6 +336,13 @@ function twitter() {
 	     });
 
 	    chart.render();
+	}
+
+	this.legendHotPosts = function() {
+		var html = '<div class="legendAttr">Abscisse</div>Date du tweet<br />' + 
+				   '<div class="legendAttr">Ordonnée</div>Nombre de retweets<br />' + 
+				   '<div class="legendAttr">Taille du tweet</div>Nombre mises en favoris';
+		get(Window).create("Légende", html, 400);
 	}
 
 	/**********************************
@@ -366,7 +378,7 @@ function twitter() {
 							'<img src="front/client/design/pictures/favorite.png" class="twitterIcon"/> ' + data[0].info.favorite +
 							' &middot <img src="front/client/design/pictures/retweet.png" class="twitterIcon"/> ' + data[0].info.retweet +
 						'</div>' +
-						'Publié le ' + moment(data[0].info.created_time).format('MM/DD/YYYY à HH[h]mm') +
+						'Publié le ' + moment(data[0].info.created_time).format('DD/MM/YYYY à HH[h]mm') +
 					'</div>';
 		get(Window).content(html);
 	}
@@ -425,7 +437,11 @@ function twitter() {
 			for (var i = tuples.length - 1; i > tuples.length - 10; i--) {
 				var key = tuples[i][0];
 				var value = tuples[i][1];
-				html += '<span class="twitterCloudWord" style="font-size: ' + (value / maxValue * 30) + 'px;">' + key + '</span> ';
+				var fontSize = value / maxValue * 30;
+				if (fontSize < 9) {
+					fontSize = 9;
+				}
+				html += '<span class="twitterCloudWord" style="font-size: ' + fontSize + 'px;">' + key + '</span> ';
 			}
 		} else {
 			html += 'Aucun mot trouvé';

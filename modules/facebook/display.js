@@ -47,6 +47,7 @@ function facebook() {
 								'<td style="width: 50%; vertical-align: top; background-color: white;">' +
 									'<div class="facebookLegend" style="font-size: 0.8em;">' +
 										'<div class="facebookLegendItem" style="background-color: #3b5998; border-radius: 5px;"></div> Post' +
+										' <img src="front/client/design/pictures/help.png" class="facebookLegendHot"/>' +
 									'</div>' +
 									'<h2>Posts et importance</h2>' +
 									'<div id="graphHotPosts' + connectorId + '" style="height: 430px;"></div>' +
@@ -104,13 +105,13 @@ function facebook() {
 
 		var j = 0;
 		//pour toutes les dates sur 15 jours
-		while (dateBefore.format('MM/DD/YYYY') != dateEnd.format('MM/DD/YYYY')) {
+		while (dateBefore.format('DD/MM/YYYY') != dateEnd.format('DD/MM/YYYY')) {
 			if (j != 0) { //la premiere valeur n'est la que pour le calcul des nouveaux likes et shared
 				var totalData = self.getData(dateBefore, data);
-				newLikes.push({x: j, label: dateBefore.format('MM/DD/YYYY'), y: totalData.newLikes});
-				newShares.push({x: j, label: dateBefore.format('MM/DD/YYYY'), y: totalData.newShared});
-				totalLikes.push({x: j, label: dateBefore.format('MM/DD/YYYY'), y: totalData.totalLikes});
-				totalShares.push({x: j, label: dateBefore.format('MM/DD/YYYY'), y: totalData.totalShared});
+				newLikes.push({x: j, label: dateBefore.format('DD/MM/YYYY'), y: totalData.newLikes});
+				newShares.push({x: j, label: dateBefore.format('DD/MM/YYYY'), y: totalData.newShared});
+				totalLikes.push({x: j, label: dateBefore.format('DD/MM/YYYY'), y: totalData.totalLikes});
+				totalShares.push({x: j, label: dateBefore.format('DD/MM/YYYY'), y: totalData.totalShared});
 			}
 			dateBefore.add('days', 1);
 			j++;
@@ -182,7 +183,7 @@ function facebook() {
 	*/
 	this.getData = function(date, data) {
 		var i = 0;
-		while (i < data.length && date.format('MM/DD/YYYY') != moment(data[i].date).format('MM/DD/YYYY')) {
+		while (i < data.length && date.format('DD/MM/YYYY') != moment(data[i].date).format('DD/MM/YYYY')) {
 			i++;
 		}
 		if (i < data.length) {
@@ -290,7 +291,7 @@ function facebook() {
 				notification = ' style="background-color: #efe7b2;"';
 			}
 			html += '<tr class="' + lineClass + 'facebookLastPostsTr facebookLastPostsTr' + self.connectorId + '" post-id="' + data[i].info.id + '" ' + notification + '>' +
-						'<td class="facebookPostDate">' + moment(data[i].info.created_time).format('MM/DD/YYYY') + '<br />' +
+						'<td class="facebookPostDate">' + moment(data[i].info.created_time).format('DD/MM/YYYY') + '<br />' +
 						'<span class="facebookPostTime">' + moment(data[i].info.created_time).format('HH[h]mm') + '</td>' +
 						'<td class="facebookPostType"><img title="' + data[i].info.type + '" src="front/client/design/pictures/';
 			if (data[i].info.type == "link") {
@@ -368,15 +369,19 @@ function facebook() {
 		function(data) {
 			self.displayHotPosts(data.data);
 		});
+
+		$('.facebookLegendHot').off().click(function() {
+			self.legendHotPosts();
+		});
 	}
 
 	this.displayHotPosts = function(data) {
 		var posts = [];
 		for(var i = 0; i < data.length; i++) {
-			posts.push({x: new Date(data[i].info.created_time), y: data[i].info.comments, z: data[i].info.likes, id: data[i].info.id, date: moment(data[i].info.created_time).format('MM/DD/YYYY, HH[h]mm')});
+			posts.push({x: new Date(data[i].info.created_time), y: data[i].info.comments, z: data[i].info.likes, id: data[i].info.id, date: moment(data[i].info.created_time).format('DD/MM/YYYY, HH[h]mm')});
 		}
 
-		var axisX = {tickColor: "#cccccc", tickLength: 3, tickThickness: 1, lineThickness: 1, interlacedColor: "#fafafa", valueFormatString: "MM/DD/YYYY", labelFontSize: 10};
+		var axisX = {tickColor: "#cccccc", tickLength: 3, tickThickness: 1, lineThickness: 1, interlacedColor: "#fafafa", valueFormatString: "DD/MM/YYYY", labelFontSize: 10};
 		var axisY = {minimum: 0, tickColor: "#cccccc", tickThickness: 0, lineThickness: 1, gridThickness: 1, labelFontSize: 10};
 
 		var chart = new CanvasJS.Chart("graphHotPosts" + self.connectorId, {
@@ -397,6 +402,13 @@ function facebook() {
 	     });
 
 	    chart.render();
+	}
+
+	this.legendHotPosts = function() {
+		var html = '<div class="legendAttr">Abscisse</div>Date du post<br />' + 
+				   '<div class="legendAttr">Ordonnée</div>Nombre de commentaires<br />' + 
+				   '<div class="legendAttr">Taille du post</div>Nombre de mentions "j\'aime"';
+		get(Window).create("Légende", html, 400);
 	}
 
 	/**********************************
@@ -457,7 +469,7 @@ function facebook() {
 							' &middot <img src="front/client/design/pictures/comment.png"/> ' + data[0].info.comments +
 							' &middot <img src="front/client/design/pictures/share.png"/> ' + data[0].info.shares +
 						'</div>' +
-						'Publié le ' + moment(data[0].info.created_time).format('MM/DD/YYYY à HH[h]mm') +
+						'Publié le ' + moment(data[0].info.created_time).format('DD/MM/YYYY à HH[h]mm') +
 					'</div>';
 		get(Window).content(html);
 	}
@@ -519,7 +531,11 @@ function facebook() {
 			for (var i = tuples.length - 1; i > tuples.length - 10; i--) {
 				var key = tuples[i][0];
 				var value = tuples[i][1];
-				html += '<span class="facebookCloudWord" style="font-size: ' + (value / maxValue * 30) + 'px;">' + key + '</span> ';
+				var fontSize = value / maxValue * 30;
+				if (fontSize < 9) {
+					fontSize = 9;
+				}
+				html += '<span class="facebookCloudWord" style="font-size: ' + fontSize + 'px;">' + key + '</span> ';
 			}
 		} else {
 			html += 'Aucun mot trouvé';

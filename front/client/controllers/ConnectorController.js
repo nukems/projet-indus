@@ -13,6 +13,7 @@ function Connector() {
 	*/
 	//affichage de la liste des modules
 	this.displayList = function(modules) {
+		$('#dashboardConnectorsList').html('');
 		var html ='<h1 id="addConnectorH1">Ajouter un connecteur au concurrent ' + get(Competitor).getName() + '</h1>';
 		for (var key in modules) {
 			html += '<div id="' + key + '" class="addConnectorChoice">' + 

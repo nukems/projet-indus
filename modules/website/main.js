@@ -8,6 +8,8 @@ var DIFF_TXT = "Contenu";
 var DIFF_FCT = "Fonctionnalité";
 var DIFF_GLB = "Contenu";
 
+var callbackValue = 0;
+
 function execute(callback)
 {
 	console.log("Execution du module website");
@@ -16,6 +18,7 @@ function execute(callback)
 	{
 		for(var i = 0; i < linkWebsite.length; i++)
 		{
+			callbackValue++;
 			//console.log("base");
 			//console.log(linkWebsite[i]);
 
@@ -45,31 +48,43 @@ function doWebsitePullRequest(data, index, callback)
 				["date", "desc"]
 			]}).toArray(function(err, items)
 				{
-					if(items.length == 0)
+					var result = DIFF_GLB;
+
+					if (items.length > 0) {
+						var old_content = items[0].info.page;
+						result = newPageIsDifferent(old_content, stdout);
+						console.log(data[index].connector_id + " : " + result);
+					}
+					
+					var dataWebsitePage = {
+						"connector_name": "website",
+						"type"          : "content",
+						"date"          : new Date(),
+						"competitor_id" : data[index].competitor_id,
+						"connector_id"  : data[index].connector_id,
+						"info"          : {"page": stdout, "update_type": result, "url": data[index].fields.pageName}
+					};
+
+					var constraints = {
+						"user_id"    : data[index].user_id,
+						"module_name": "website",
+						"notification": 1,
+						"type_name"  : "content"
+					};
+
+					ConfigChecker.add(constraints, dataWebsitePage, function()
 					{
-						var dataWebsitePage = {
-							"connector_name": "website",
-							"type"          : "content",
-							"date"          : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
-							"competitor_id" : data[index].competitor_id,
-							"connector_id"  : data[index].connector_id,
-							"info"          : {"page": stdout, "update_type": DIFF_GLB, "url": data[index].fields.pageName}
-						};
+						console.log('Data for ' + data[index].connector_id + ' of type ' + result);
+						callbackValue--;
+						if (callbackValue == 0) {
+							callback();
+						}
+					});
 
-						var constraints = {
-							"user_id"    : data[index].user_id,
-							"module_name": "website",
-							"type_name"  : "content",
-							"fields"     : {
-								"date"        : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
-								"connector_id": data[index].connector_id
-							}
-						};
 
-						ConfigChecker.update(constraints, dataWebsitePage, function()
-						{
-							console.log('First added data for ' + data[index].connector_id);
-						});
+					/*if(items.length == 0)
+					{
+						
 					}
 					else
 					{
@@ -92,35 +107,18 @@ function doWebsitePullRequest(data, index, callback)
 							var constraints = {
 								"user_id"    : data[index].user_id,
 								"module_name": "website",
-								"type_name"  : "content",
-								"fields"     : {
-									"date"        : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
-									"connector_id": data[index].connector_id
-								}
+								"type_name"  : "content"
 							};
 
-							ConfigChecker.update(constraints, dataWebsitePage, function()
+							ConfigChecker.add(constraints, dataWebsitePage, function()
 							{
 								console.log('Updated page content');
 							});
 						}
 
-					}
+					}*/
 				});
 		});
-		/*
-		 get(Ajax).send('user/competitors/modules/get', {"connector_id": self.connectorId,
-		 "moduleName"                                          : "website",
-		 "where"                                               : {},
-		 "options"                                             : {"sort": {"date": -1}, "limit": 1}},
-		 function(data)
-		 {
-		 console.log('data : ' + data);
-
-
-
-		 }
-		 );*/
 	});
 }
 
