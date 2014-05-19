@@ -42,7 +42,8 @@ function doWebsitePullRequest(data, index, callback)
 
 		var client = require('mongodb').MongoClient;
 		Database = InstancesController.getInstance('Core_Database');
-		Database.connect(function() {
+		Database.connect(function()
+		{
 			var collection = Database.getCollection('user_' + data[index].user_id);
 			collection.find({"connector_id": data[index].connector_id}, {}, {"limit": 1, "sort": [
 				["date", "desc"]
@@ -80,45 +81,9 @@ function doWebsitePullRequest(data, index, callback)
 							callback();
 						}
 					});
-
-
-					/*if(items.length == 0)
-					{
-						
-					}
-					else
-					{
-						var old_content = items[0].info.page;
-						var result = newPageIsDifferent(old_content, stdout);
-
-						console.log(data[index].connector_id + " : " + result);
-
-						if(result)
-						{
-							var dataWebsitePage = {
-								"connector_name": "website",
-								"type"          : "content",
-								"date"          : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0),
-								"competitor_id" : data[index].competitor_id,
-								"connector_id"  : data[index].connector_id,
-								"info"          : {"page": stdout, "update_type": result, "url": data[index].fields.pageName}
-							};
-
-							var constraints = {
-								"user_id"    : data[index].user_id,
-								"module_name": "website",
-								"type_name"  : "content"
-							};
-
-							ConfigChecker.add(constraints, dataWebsitePage, function()
-							{
-								console.log('Updated page content');
-							});
-						}
-
-					}*/
 				});
 		});
+
 	});
 }
 
