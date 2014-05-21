@@ -47,18 +47,21 @@ function website()
 
 	this.displayWebsitePages = function(data)
 	{
-		var html = '';
-		var iframe = "<iframe class='websiteIframe' src='" + data[0].info.url + "'></iframe>";
+		if (data.length == 0) {
+			$('#websiteUpdate' + self.connectorId).html('<div style="padding: 60px; color: #cccccc; text-align: center; font-size: 20px;">Aucune donnée disponible</div>');
+		} else {
+			var html = '';
+			var iframe = "<iframe class='websiteIframe' src='" + data[0].info.url + "'></iframe>";
 
-		if (data[0].notification == 1) {
-			html += '<div class="websiteNotification"><img src="front/client/design/pictures/bell.png"/> Nouvelle mise à jour</div>';
-			$('#goToConnector' + self.connectorId + ' .notificationItem').html(1).show();
+			if (data[0].notification == 1) {
+				html += '<div class="websiteNotification"><img src="front/client/design/pictures/bell.png"/> Nouvelle mise à jour</div>';
+				$('#goToConnector' + self.connectorId + ' .notificationItem').html(1).show();
+			}
+			html += "Dernier changement : <span style='font-weight: bold;'>" + data[0].info.update_type + "</span> le " + moment(data[0].date).format('DD/MM/YYYY [à] HH:mm');
+		
+			$('#websiteUpdate' + self.connectorId).html(html);
+			$('#websitePage' + self.connectorId).html(iframe);
 		}
-		html += "Dernier changement : <span style='font-weight: bold;'>" + data[0].info.update_type + "</span> le " + moment(data[0].date).format('DD/MM/YYYY [à] HH:mm');
-		
-		
-		$('#websiteUpdate' + self.connectorId).html(html);
-		$('#websitePage' + self.connectorId).html(iframe);
 	}
 
 }

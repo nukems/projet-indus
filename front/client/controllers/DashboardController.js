@@ -35,6 +35,7 @@ function DashboardController() {
 									'<div class="loadingDiv"><img src="front/client/design/pictures/loader.gif"/></div>' +
 								'</div>' +
 							'</div>' + 
+							'<div id="dashboardResponsive"><img src="front/client/design/pictures/responsive.png"/></div>' +
 							'<div id="dashboardContent">' + 
 								
 							'</div>' + 
@@ -82,6 +83,13 @@ function DashboardController() {
 			self.destroy();
 			self.logOut();
 			return false;
+		});
+		$('#dashboardResponsive').off().click(function() {
+			if ($('#dashboardMenu').is(':visible')) {
+				$('#dashboardMenu').removeClass("responsiveMenu");
+			} else {
+				$('#dashboardMenu').addClass('responsiveMenu');
+			}
 		});
 		self.getNotifications();
 	}

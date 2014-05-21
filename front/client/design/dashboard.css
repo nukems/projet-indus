@@ -1,5 +1,6 @@
 #dashboardTable {
 	display: table;
+	table-layout: fixed;
 	height: 101%;
 	width: 100%;
 }
@@ -73,6 +74,15 @@
 	top: -1px;
 }
 
+#dashboardResponsive {
+	display: none;
+	vertical-align: top;
+	width: 15px;
+	padding: 10px;
+	background-color: #888888;
+	color: #eeeeee;
+	cursor: pointer;
+}
 
 /* CONTENU */
 #dashboardContent {
@@ -80,6 +90,7 @@
 	background-color: #eeeeee;
 	background-image: url('pictures/background.jpg');
 	background-attachment: fixed;
+	min-width: 700px;
 }
 #emptyDashboard {
 	margin: 15px;
@@ -219,4 +230,21 @@
 .moduleSeparator {
 	margin: 5px -10px 5px -10px;
 	height: 10px;
+}
+
+/**
+*	RESPONSIVE
+*/
+@media screen and (max-width: 980px) {
+	#dashboardResponsive {
+		display: table-cell;
+	}
+
+	#dashboardMenu {
+		display: none;
+	}
+	#dashboardMenu.responsiveMenu {
+		display: table-cell;
+		width: 230px;
+	}
 }
