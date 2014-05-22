@@ -138,7 +138,10 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 						"module_name" : "facebook",
 						"type_name" : "post",
 						"notification": 1,
-						"fields" : {"info.id": response.data[j].id}
+						"fields" : {
+										"info.id": response.data[j].id,
+										"connector_id" : linkFacebook[index].connector_id
+								   }
 					};
 
 					ConfigChecker.update(constraints, dataFBPost, function(){counterCallbackPost--;checkCallback(callback);});

@@ -126,7 +126,8 @@ function doTweetsTwitterRequest(linkTwitter, index, callback) {
 					"module_name" : "twitter",
 					"type_name" : "tweet",
 					"notification": 1,
-					"fields" : {"info.id": body[j].id_str}
+					"fields" : {"info.id": body[j].id_str,
+								"connector_id": linkTwitter[index].connector_id}
 				};
 
 				ConfigChecker.update(constraints, dataTwitterTweet, function(){counterCallbackTweet--;checkCallback(callback);});
