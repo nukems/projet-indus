@@ -1,6 +1,15 @@
+#logoDiv {
+	text-align: center;
+	margin-top: 100px;
+}
+#logoDiv img {
+	width: 100px;
+	height: 100px;
+}
+
 /* LOG IN */
 #logInForm {
-	margin: 100px auto 100px auto;
+	margin: 20px auto 100px auto;
 	width: 260px;
 	background-color: #eeeeee;
 	padding: 20px;
@@ -15,7 +24,7 @@
 
 /* SIGN IN */
 #signInForm {
-	margin: 100px auto 100px auto;
+	margin: 20px auto 100px auto;
 	width: 260px;
 	background-color: #eeeeee;
 	padding: 20px;

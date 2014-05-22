@@ -26,7 +26,8 @@ function UserController() {
 	*	AFFICHAGE
 	*/
 	this.displayLogIn = function() {
-		var html = '<form method="post" id="logInForm">' + 
+		var html = '<div id="logoDiv"><img src="front/client/design/pictures/logo.png"/></div>' + 
+					'<form method="post" id="logInForm">' + 
 						'<h1>Se connecter</h1>' +
 						'<div id="logInError" class="formError"></div>' +
 						'<label for="logInMail">Adresse mail :</label>' + 
@@ -42,7 +43,8 @@ function UserController() {
 	}
 
 	this.displaySignIn = function() {
-		var html = '<form method="post" id="signInForm">' + 
+		var html = '<div id="logoDiv"><img src="front/client/design/pictures/logo.png"/></div>' + 
+					'<form method="post" id="signInForm">' + 
 						'<h1>S\'inscrire</h1>' +
 						'<div id="signInError" class="formError"></div>' +
 						'<label for="signInName">Nom : </label>' + 
