@@ -1,6 +1,6 @@
 global.env = require("./lib/config.js").getConfig();
-global.ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-global.port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+global.ipaddress = process.env.OPENSHIFT_NODEJS_IP || "5.39.91.227";
+global.port = process.env.OPENSHIFT_NODEJS_PORT || 80;
 
 /**
 *	Creation du serveur

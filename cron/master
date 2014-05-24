@@ -2,8 +2,6 @@
 
 sleep 1
 
-#source /usr/bin/rhcsh
-
 isCronOption() 
 {
         local e
@@ -42,10 +40,10 @@ mailThatFrontIsDown()
     	-F text='Cron message : server http://front-wawamania.rhcloud.com down !'
 }
 
-APP_REPO=~/app-root/runtime/repo/
+APP_REPO=/app/wasa/
 MODULES_REPO=$APP_REPO/modules/
 
-LOG_REPO=~/app-root/logs/
+LOG_REPO=/app/logs
 CRON_LOG=$LOG_REPO/cron.log
 
 INIT_PATH=$APP_REPO/back/init.js
@@ -131,24 +129,24 @@ while [[ k -lt i ]]; do
 	if [[ ${crony[$k]} == ${CRON_POSSIBILITIES[0]} ]]; then 
 		# --minutely
 		echo "Calling (minutely) : node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &"
-		node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
+		/app/node/node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[1]} ]]; then
 		if [[ $(date +%M) == *0 ]] || [[ $(date +%M) == *5 ]]; then
 			# --fiveminutely
 			echo "Calling (fiveminutely) : node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &"
-			node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
+			/app/node/node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
 		fi
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[2]} ]]; then 
 		if [[ $(date +%M) -eq 0 ]]; then
 			# --hourly
 			echo "Calling (hourly) : node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &"
-			node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
+			/app/node/node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
 		fi
 	elif [[ ${crony[$k]} == ${CRON_POSSIBILITIES[3]} ]]; then
 		if [[ $(date +%H) -eq 0 ]] && [[ $(date +%M) -eq 0 ]]; then
 			# --daily
 			echo "Calling (daily) : node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &"
-			node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
+			/app/node/node $INIT_PATH ${modules[$k]} >> $LOG_REPO/${logs[$k]} &
 		fi
 	fi
 	let k=k+1
@@ -160,16 +158,16 @@ if [[ $(date +%M) -eq 0 ]]; then
     isFrontUp
     if [[ $? -ne 200 ]]; then
         echo "Error : front didn't send 200 status code, emailing admin..."
-        mailThatFrontIsDown
+        # mailThatFrontIsDown
     else
-        echo "Front sent 200 status code"
+       echo "Front sent 200 status code"
     fi
     # Emptying log files
-    echo "Emptying log files..."
-    echo > $CRON_LOG
-    for log in ${logs[@]}; do
-            echo > $LOG_REPO/$log
-    done
+    # echo "Emptying log files..."
+    # echo > $CRON_LOG
+    # for log in ${logs[@]}; do
+    #         echo > $LOG_REPO/$log
+    # done
 fi
 
 echo
