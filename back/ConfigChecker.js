@@ -84,7 +84,7 @@ function update(constraints, data, callback) {
 	{
 		var arr = constraints.fields;
 		arr["type"] = constraints.type_name;
-		InstancesController.getInstance('Core_Database').getCollection("user_" + constraints.user_id).update(arr, data, function(err, result){
+		InstancesController.getInstance('Core_Database').getCollection("user_" + constraints.user_id).update(arr, {$set: data}, function(err, result){
 			if (result == 0) {
 				add(constraints, data, callback);
 			} else {

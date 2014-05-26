@@ -163,9 +163,11 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 }
 
 function checkAdd(fields, callback) {
+	console.log(fields.pageName);
 	facebook.get(('/' + fields.pageName), function(response) {
 
 		response = JSON.parse(response);
+		console.log(response);
 		if (!response.error && fields.displayName != '') {
 			callback(true);
 		} else {

@@ -441,6 +441,9 @@ function twitter() {
 				if (fontSize < 9) {
 					fontSize = 9;
 				}
+				if (fontSize > 30) {
+					fontSize = 30;
+				}
 				html += '<span class="twitterCloudWord" style="font-size: ' + fontSize + 'px;">' + key + '</span> ';
 			}
 		} else {
