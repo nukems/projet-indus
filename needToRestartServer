@@ -1,0 +1,18 @@
+#!/bin/bash
+
+IS_NODE_RUNNING=$(ps -A | grep node)
+if [[ $IS_NODE_RUNNING == *node* ]]; then
+	echo "Node server seems running"
+else
+	echo "Node server seems stopped ! Trying to restart it..." >> /app/logs/nodejs.log
+	/app/node/node /app/wasa/server_front.js >> /app/logs/nodejs.log &
+fi
+
+IS_MONGO_RUNNING=$(ps -A | grep mongod)
+if [[ $IS_MONGO_RUNNING == *mongod* ]]; then
+	echo "Mongod server seems running"
+else
+	echo "Mongod server seems stopped ! Trying to restart it..." >> /app/logs/mongo.log
+	mongod --dbpath /app/database --port 27017 --fork --logpath /app/logs/mongo.log --auth
+fi
+
