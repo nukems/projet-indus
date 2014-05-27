@@ -270,7 +270,7 @@ function twitter() {
 		html += '</table></div>';
 		$('#lastTweets' + self.connectorId).html(html);
 		if (newTweets > 0) {
-			$('#twitterNotifications' + self.connectorId).html('<div class="twitterNotificationsContent"><img src="front/client/design/pictures/bell.png"/> Il y a ' + newTweets + ' nouveaux tweets</div>');
+			$('#twitterNotifications' + self.connectorId).html('<div class="twitterNotificationsContent"><img src="front/client/design/pictures/bell.png"/> Il y a ' + newTweets + ' nouveau(x) tweets</div>');
 			$('#goToConnector' + self.connectorId + ' .notificationItem').html(newTweets).show();
 		}
 

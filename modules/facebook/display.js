@@ -29,14 +29,14 @@ function facebook() {
 					'<div id="facebookNotifications' + connectorId + '"></div>' +
 					'<div style="background-color: white; margin: 0px -10px; padding: 10px;">' +
 						'<div class="facebookLegend">' +
-							'<div class="facebookLegendItem" style="background-color: rgba(59, 89, 152, 0.3);"></div> Likes ' +
-							'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Shares' +
+							'<div class="facebookLegendItem" style="background-color: rgba(59, 89, 152, 0.3);"></div> J\'aime ' +
+							'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Partages' +
 						'</div>' +
 						'<h2 >Nouveaux "J\'aime" et partages</h2>' +
 						'<div id="graphNewLikesAndShares' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' +
 						'<div class="facebookLegend">' +
-							'<div class="facebookLegendItem" style="background-color: rgba(59, 89, 152, 0.3);"></div> Likes ' +
-							'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Shares' +
+							'<div class="facebookLegendItem" style="background-color: rgba(59, 89, 152, 0.3);"></div> J\'aime ' +
+							'<div class="facebookLegendItem" style="background-color: rgba(0,135,147,.3);"></div> Partages' +
 						'</div>' +
 						'<h2>Total des "J\'aime" et partages</h2>' +
 						'<div id="graphTotalLikesAndShares' + connectorId + '" style="min-width: 600px; height: 200px;"></div>' +
@@ -318,7 +318,7 @@ function facebook() {
 		$('#lastPosts' + self.connectorId).html(html);
 
 		if (newPosts > 0) {
-			$('#facebookNotifications' + self.connectorId).html('<div class="facebookNotificationsContent"><img src="front/client/design/pictures/bell.png"/> Il y a ' + newPosts + ' nouveaux posts</div>');
+			$('#facebookNotifications' + self.connectorId).html('<div class="facebookNotificationsContent"><img src="front/client/design/pictures/bell.png"/> Il y a ' + newPosts + ' nouveau(x) posts</div>');
 			$('#goToConnector' + self.connectorId + ' .notificationItem').html(newPosts).show();
 		}
 
