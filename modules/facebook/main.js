@@ -163,11 +163,12 @@ function doPostFacebookRequest(linkFacebook, index, callback) {
 }
 
 function checkAdd(fields, callback) {
-	console.log(fields.pageName);
-	facebook.get(('/' + fields.pageName), function(response) {
+	if (fields.pageName.indexOf('http') == 0) {
+		callback('Il ne faut pas rentrer l\'adresse entière de la page');
+	}
+	facebook.get(('/' + fields.pageName + '/posts?access_token=' + accessToken), function(response) {
 
 		response = JSON.parse(response);
-		console.log(response);
 		if (!response.error && fields.displayName != '') {
 			callback(true);
 		} else {
